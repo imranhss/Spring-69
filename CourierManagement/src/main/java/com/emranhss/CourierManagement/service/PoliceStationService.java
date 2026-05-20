@@ -3,6 +3,7 @@ package com.emranhss.CourierManagement.service;
 import com.emranhss.CourierManagement.entity.PoliceStation;
 import com.emranhss.CourierManagement.repository.PoliceStationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class PoliceStationService {
 
     public  void  delete(long id){
 
-        stationRepository.deleteById(id);
+         stationRepository.deleteById(id);
     }
 
 }
