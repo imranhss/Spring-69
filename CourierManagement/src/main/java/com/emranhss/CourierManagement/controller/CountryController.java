@@ -42,7 +42,8 @@ public class CountryController {
     public ResponseEntity<String> delete(@PathVariable Integer id) {
 
         countryService.delete(id);
-        return ResponseEntity.ok("Data Deleted");
+
+        return ResponseEntity.ok("Country Deleted Successfully");
     }
 
     @PutMapping("{id}")

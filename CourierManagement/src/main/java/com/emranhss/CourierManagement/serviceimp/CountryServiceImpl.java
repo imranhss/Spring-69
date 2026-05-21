@@ -34,11 +34,12 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public void delete(Integer id) {
-        countryRepository.deleteById(id);
+
+        Country country = countryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Country Not Found With ID: " + id));
+
+        countryRepository.delete(country);
     }
-
-
-
 
 
 }
