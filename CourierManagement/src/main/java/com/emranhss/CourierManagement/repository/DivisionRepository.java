@@ -1,5 +1,6 @@
 package com.emranhss.CourierManagement.repository;
 
+import com.emranhss.CourierManagement.dto.DivisionDTO;
 import com.emranhss.CourierManagement.entity.Division;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

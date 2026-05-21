@@ -1,5 +1,6 @@
 package com.emranhss.CourierManagement.service;
 
+import com.emranhss.CourierManagement.dto.DivisionDTO;
 import com.emranhss.CourierManagement.entity.Country;
 import com.emranhss.CourierManagement.entity.Division;
 
@@ -13,8 +14,8 @@ public interface DivisionService {
     Optional<Division> getById(Integer id);
     void delete(Integer id);
 
-    List<Division> getDivisionsByCountryId(Integer countryId);
+    List<DivisionDTO> getDivisionsByCountryId(Integer countryId);
 
-    List<Division> getDivisionsByCountryName(String countryName);
+    List<DivisionDTO> getDivisionsByCountryName(String countryName);
 
 }

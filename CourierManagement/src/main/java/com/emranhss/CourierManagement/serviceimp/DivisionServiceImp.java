@@ -1,5 +1,6 @@
 package com.emranhss.CourierManagement.serviceimp;
 
+import com.emranhss.CourierManagement.dto.DivisionDTO;
 import com.emranhss.CourierManagement.entity.Country;
 import com.emranhss.CourierManagement.entity.Division;
 import com.emranhss.CourierManagement.repository.CountryRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DivisionServiceImp implements DivisionService {
@@ -49,12 +51,31 @@ public class DivisionServiceImp implements DivisionService {
     }
 
     @Override
-    public List<Division> getDivisionsByCountryId(Integer countryId) {
-        return divisionRepository.findByCountryId(countryId);
+    public List<DivisionDTO> getDivisionsByCountryId(Integer countryId) {
+
+        List<Division> list = divisionRepository.findByCountryId(countryId);
+
+        return  list.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
-    public List<Division> getDivisionsByCountryName(String countryName) {
-        return divisionRepository.findByCountryName(countryName);
+    public List<DivisionDTO> getDivisionsByCountryName(String countryName) {
+
+        List<Division> list = divisionRepository.findByCountryName(countryName);
+
+        return  list.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
+
+
+    private DivisionDTO convertToDTO(Division division) {
+
+        return new DivisionDTO(
+                division.getId(),
+                division.getName(),
+                division.getCountry().getName(),
+                division.getCountry().getId()
+        );
+    }
+
+
 }
