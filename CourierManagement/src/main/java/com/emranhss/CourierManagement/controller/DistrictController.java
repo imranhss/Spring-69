@@ -1,5 +1,6 @@
 package com.emranhss.CourierManagement.controller;
 
+import com.emranhss.CourierManagement.dto.Response.DistrictResponseDTO;
 import com.emranhss.CourierManagement.entity.District;
 import com.emranhss.CourierManagement.service.DistrictService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +29,14 @@ public class DistrictController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<List<District>> getByDivisionId(@PathVariable Integer id) {
-        List<District> list = districtService.findByDivisionId(id);
+    public ResponseEntity<List<DistrictResponseDTO>> getByDivisionId(@PathVariable Integer id) {
+        List<DistrictResponseDTO> list = districtService.findByDivisionId(id);
         return ResponseEntity.ok(list);
     }
 
     @GetMapping("division/{name}")
-    public ResponseEntity<List<District>> getByDivisionName(@PathVariable String name) {
-        List<District> list = districtService.findByDivisionName(name);
+    public ResponseEntity<List<DistrictResponseDTO>> getByDivisionName(@PathVariable String name) {
+        List<DistrictResponseDTO> list = districtService.findByDivisionName(name);
         return ResponseEntity.ok(list);
     }
 

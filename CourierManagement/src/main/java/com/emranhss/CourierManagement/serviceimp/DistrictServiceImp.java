@@ -1,5 +1,7 @@
 package com.emranhss.CourierManagement.serviceimp;
 
+import com.emranhss.CourierManagement.dto.DivisionDTO;
+import com.emranhss.CourierManagement.dto.Response.DistrictResponseDTO;
 import com.emranhss.CourierManagement.entity.District;
 import com.emranhss.CourierManagement.entity.Division;
 import com.emranhss.CourierManagement.repository.DistrictRepository;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DistrictServiceImp implements DistrictService {
@@ -47,12 +50,29 @@ public class DistrictServiceImp implements DistrictService {
     }
 
     @Override
-    public List<District> findByDivisionId(Integer divisionId) {
-        return districtRepository.findByDivisionId(divisionId);
+    public List<DistrictResponseDTO> findByDivisionId(Integer divisionId) {
+        List<District> list =  districtRepository.findByDivisionId(divisionId);
+        return list.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     @Override
-    public List<District> findByDivisionName(String divisionName) {
-        return districtRepository.findByDivisionName(divisionName);
+    public List<DistrictResponseDTO> findByDivisionName(String divisionName) {
+        List<District> list =  districtRepository.findByDivisionName(divisionName);
+        return list.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
+
+    private DistrictResponseDTO convertToDTO(District district) {
+
+        return new DistrictResponseDTO(
+                district.getId(),
+                district.getName(),
+                district.getDivision().getId(),
+                district.getDivision().getName(),
+                district.getDivision().getCountry().getName(),
+                district.getDivision().getCountry().getCode(),
+                district.getDivision().getCountry().getId()
+        );
+    }
+
+
 }

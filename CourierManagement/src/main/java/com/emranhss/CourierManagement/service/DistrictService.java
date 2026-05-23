@@ -1,6 +1,7 @@
 package com.emranhss.CourierManagement.service;
 
 import com.emranhss.CourierManagement.dto.DivisionDTO;
+import com.emranhss.CourierManagement.dto.Response.DistrictResponseDTO;
 import com.emranhss.CourierManagement.entity.District;
 import com.emranhss.CourierManagement.entity.Division;
 
@@ -14,9 +15,9 @@ public interface DistrictService {
     Optional<District> getById(Integer id);
     void delete(Integer id);
 
-    List<District> findByDivisionId(Integer  divisionId);
+    List<DistrictResponseDTO> findByDivisionId(Integer  divisionId);
 
-    List<District> findByDivisionName(String divisionName);
+    List<DistrictResponseDTO> findByDivisionName(String divisionName);
 
 
 }
