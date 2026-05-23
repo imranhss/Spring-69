@@ -1,37 +1,23 @@
 package com.emranhss.CourierManagement.service;
 
+import com.emranhss.CourierManagement.dto.Response.DistrictResponseDTO;
+import com.emranhss.CourierManagement.dto.Response.PoliceStationResponseDTO;
+import com.emranhss.CourierManagement.entity.District;
 import com.emranhss.CourierManagement.entity.PoliceStation;
-import com.emranhss.CourierManagement.repository.PoliceStationRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class PoliceStationService {
+public interface PoliceStationService {
 
-    @Autowired
-    private PoliceStationRepository stationRepository;
+    PoliceStation save(PoliceStation p);
+    List<PoliceStation> findAll();
+    Optional<PoliceStation> getById(Long id);
+    void delete(Long id);
 
-    public List<PoliceStation> getAll() {
+    List<PoliceStationResponseDTO> findByDistrictId(Integer  districtId);
 
-        return stationRepository.findAll();
-    }
+    List<PoliceStationResponseDTO> findByDistrictName(String districtName);
 
-    public PoliceStation saveOrUpdate(PoliceStation p) {
-
-      return   stationRepository.save(p);
-    }
-
-    public Optional<PoliceStation> getById(long id) {
-        return stationRepository.findById(id);
-    }
-
-    public  void  delete(long id){
-
-         stationRepository.deleteById(id);
-    }
 
 }

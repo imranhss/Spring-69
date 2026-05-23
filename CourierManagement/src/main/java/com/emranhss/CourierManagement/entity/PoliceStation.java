@@ -21,5 +21,9 @@ public class PoliceStation {
     @Column(length = 50)
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "district_id")
+    private District district;
+
 
 }

@@ -24,7 +24,6 @@ public class Country {
 
     private  String code;
 
-    @OneToMany
-    private List<Division> divisions;
+
 
 }
