@@ -32,7 +32,15 @@ public class CustomerServiceImp implements CustomerService {
 
 
     @Override
-    public Customer save(Customer c) {
+    public Customer save(Customer c, MultipartFile imageFile) {
+
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            // Save image for both User and JobSeeker
+            String filename = saveImageForCustomer(imageFile, c);
+            c.setImage(filename);
+        }
+
 
         User u = new User();
 
@@ -65,7 +73,7 @@ public class CustomerServiceImp implements CustomerService {
 
 
 
-    public String saveImageForCutomer(MultipartFile file, Customer c) {
+    public String saveImageForCustomer(MultipartFile file, Customer c) {
 
         Path uploadPath = Paths.get(uploadDir + "/customer");
         if (!Files.exists(uploadPath)) {
