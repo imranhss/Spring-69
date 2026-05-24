@@ -27,7 +27,7 @@ public class CustomerServiceImp implements CustomerService {
     @Autowired
     private UserRepository userRepository;
 
-    @Value("F:/JEE-69/Spring/Code/Spring-69/")
+    @Value("F:/JEE-69/Spring/Code/Spring-69/assets/")
     private String uploadDir;
 
 
