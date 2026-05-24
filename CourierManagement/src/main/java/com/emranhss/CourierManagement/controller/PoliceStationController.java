@@ -77,7 +77,7 @@ public class PoliceStationController {
         List<PoliceStationResponseDTO> list = policeStationService.findByDistrictId(id);
         return ResponseEntity.ok(list);
     }
-
+ 
     @GetMapping("district/name/{name}")
     public ResponseEntity<List<PoliceStationResponseDTO>> getByCountryName(@PathVariable String name) {
         List<PoliceStationResponseDTO> list = policeStationService.findByDistrictName(name);
