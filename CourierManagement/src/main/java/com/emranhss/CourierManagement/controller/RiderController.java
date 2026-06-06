@@ -1,17 +1,18 @@
 package com.emranhss.CourierManagement.controller;
 
+import com.emranhss.CourierManagement.dto.Response.RiderResponseDTO;
+import com.emranhss.CourierManagement.dto.request.RiderRequestDTO;
 import com.emranhss.CourierManagement.entity.Customer;
 import com.emranhss.CourierManagement.entity.Rider;
 import com.emranhss.CourierManagement.service.RiderService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import tools.jackson.databind.ObjectMapper;
+import java.util.List;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/rider/")
@@ -22,29 +23,30 @@ public class RiderController {
 
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> save(
-            @RequestPart(value = "rider") String data,
-            @RequestParam(value = "image") MultipartFile file
+    public ResponseEntity<RiderResponseDTO> create(
+            @RequestPart("rider") RiderRequestDTO dto,
+            @RequestPart(value = "image", required = false) MultipartFile image
     ) {
+        return new ResponseEntity<>(
+                riderService.create(dto, image),
+                HttpStatus.CREATED
+        );
+    }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        Rider ri = objectMapper.readValue(data, Rider.class);
+    @GetMapping
+    public List<RiderResponseDTO> getAll() {
+        return riderService.getAll();
+    }
 
-        try {
-            riderService.save(ri, file);
-            Map<String, String> response = new HashMap<>();
-            response.put("Message", "Rider Added Successfully ");
+    @GetMapping("/{id}")
+    public RiderResponseDTO getById(@PathVariable Long id) {
+        return riderService.getById(id);
+    }
 
-            return new ResponseEntity<>(response, HttpStatus.OK);
-
-        } catch (Exception e) {
-
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("Message", "Rider Add Faild " + e);
-            return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        riderService.delete(id);
+        return ResponseEntity.ok("Deleted successfully");
     }
 
 

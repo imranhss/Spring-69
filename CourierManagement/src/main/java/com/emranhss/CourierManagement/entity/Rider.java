@@ -18,16 +18,6 @@ public class Rider {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private  String name;
-    @Column(unique = true)
-    private String email;
-
-    @Column(unique = true)
-    private String phone;
-
-    @Size(max = 20, min = 4)
-    private String password;
-
     private String vehicleType;
 
     private String vehicleNumber;

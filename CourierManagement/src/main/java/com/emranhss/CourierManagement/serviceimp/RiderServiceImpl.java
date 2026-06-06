@@ -1,15 +1,18 @@
 package com.emranhss.CourierManagement.serviceimp;
 
-import com.emranhss.CourierManagement.entity.Customer;
+import com.emranhss.CourierManagement.dto.Response.RiderResponseDTO;
+import com.emranhss.CourierManagement.dto.mapper.RiderMapper;
+import com.emranhss.CourierManagement.dto.request.RiderRequestDTO;
 import com.emranhss.CourierManagement.entity.Rider;
 import com.emranhss.CourierManagement.entity.User;
 import com.emranhss.CourierManagement.repository.RiderRepository;
 import com.emranhss.CourierManagement.repository.UserRepository;
 import com.emranhss.CourierManagement.service.RiderService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,85 +21,85 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class RiderServiceImpl implements RiderService {
 
-    @Autowired
-    private RiderRepository riderRepository;
+    private final RiderRepository riderRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Value("F:/JEE-69/Spring/Code/Spring-69/assets/")
+    @Value("${image.upload.dir}")
     private String uploadDir;
 
+    @Transactional
     @Override
-    public Rider save(Rider r, MultipartFile image) {
+    public RiderResponseDTO create(RiderRequestDTO dto, MultipartFile image) {
 
+        Rider rider = RiderMapper.toEntity(dto);
+
+        // save user first
+        User savedUser = userRepository.save(rider.getUser());
+        rider.setUser(savedUser);
+
+        // upload image
         if (image != null && !image.isEmpty()) {
-
-            String filename = saveImageForRider(image, r);
-            r.setImage(filename);
+            rider.setImage(uploadImage(image, dto.getName()));
         }
 
+        Rider saved = riderRepository.save(rider);
 
-        User user = new User();
-
-        user.setName(r.getName());
-        user.setEmail(r.getEmail());
-        user.setPhone(r.getPhone());
-        user.setPassword(r.getPassword());
-        user.setRole("RIDER");
-
-        User savedUser = userRepository.save(user);
-
-        r.setUser(savedUser);
-
-        return riderRepository.save(r);
+        return RiderMapper.toDTO(saved);
     }
 
     @Override
-    public List<Rider> findAll() {
-        return List.of();
+    public List<RiderResponseDTO> getAll() {
+        return riderRepository.findAll()
+                .stream()
+                .map(RiderMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<Rider> getById(Integer id) {
-        return Optional.empty();
+    public RiderResponseDTO getById(Long id) {
+        Rider rider = riderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Rider not found"));
+
+        return RiderMapper.toDTO(rider);
     }
 
     @Override
-    public void delete(Integer id) {
-
+    public void delete(Long id) {
+        riderRepository.deleteById(id);
     }
 
-    public String saveImageForRider(MultipartFile file, Rider r) {
-
-        Path uploadPath = Paths.get(uploadDir + "/rider");
-        if (!Files.exists(uploadPath)) {
-            try {
-                Files.createDirectory(uploadPath);
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        String riderName = r.getName();
-        String fileName = riderName.trim().replaceAll("\\s+", "_");
-
-        String savedFileName = fileName + "_" + UUID.randomUUID().toString();
+    private String uploadImage(MultipartFile file, String name) {
 
         try {
-            Path filePath = uploadPath.resolve(savedFileName);
-            Files.copy(file.getInputStream(), filePath);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            Path path = Paths.get(uploadDir, "rider");
+
+            if (!Files.exists(path)) {
+                Files.createDirectories(path);
+            }
+
+            String ext = "";
+            String original = file.getOriginalFilename();
+
+            if (original != null && original.contains(".")) {
+                ext = original.substring(original.lastIndexOf("."));
+            }
+
+            String fileName = name.trim().replaceAll("\\s+", "_")
+                    + "_" + UUID.randomUUID()
+                    + ext;
+
+            Files.copy(file.getInputStream(), path.resolve(fileName));
+
+            return fileName;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Image upload failed");
         }
-        return savedFileName;
-
     }
-
-
 }
