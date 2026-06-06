@@ -27,8 +27,6 @@ public class User {
     @Size(max = 20, min = 4)
     private String password;
 
-
-
     private String role;
 
 

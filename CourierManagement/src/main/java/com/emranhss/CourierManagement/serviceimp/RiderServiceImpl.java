@@ -74,6 +74,9 @@ public class RiderServiceImpl implements RiderService {
         riderRepository.deleteById(id);
     }
 
+
+
+
     private String uploadImage(MultipartFile file, String name) {
 
         try {

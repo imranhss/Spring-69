@@ -13,6 +13,8 @@ public class RiderResponseDTO {
 
     private String phone;
 
+    private String role;
+
     private String vehicleType;
 
     private String vehicleNumber;
