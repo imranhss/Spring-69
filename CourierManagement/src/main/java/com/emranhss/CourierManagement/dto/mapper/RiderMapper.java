@@ -40,7 +40,7 @@ public class RiderMapper {
         dto.setName(rider.getUser().getName());
         dto.setEmail(rider.getUser().getEmail());
         dto.setPhone(rider.getUser().getPhone());
-        dto.setPhone(rider.getUser().getRole());
+        dto.setRole(rider.getUser().getRole());
 
         dto.setVehicleType(rider.getVehicleType());
         dto.setVehicleNumber(rider.getVehicleNumber());
