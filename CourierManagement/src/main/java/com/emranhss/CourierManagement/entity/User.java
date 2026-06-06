@@ -1,5 +1,6 @@
 package com.emranhss.CourierManagement.entity;
 
+import com.emranhss.CourierManagement.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
@@ -27,8 +28,8 @@ public class User {
     @Size(max = 20, min = 4)
     private String password;
 
-    private String role;
-
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
 
 }

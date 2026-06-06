@@ -2,6 +2,7 @@ package com.emranhss.CourierManagement.serviceimp;
 
 import com.emranhss.CourierManagement.entity.Customer;
 import com.emranhss.CourierManagement.entity.User;
+import com.emranhss.CourierManagement.enums.Role;
 import com.emranhss.CourierManagement.repository.CustomerRepository;
 import com.emranhss.CourierManagement.repository.UserRepository;
 import com.emranhss.CourierManagement.service.CustomerService;
@@ -53,7 +54,7 @@ public class CustomerServiceImp implements CustomerService {
         u.setEmail(c.getEmail());
         u.setPhone(c.getPhone());
         u.setPassword(c.getPassword());
-        u.setRole("CUSTOMER");
+        u.setRole(Role.RIDER);
 
         User savedUser = userRepository.save(u);
 

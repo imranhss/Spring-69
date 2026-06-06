@@ -4,6 +4,7 @@ import com.emranhss.CourierManagement.dto.Response.RiderResponseDTO;
 import com.emranhss.CourierManagement.dto.request.RiderRequestDTO;
 import com.emranhss.CourierManagement.entity.Rider;
 import com.emranhss.CourierManagement.entity.User;
+import com.emranhss.CourierManagement.enums.Role;
 
 public class RiderMapper {
 
@@ -22,7 +23,7 @@ public class RiderMapper {
         user.setEmail(dto.getEmail());
         user.setPhone(dto.getPhone());
         user.setPassword(dto.getPassword());
-        user.setRole("RIDER");
+        user.setRole(Role.RIDER);
 
 
         rider.setUser(user);
@@ -40,7 +41,7 @@ public class RiderMapper {
         dto.setName(rider.getUser().getName());
         dto.setEmail(rider.getUser().getEmail());
         dto.setPhone(rider.getUser().getPhone());
-        dto.setRole(rider.getUser().getRole());
+        dto.setRole(rider.getUser().getRole().name());
 
         dto.setVehicleType(rider.getVehicleType());
         dto.setVehicleNumber(rider.getVehicleNumber());
