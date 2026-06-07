@@ -15,14 +15,14 @@ public interface RiderRepository extends JpaRepository<Rider, Long> {
 
 
 
-    @Query("""
-        SELECT DISTINCT r FROM Rider r
-        LEFT JOIN FETCH r.zones z
-        LEFT JOIN FETCH z.district d
-        LEFT JOIN FETCH d.division
-        LEFT JOIN FETCH r.user
-    """)
-    List<Rider> findAllRiders();
+//    @Query("""
+//        SELECT DISTINCT r FROM Rider r
+//        LEFT JOIN FETCH r.zones z
+//        LEFT JOIN FETCH z.district d
+//        LEFT JOIN FETCH d.division
+//        LEFT JOIN FETCH r.user
+//    """)
+//    List<Rider> findAllRiders();
 
     @Query("""
         SELECT r FROM Rider r

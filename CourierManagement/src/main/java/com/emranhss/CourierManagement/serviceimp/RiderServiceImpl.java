@@ -68,7 +68,8 @@ public class RiderServiceImpl implements RiderService {
 
     @Override
     public List<RiderResponseDTO> getAll() {
-        List<Rider> riders = riderRepository.findAllRiders();
+//        List<Rider> riders = riderRepository.findAllRiders();
+        List<Rider> riders = riderRepository.findAll();
 
         return riders.stream()
                 .map(RiderMapper::toDTO)
@@ -77,7 +78,7 @@ public class RiderServiceImpl implements RiderService {
 
     @Override
     public RiderResponseDTO getById(Long id) {
-        Rider rider = riderRepository.findByIdWithZones(id)
+        Rider rider = riderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Rider not found"));
         return RiderMapper.toDTO(rider);
     }
