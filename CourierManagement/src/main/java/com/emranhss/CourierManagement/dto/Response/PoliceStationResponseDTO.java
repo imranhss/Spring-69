@@ -12,13 +12,13 @@ public class PoliceStationResponseDTO {
 
     private Long policeStationId;
     private String policeStationName;
-    private Integer districtId;
+    private Long districtId;
     private String districtName;
-    private Integer divisionId;
+    private Long divisionId;
     private  String divisionName;
     private  String countryName;
     private  String countryCode;
-    private Integer countryId;
+    private Long countryId;
 
 
 }

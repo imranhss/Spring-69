@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface PoliceStationRepository extends JpaRepository<PoliceStation, Long> {
 
-    List<PoliceStation> findByDistrictId(Integer districtId);
+    List<PoliceStation> findByDistrictId(Long districtId);
 
     List<PoliceStation> findByDistrictName(String districtName);
     

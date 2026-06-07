@@ -31,7 +31,7 @@ public class CountryController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Country> findById(@PathVariable("id") Integer id) {
+    public ResponseEntity<Country> findById(@PathVariable("id") Long id) {
         Country c = countryService.getById(id)
                 .orElseThrow(() -> new RuntimeException("Country Not Found with this ID"));
 
@@ -39,7 +39,7 @@ public class CountryController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
 
         countryService.delete(id);
 
@@ -48,7 +48,7 @@ public class CountryController {
 
     @PutMapping("{id}")
     public  ResponseEntity<Country> update(
-            @PathVariable Integer id,
+            @PathVariable Long id,
             @RequestBody Country c
     ){
 

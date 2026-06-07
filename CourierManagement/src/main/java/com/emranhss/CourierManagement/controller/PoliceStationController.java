@@ -73,7 +73,7 @@ public class PoliceStationController {
 
 
     @GetMapping("district/{id}")
-    public ResponseEntity<List<PoliceStationResponseDTO>> getByDistrictId(@PathVariable Integer id) {
+    public ResponseEntity<List<PoliceStationResponseDTO>> getByDistrictId(@PathVariable Long id) {
         List<PoliceStationResponseDTO> list = policeStationService.findByDistrictId(id);
         return ResponseEntity.ok(list);
     }

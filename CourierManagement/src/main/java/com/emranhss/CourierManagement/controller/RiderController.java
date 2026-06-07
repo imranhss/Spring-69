@@ -33,10 +33,23 @@ public class RiderController {
         );
     }
 
+//    @GetMapping
+//    public List<RiderResponseDTO> getAll() {
+//        return riderService.getAll();
+//    }
+
     @GetMapping
-    public List<RiderResponseDTO> getAll() {
-        return riderService.getAll();
+    public ResponseEntity<List<RiderResponseDTO>> getAll() {
+
+        List<RiderResponseDTO> riders = riderService.getAll();
+
+        if (riders.isEmpty()) {
+            return ResponseEntity.noContent().build(); // 204
+        }
+
+        return ResponseEntity.ok(riders);
     }
+
 
     @GetMapping("/{id}")
     public RiderResponseDTO getById(@PathVariable Long id) {

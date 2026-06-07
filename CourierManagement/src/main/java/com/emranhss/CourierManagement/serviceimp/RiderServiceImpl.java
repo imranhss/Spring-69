@@ -3,8 +3,10 @@ package com.emranhss.CourierManagement.serviceimp;
 import com.emranhss.CourierManagement.dto.Response.RiderResponseDTO;
 import com.emranhss.CourierManagement.dto.mapper.RiderMapper;
 import com.emranhss.CourierManagement.dto.request.RiderRequestDTO;
+import com.emranhss.CourierManagement.entity.PoliceStation;
 import com.emranhss.CourierManagement.entity.Rider;
 import com.emranhss.CourierManagement.entity.User;
+import com.emranhss.CourierManagement.repository.PoliceStationRepository;
 import com.emranhss.CourierManagement.repository.RiderRepository;
 import com.emranhss.CourierManagement.repository.UserRepository;
 import com.emranhss.CourierManagement.service.RiderService;
@@ -20,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -29,6 +32,7 @@ public class RiderServiceImpl implements RiderService {
 
     private final RiderRepository riderRepository;
     private final UserRepository userRepository;
+    private final PoliceStationRepository policeStationRepository;
 
     @Value("${image.upload.dir}")
     private String uploadDir;
@@ -48,6 +52,15 @@ public class RiderServiceImpl implements RiderService {
             rider.setImage(uploadImage(image, dto.getName()));
         }
 
+        Set<PoliceStation> zones = dto.getZones()
+                .stream()
+                .map(z -> policeStationRepository.findById(z.getPoliceStationId())
+                        .orElseThrow(() ->
+                                new RuntimeException("Zone not found: " + z.getPoliceStationId())))
+                .collect(Collectors.toSet());
+
+        rider.setZones(zones);
+
         Rider saved = riderRepository.save(rider);
 
         return RiderMapper.toDTO(saved);
@@ -55,17 +68,17 @@ public class RiderServiceImpl implements RiderService {
 
     @Override
     public List<RiderResponseDTO> getAll() {
-        return riderRepository.findAll()
-                .stream()
+        List<Rider> riders = riderRepository.findAllRiders();
+
+        return riders.stream()
                 .map(RiderMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public RiderResponseDTO getById(Long id) {
-        Rider rider = riderRepository.findById(id)
+        Rider rider = riderRepository.findByIdWithZones(id)
                 .orElseThrow(() -> new RuntimeException("Rider not found"));
-
         return RiderMapper.toDTO(rider);
     }
 

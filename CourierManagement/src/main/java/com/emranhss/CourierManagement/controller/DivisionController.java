@@ -32,7 +32,7 @@ public class DivisionController {
 
     // Find by Country ID
     @GetMapping("country/{id}")
-    public List<DivisionDTO> getByCountryId(@PathVariable Integer id) {
+    public List<DivisionDTO> getByCountryId(@PathVariable Long id) {
         return divisionService.getDivisionsByCountryId(id);
     }
 

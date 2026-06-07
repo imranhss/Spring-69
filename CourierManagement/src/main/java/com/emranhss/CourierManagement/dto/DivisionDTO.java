@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 public class DivisionDTO {
 
-    private Integer divisionId;
+    private Long divisionId;
     private  String divisionName;
     private  String countryName;
-    private Integer countryId;
+    private Long countryId;
 
 }

@@ -27,7 +27,7 @@ public class PoliceStationServiceImpl implements PoliceStationService {
 
     @Override
     public PoliceStation save(PoliceStation p) {
-        Integer districtId= p.getDistrict().getId();
+        Long districtId= p.getDistrict().getId();
         District d= districtRepository.findById(districtId)
                 .orElseThrow(()-> new RuntimeException("District Not found with this ID"));
 
@@ -52,7 +52,7 @@ public class PoliceStationServiceImpl implements PoliceStationService {
     }
 
     @Override
-    public List<PoliceStationResponseDTO> findByDistrictId(Integer districtId) {
+    public List<PoliceStationResponseDTO> findByDistrictId(Long districtId) {
         List<PoliceStation> list= stationRepository.findByDistrictId(districtId);
         return list.stream().map(this::convertToDTO).collect(Collectors.toList());
     }

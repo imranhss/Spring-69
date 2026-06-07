@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface DistrictRepository extends JpaRepository<District, Integer> {
-        List<District> findByDivisionId(Integer divisionId);
+public interface DistrictRepository extends JpaRepository<District, Long> {
+        List<District> findByDivisionId(Long divisionId);
 
         List<District> findByDivisionName(String divisionName);
 

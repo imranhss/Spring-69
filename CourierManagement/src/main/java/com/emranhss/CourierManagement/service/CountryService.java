@@ -12,8 +12,8 @@ public interface CountryService {
 
     Country save(Country c);
     List<Country> findAll();
-    Optional<Country> getById(Integer id);
-    void delete(Integer id);
+    Optional<Country> getById(Long id);
+    void delete(Long id);
 
 
 }

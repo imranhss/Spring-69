@@ -15,7 +15,7 @@ public interface PoliceStationService {
     Optional<PoliceStation> getById(Long id);
     void delete(Long id);
 
-    List<PoliceStationResponseDTO> findByDistrictId(Integer  districtId);
+    List<PoliceStationResponseDTO> findByDistrictId(Long  districtId);
 
     List<PoliceStationResponseDTO> findByDistrictName(String districtName);
 

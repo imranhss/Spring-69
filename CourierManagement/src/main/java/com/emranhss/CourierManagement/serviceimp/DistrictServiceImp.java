@@ -26,7 +26,7 @@ public class DistrictServiceImp implements DistrictService {
 
     @Override
     public District save(District d) {
-        Integer divisionId= d.getDivision().getId();
+        Long divisionId= d.getDivision().getId();
         Division dv =divisionRepository.findById(divisionId)
                 .orElseThrow(()-> new RuntimeException("Division Not found With this id"));
 
@@ -40,17 +40,17 @@ public class DistrictServiceImp implements DistrictService {
     }
 
     @Override
-    public Optional<District> getById(Integer id) {
+    public Optional<District> getById(Long id) {
         return districtRepository.findById(id);
     }
 
     @Override
-    public void delete(Integer id) {
+    public void delete(Long id) {
 
     }
 
     @Override
-    public List<DistrictResponseDTO> findByDivisionId(Integer divisionId) {
+    public List<DistrictResponseDTO> findByDivisionId(Long divisionId) {
         List<District> list =  districtRepository.findByDivisionId(divisionId);
         return list.stream().map(this::convertToDTO).collect(Collectors.toList());
     }

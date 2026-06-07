@@ -11,10 +11,10 @@ public interface DivisionService {
 
     Division save(Division d);
     List<Division> findAll();
-    Optional<Division> getById(Integer id);
-    void delete(Integer id);
+    Optional<Division> getById(Long id);
+    void delete(Long id);
 
-    List<DivisionDTO> getDivisionsByCountryId(Integer countryId);
+    List<DivisionDTO> getDivisionsByCountryId(Long countryId);
 
     List<DivisionDTO> getDivisionsByCountryName(String countryName);
 

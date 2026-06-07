@@ -31,5 +31,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    // Geographic area where the user is registered / delivers to
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "police_station_id")
+    private PoliceStation policeStation;
+
 
 }

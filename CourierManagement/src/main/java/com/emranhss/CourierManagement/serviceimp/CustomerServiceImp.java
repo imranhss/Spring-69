@@ -54,7 +54,7 @@ public class CustomerServiceImp implements CustomerService {
         u.setEmail(c.getEmail());
         u.setPhone(c.getPhone());
         u.setPassword(c.getPassword());
-        u.setRole(Role.RIDER);
+        u.setRole(Role.CUSTOMER);
 
         User savedUser = userRepository.save(u);
 

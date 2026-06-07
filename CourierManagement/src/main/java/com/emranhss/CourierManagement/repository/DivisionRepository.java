@@ -8,10 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface DivisionRepository extends JpaRepository<Division, Integer> {
+public interface DivisionRepository extends JpaRepository<Division, Long> {
 
     // Find all divisions by country ID
-    List<Division> findByCountryId(Integer countryId);
+    List<Division> findByCountryId(Long countryId);
 
     // Find all divisions by country name
     List<Division> findByCountryName(String countryName);
