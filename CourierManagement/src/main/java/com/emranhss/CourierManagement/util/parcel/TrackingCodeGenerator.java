@@ -43,7 +43,7 @@ public class TrackingCodeGenerator {
             charge = base;
         } else {
 
-            charge = weight * perKg;
+            charge = base+ (weight-1 * perKg);
         }
 
 
