@@ -10,14 +10,15 @@ public class TrackingCodeGenerator {
 
     public String generateTrackingCode() {
 
-        return "TRN-" +System.currentTimeMillis() ;
+        return "TRN-" + System.currentTimeMillis();
     }
 
 
-    public double calculateCharge(double weight, ServiceType serviceType,double codAmount) {
+    public double calculateCharge(double weight, ServiceType serviceType, double codAmount) {
 
         double base = 0;
         double perKg = 0;
+        double charge = 0;
 
         switch (serviceType) {
             case STANDARD -> {
@@ -38,7 +39,13 @@ public class TrackingCodeGenerator {
             }
         }
 
-        double charge = base + (weight * perKg);
+        if (weight < 1) {
+            charge = base;
+        } else {
+
+            charge = weight * perKg;
+        }
+
 
         if (codAmount > 0) {
             charge += codAmount * 0.015;

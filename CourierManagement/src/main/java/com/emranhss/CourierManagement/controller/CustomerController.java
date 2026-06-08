@@ -1,5 +1,7 @@
 package com.emranhss.CourierManagement.controller;
 
+import com.emranhss.CourierManagement.dto.Response.CustomerResponseDTO;
+import com.emranhss.CourierManagement.dto.request.CustomerRequestDTO;
 import com.emranhss.CourierManagement.entity.Customer;
 import com.emranhss.CourierManagement.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,37 +24,58 @@ public class CustomerController {
 
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> save(@RequestPart(value = "customer") String data, @RequestParam(value = "image") MultipartFile file) {
+    public ResponseEntity<CustomerResponseDTO> create(
+            @RequestPart("customer") String customerJson,
+            @RequestPart(value = "image", required = false) MultipartFile image) throws Exception {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        Customer cu = objectMapper.readValue(data, Customer.class);
+        ObjectMapper mapper = new ObjectMapper();
+        CustomerRequestDTO dto = mapper.readValue(customerJson, CustomerRequestDTO.class);
 
-
-
-            try{
-                customerService.save(cu, file);
-                Map<String, String> response = new HashMap<>();
-                response.put("Message", "User Added Successfully ");
-
-                return new ResponseEntity<>(response, HttpStatus.OK);
-
-            }
-            catch (Exception e){
-
-                Map<String, String> errorResponse = new HashMap<>();
-                errorResponse.put("Message", "User Add Faild " + e);
-                return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-
-
+        return new ResponseEntity<>(
+                customerService.create(dto, image),
+                HttpStatus.CREATED
+        );
     }
 
-
     @GetMapping
-    public ResponseEntity<List<Customer>> getALl(){
-        List<Customer> list = customerService.findAll();
-        return  ResponseEntity.ok(list);
+    public ResponseEntity<List<CustomerResponseDTO>> getAll() {
+        List<CustomerResponseDTO> list = customerService.getAll();
+        return list.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(list);
+    }
 
+    @GetMapping("/{id}")
+    public CustomerResponseDTO getById(@PathVariable Long id) {
+        return customerService.getById(id);
+    }
+
+    @PutMapping("/{id}")
+    public CustomerResponseDTO update(
+            @PathVariable Long id,
+            @RequestPart("customer") CustomerRequestDTO dto,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+        return customerService.update(id, dto, image);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        customerService.delete(id);
+        return ResponseEntity.ok("Deleted successfully");
     }
 
 }
+
+
+
+
+//{
+//    "name":"Fatema Begum",
+//        "email":"fatema@gmail.com",
+//        "phone":"01933333333",
+//        "password":"fatema123",
+//        "address":"Dhaka",
+//        "gender":"FEMALE",
+//        "dob":"1995-08-21",
+//        "policeStationId":1
+//}
