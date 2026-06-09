@@ -7,6 +7,7 @@ import com.emranhss.CourierManagement.dto.request.StatusUpdateRequestDTO;
 import com.emranhss.CourierManagement.entity.Customer;
 import com.emranhss.CourierManagement.entity.Parcel;
 import com.emranhss.CourierManagement.entity.ParcelHistory;
+import com.emranhss.CourierManagement.entity.Rider;
 import com.emranhss.CourierManagement.enums.*;
 import com.emranhss.CourierManagement.repository.CustomerRepository;
 import com.emranhss.CourierManagement.repository.ParcelRepository;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -104,55 +106,142 @@ public class ParcelServiceImpl implements ParcelService {
                 parcelRepository.findByIdWithDetails(saved.getId()).orElse(saved));
     }
 
+
     @Override
+    @Transactional(readOnly = true)
     public List<ParcelResponseDTO> getByCustomer(Long customerId) {
-        return List.of();
+        return parcelRepository.findByCustomerIdWithDetails(customerId)
+                .stream().map(ParcelMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ParcelResponseDTO track(String trackingCode) {
-        return null;
+        return ParcelMapper.toDTO(
+                parcelRepository.findByTrackingCodeWithDetails(trackingCode)
+                        .orElseThrow(() -> new RuntimeException(
+                                "No parcel found with tracking code: " + trackingCode)));
     }
 
+    @Transactional
     @Override
     public ParcelResponseDTO cancel(Long parcelId, Long customerId) {
-        return null;
+        Parcel parcel = parcelRepository.findByIdWithDetails(parcelId)
+                .orElseThrow(() -> new RuntimeException("Parcel not found"));
+
+        if (!parcel.getCustomer().getId().equals(customerId))
+            throw new RuntimeException("You can only cancel your own parcels");
+
+        if (parcel.getStatus() != ParcelStatus.PENDING)
+            throw new RuntimeException("Cannot cancel — status is: " + parcel.getStatus()
+                    + ". Only PENDING parcels can be cancelled.");
+
+        parcel.setStatus(ParcelStatus.CANCELLED);
+
+        ParcelHistory h = new ParcelHistory();
+        h.setStatus(ParcelStatus.CANCELLED.name());
+        h.setNote("Cancelled by customer");
+        h.setLocation(parcel.getOriginPoliceStation() != null
+                ? parcel.getOriginPoliceStation().getName() : "");
+        h.setParcel(parcel);
+        parcel.getHistory().add(h);
+
+        return ParcelMapper.toDTO(parcelRepository.save(parcel));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ParcelResponseDTO> getAll() {
-        return List.of();
+        return parcelRepository.findAll()
+                .stream().map(ParcelMapper::toDTO).collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ParcelResponseDTO getById(Long id) {
-        return null;
+        return ParcelMapper.toDTO(
+                parcelRepository.findByIdWithDetails(id)
+                        .orElseThrow(() -> new RuntimeException("Parcel not found")));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ParcelResponseDTO> getPendingUnassigned() {
-        return List.of();
+        return parcelRepository.findByStatusAndRiderIsNull(ParcelStatus.PENDING)
+                .stream().map(ParcelMapper::toDTO).collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public ParcelResponseDTO assignRider(Long parcelId, Long riderId) {
-        return null;
+        Parcel parcel = parcelRepository.findByIdWithDetails(parcelId)
+                .orElseThrow(() -> new RuntimeException("Parcel not found"));
+        Rider rider = riderRepository.findByIdWithZones(riderId)
+                .orElseThrow(() -> new RuntimeException("Rider not found"));
+
+        parcel.setRider(rider);
+        parcel.setStatus(ParcelStatus.PICKED_UP);
+
+        ParcelHistory h = new ParcelHistory();
+        h.setStatus(ParcelStatus.PICKED_UP.name());
+        h.setNote("Assigned to " + rider.getUser().getName() + " and picked up");
+        h.setLocation(parcel.getOriginPoliceStation() != null
+                ? parcel.getOriginPoliceStation().getName() + " Hub" : "Hub");
+        h.setPerformedBy(rider);
+        h.setParcel(parcel);
+        parcel.getHistory().add(h);
+
+        return ParcelMapper.toDTO(parcelRepository.save(parcel));
     }
 
+    @Transactional
     @Override
     public ParcelResponseDTO updateStatus(Long parcelId, StatusUpdateRequestDTO dto) {
-        return null;
+        Parcel parcel = parcelRepository.findByIdWithDetails(parcelId)
+                .orElseThrow(() -> new RuntimeException("Parcel not found"));
+
+        ParcelStatus newStatus;
+        try {
+            newStatus = ParcelStatus.valueOf(dto.getStatus().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid status: " + dto.getStatus());
+        }
+
+        parcel.setStatus(newStatus);
+
+        if (newStatus == ParcelStatus.DELIVERED
+                && parcel.getPaymentMethod() == PaymentMethod.COD) {
+            parcel.setPaymentStatus(PaymentStatus.PAID);
+        }
+
+        ParcelHistory h = new ParcelHistory();
+        h.setStatus(newStatus.name());
+        h.setNote(dto.getNote() != null ? dto.getNote() : "Status updated");
+        h.setLocation(dto.getLocation() != null ? dto.getLocation() : "");
+        h.setParcel(parcel);
+
+        if (dto.getRiderId() != null)
+            riderRepository.findById(dto.getRiderId()).ifPresent(h::setPerformedBy);
+
+        parcel.getHistory().add(h);
+        return ParcelMapper.toDTO(parcelRepository.save(parcel));
     }
 
     @Override
     public void delete(Long id) {
-
+        parcelRepository.deleteById(id);
     }
 
     @Override
     public double calculateCharge(double weight, String serviceType, double codAmount) {
-        return 0;
+        try {
+            return trackingCodeGenerator.calculateCharge(
+                    weight, ServiceType.valueOf(serviceType.toUpperCase()), codAmount);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid serviceType: " + serviceType);
+        }
     }
+
 
 
     private LocalDate estimateDelivery(ServiceType serviceType) {
