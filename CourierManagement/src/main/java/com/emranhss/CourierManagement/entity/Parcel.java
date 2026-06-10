@@ -92,6 +92,18 @@ public class Parcel {
     private Rider rider;
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "agent_id")
+    private Agent bookedByAgent;
+
+    // ── Booking source ────────────────────────────────────────────
+    // Exactly one of these will be set:
+    //   customer  → booked online by a registered customer
+    //   bookedByAgent → booked at a hub counter by an agent (walk-in)
+    @Enumerated(EnumType.STRING)
+    private BookingSource bookingSource; // ONLINE / AGENT
+
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
