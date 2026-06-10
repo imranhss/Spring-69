@@ -1,6 +1,7 @@
 package com.emranhss.CourierManagement.dto.mapper;
 
 import com.emranhss.CourierManagement.dto.Response.ParcelResponseDTO;
+import com.emranhss.CourierManagement.entity.Agent;
 import com.emranhss.CourierManagement.entity.Parcel;
 import com.emranhss.CourierManagement.entity.ParcelHistory;
 import com.emranhss.CourierManagement.entity.PoliceStation;
@@ -71,6 +72,17 @@ public class ParcelMapper {
             if (parcel.getCustomer().getUser() != null) {
                 dto.setCustomerName(parcel.getCustomer().getUser().getName());
                 dto.setCustomerPhone(parcel.getCustomer().getUser().getPhone());
+            }
+        }
+
+        if (parcel.getBookedByAgent() != null) {
+            Agent agent = parcel.getBookedByAgent();
+            dto.setAgentId(agent.getId());
+            if (agent.getUser() != null) {
+                dto.setAgentName(agent.getUser().getName());
+            }
+            if (agent.getHub() != null) {
+                dto.setAgentHubName(agent.getHub().getName());
             }
         }
 

@@ -62,6 +62,12 @@ public class ParcelResponseDTO {
     private String riderName;
     private String riderPhone;
 
+
+    // Set if bookingSource = AGENT
+    private Long   agentId;
+    private String agentName;
+    private String agentHubName;
+
     // ── Tracking history ──────────────────────────────────────────
     private List<HistoryEntry> history;
 

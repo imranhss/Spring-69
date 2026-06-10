@@ -4,7 +4,9 @@ import com.emranhss.CourierManagement.enums.ParcelType;
 import com.emranhss.CourierManagement.enums.PaymentMethod;
 import com.emranhss.CourierManagement.enums.Priority;
 import com.emranhss.CourierManagement.enums.ServiceType;
+import lombok.Data;
 
+@Data
 public class AgentParcelRequestDTO {
 
     // Agent booking this parcel (required)

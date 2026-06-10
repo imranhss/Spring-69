@@ -86,4 +86,52 @@ public interface ParcelRepository extends JpaRepository<Parcel, Long> {
     List<Parcel> findByStatusAndRiderIsNull(ParcelStatus status);
     List<Parcel> findByStatus(ParcelStatus status);
 
+
+    @Query("""
+        SELECT DISTINCT p FROM Parcel p
+        LEFT JOIN FETCH p.customer c
+        LEFT JOIN FETCH c.user
+        LEFT JOIN FETCH p.bookedByAgent a
+        LEFT JOIN FETCH a.user
+        LEFT JOIN FETCH a.hub
+        LEFT JOIN FETCH p.rider r
+        LEFT JOIN FETCH r.user
+        LEFT JOIN FETCH p.originPoliceStation ops
+        LEFT JOIN FETCH ops.district opsd
+        LEFT JOIN FETCH opsd.division
+        LEFT JOIN FETCH p.destinationPoliceStation dps
+        LEFT JOIN FETCH dps.district dpsd
+        LEFT JOIN FETCH dpsd.division
+        LEFT JOIN FETCH p.history
+        WHERE p.originPoliceStation.id = :hubId
+           OR p.destinationPoliceStation.id = :hubId
+        ORDER BY p.createdAt DESC
+    """)
+    List<Parcel> findByHubWithDetails(@Param("hubId") Long hubId);
+
+    // ── Hub parcels filtered by status ────────────────────────────
+    @Query("""
+        SELECT DISTINCT p FROM Parcel p
+        LEFT JOIN FETCH p.customer c
+        LEFT JOIN FETCH c.user
+        LEFT JOIN FETCH p.bookedByAgent a
+        LEFT JOIN FETCH a.user
+        LEFT JOIN FETCH a.hub
+        LEFT JOIN FETCH p.rider r
+        LEFT JOIN FETCH r.user
+        LEFT JOIN FETCH p.originPoliceStation ops
+        LEFT JOIN FETCH ops.district
+        LEFT JOIN FETCH p.destinationPoliceStation dps
+        LEFT JOIN FETCH dps.district
+        LEFT JOIN FETCH p.history
+        WHERE (p.originPoliceStation.id = :hubId
+           OR  p.destinationPoliceStation.id = :hubId)
+          AND p.status = :status
+        ORDER BY p.createdAt DESC
+    """)
+    List<Parcel> findByHubAndStatusWithDetails(
+            @Param("hubId") Long hubId,
+            @Param("status") ParcelStatus status);
+
+
 }
