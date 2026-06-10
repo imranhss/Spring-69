@@ -204,6 +204,7 @@ public class AgentServiceImpl implements AgentService {
         parcel.setDeliveryCharge(
                 trackingCodeGenerator.calculateCharge(parcel.getWeight(), serviceType, codAmount));
 
+
         // 7. Payment
         parcel.setPaymentMethod(dto.getPaymentMethod() != null
                 ? dto.getPaymentMethod() : PaymentMethod.COD);

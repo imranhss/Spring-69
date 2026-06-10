@@ -61,6 +61,7 @@ public class ParcelServiceImpl implements ParcelService {
         parcel.setWeight(dto.getWeight() != null ? dto.getWeight() : 0.5);
         parcel.setDescription(dto.getDescription());
         parcel.setSpecialInstructions(dto.getSpecialInstructions());
+        parcel.setBookingSource(BookingSource.ONLINE);
 
         ServiceType serviceType = dto.getServiceType() != null
                 ? dto.getServiceType() : ServiceType.STANDARD;
