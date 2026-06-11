@@ -2,6 +2,7 @@ package com.emranhss.CourierManagement.serviceimp;
 
 import com.emranhss.CourierManagement.dto.DivisionDTO;
 import com.emranhss.CourierManagement.dto.Response.DistrictResponseDTO;
+import com.emranhss.CourierManagement.dto.mapper.DistrictMapper;
 import com.emranhss.CourierManagement.entity.District;
 import com.emranhss.CourierManagement.entity.Division;
 import com.emranhss.CourierManagement.repository.DistrictRepository;
@@ -58,20 +59,22 @@ public class DistrictServiceImp implements DistrictService {
     @Override
     public List<DistrictResponseDTO> findByDivisionName(String divisionName) {
         List<District> list =  districtRepository.findByDivisionName(divisionName);
-        return list.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return list.stream().map(DistrictMapper::toDTO).collect(Collectors.toList());
     }
-
     private DistrictResponseDTO convertToDTO(District district) {
 
-        return new DistrictResponseDTO(
-                district.getId(),
-                district.getName(),
-                district.getDivision().getId(),
-                district.getDivision().getName(),
-                district.getDivision().getCountry().getName(),
-                district.getDivision().getCountry().getCode(),
-                district.getDivision().getCountry().getId()
-        );
+        DistrictResponseDTO dto = new DistrictResponseDTO();
+
+        dto.setId(district.getId());
+        dto.setName(district.getName());
+        dto.setDivisionId(district.getDivision().getId());
+        dto.setDivisionName(district.getDivision().getName());
+        dto.setCountryId(district.getDivision().getCountry().getId());
+        dto.setCountryName(district.getDivision().getCountry().getName());
+        dto.setCountryCode(district.getDivision().getCountry().getCode());
+
+
+        return dto;
     }
 
 

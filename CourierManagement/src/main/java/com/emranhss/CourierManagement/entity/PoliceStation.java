@@ -24,9 +24,8 @@ public class PoliceStation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 50)
-    private String name;
-
+    private String name;        // e.g. Mirpur
+    private String nameBn;      // e.g. মিরপুর
     private String postalCode;  // e.g. 1216
     private Boolean active = true;
 

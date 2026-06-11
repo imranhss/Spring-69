@@ -34,4 +34,13 @@ public interface RiderRepository extends JpaRepository<Rider, Long> {
     """)
     Optional<Rider> findByIdWithZones(@Param("id") Long id);
 
+    // Zone queries — Spring Data resolves from the @ManyToMany field "zones"
+    List<Rider> findByZonesId(Long policeStationId);
+    List<Rider> findByZonesIdAndActiveTrue(Long policeStationId);
+
+    // Riders covering any thana in a given set (e.g. all thanas in a district)
+    List<Rider> findByZonesIdIn(List<Long> policeStationIds);
+    List<Rider> findByZonesIdInAndActiveTrue(List<Long> policeStationIds);
+
+
 }

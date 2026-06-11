@@ -1,6 +1,7 @@
 package com.emranhss.CourierManagement.controller;
 
 import com.emranhss.CourierManagement.dto.DivisionDTO;
+import com.emranhss.CourierManagement.dto.Response.DivisionResponseDTO;
 import com.emranhss.CourierManagement.entity.Division;
 import com.emranhss.CourierManagement.service.DivisionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,13 +33,13 @@ public class DivisionController {
 
     // Find by Country ID
     @GetMapping("country/{id}")
-    public List<DivisionDTO> getByCountryId(@PathVariable Long id) {
+    public List<DivisionResponseDTO> getByCountryId(@PathVariable Long id) {
         return divisionService.getDivisionsByCountryId(id);
     }
 
     // Find by Country Name
     @GetMapping("country/name/{name}")
-    public List<DivisionDTO> getByCountryName(@PathVariable String name) {
+    public List<DivisionResponseDTO> getByCountryName(@PathVariable String name) {
         return divisionService.getDivisionsByCountryName(name);
     }
 

@@ -9,13 +9,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DistrictResponseDTO {
 
-    private Long districtId;
-    private String districtName;
+    private Long id;
+    private String name;
+    private String nameBn;
+    private String districtCode;
+    private Boolean active;
     private Long divisionId;
-    private  String divisionName;
-    private  String countryName;
-    private  String countryCode;
+    private String divisionName;
     private Long countryId;
+    private String countryName;
+    private String countryCode;
+    private int totalPoliceStations;
 
 
 

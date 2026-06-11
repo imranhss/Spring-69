@@ -2,6 +2,7 @@ package com.emranhss.CourierManagement.serviceimp;
 
 import com.emranhss.CourierManagement.dto.Response.DistrictResponseDTO;
 import com.emranhss.CourierManagement.dto.Response.PoliceStationResponseDTO;
+import com.emranhss.CourierManagement.dto.mapper.PoliceStationMapper;
 import com.emranhss.CourierManagement.entity.District;
 import com.emranhss.CourierManagement.entity.PoliceStation;
 import com.emranhss.CourierManagement.repository.DistrictRepository;
@@ -54,7 +55,7 @@ public class PoliceStationServiceImpl implements PoliceStationService {
     @Override
     public List<PoliceStationResponseDTO> findByDistrictId(Long districtId) {
         List<PoliceStation> list= stationRepository.findByDistrictId(districtId);
-        return list.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return list.stream().map(PoliceStationMapper::toDTO).collect(Collectors.toList());
     }
 
 
@@ -62,23 +63,10 @@ public class PoliceStationServiceImpl implements PoliceStationService {
     @Override
     public List<PoliceStationResponseDTO> findByDistrictName(String districtName) {
         List<PoliceStation> list= stationRepository.findByDistrictName(districtName);
-        return list.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return list.stream().map(PoliceStationMapper::toDTO).collect(Collectors.toList());
     }
 
 
-    private PoliceStationResponseDTO convertToDTO(PoliceStation p) {
 
-        return new PoliceStationResponseDTO(
-                p.getId(),
-                p.getName(),
-                p.getDistrict().getId(),
-                p.getDistrict().getName(),
-                p.getDistrict().getDivision().getId(),
-                p.getDistrict().getDivision().getName(),
-                p.getDistrict().getDivision().getCountry().getName(),
-                p.getDistrict().getDivision().getCountry().getCode(),
-                p.getDistrict().getDivision().getCountry().getId()
-        );
-    }
 
 }

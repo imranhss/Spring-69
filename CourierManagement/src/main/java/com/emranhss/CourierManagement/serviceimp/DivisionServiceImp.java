@@ -1,6 +1,8 @@
 package com.emranhss.CourierManagement.serviceimp;
 
 import com.emranhss.CourierManagement.dto.DivisionDTO;
+import com.emranhss.CourierManagement.dto.Response.DivisionResponseDTO;
+import com.emranhss.CourierManagement.dto.mapper.DivisionMapper;
 import com.emranhss.CourierManagement.entity.Country;
 import com.emranhss.CourierManagement.entity.Division;
 import com.emranhss.CourierManagement.repository.CountryRepository;
@@ -50,31 +52,21 @@ public class DivisionServiceImp implements DivisionService {
         divisionRepository.deleteById(id);
     }
 
+    // Then your two methods become:
     @Override
-    public List<DivisionDTO> getDivisionsByCountryId(Long countryId) {
-
-        List<Division> list = divisionRepository.findByCountryId(countryId);
-
-        return  list.stream().map(this::convertToDTO).collect(Collectors.toList());
+    public List<DivisionResponseDTO> getDivisionsByCountryId(Long countryId) {
+        return divisionRepository.findByCountryId(countryId)
+                .stream()
+                .map(DivisionMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<DivisionDTO> getDivisionsByCountryName(String countryName) {
-
-        List<Division> list = divisionRepository.findByCountryName(countryName);
-
-        return  list.stream().map(this::convertToDTO).collect(Collectors.toList());
-    }
-
-
-    private DivisionDTO convertToDTO(Division division) {
-
-        return new DivisionDTO(
-                division.getId(),
-                division.getName(),
-                division.getCountry().getName(),
-                division.getCountry().getId()
-        );
+    public List<DivisionResponseDTO> getDivisionsByCountryName(String countryName) {
+        return divisionRepository.findByCountryName(countryName)
+                .stream()
+                .map(DivisionMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
 
