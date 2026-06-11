@@ -51,6 +51,7 @@ public class CustomerServiceImpl implements CustomerService {
         user.setPhone(dto.getPhone());
         user.setPassword(dto.getPassword()); // encode in security layer
         user.setRole(Role.CUSTOMER);
+        user.setActive(false);
 
         if (dto.getPoliceStationId() != null) {
             policeStationRepository.findById(dto.getPoliceStationId())
