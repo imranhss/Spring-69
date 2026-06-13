@@ -1,6 +1,6 @@
 package com.emranhss.CourierManagement.serviceimp;
 
-import com.emranhss.CourierManagement.dto.Response.RiderResponseDTO;
+import com.emranhss.CourierManagement.dto.response.RiderResponseDTO;
 import com.emranhss.CourierManagement.dto.mapper.RiderMapper;
 import com.emranhss.CourierManagement.dto.request.RiderRequestDTO;
 import com.emranhss.CourierManagement.entity.PoliceStation;
@@ -16,12 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;

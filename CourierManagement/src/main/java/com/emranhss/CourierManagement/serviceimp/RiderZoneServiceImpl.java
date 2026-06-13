@@ -1,7 +1,7 @@
 package com.emranhss.CourierManagement.serviceimp;
 
-import com.emranhss.CourierManagement.dto.Response.PoliceStationResponseDTO;
-import com.emranhss.CourierManagement.dto.Response.RiderResponseDTO;
+import com.emranhss.CourierManagement.dto.response.PoliceStationResponseDTO;
+import com.emranhss.CourierManagement.dto.response.RiderResponseDTO;
 import com.emranhss.CourierManagement.dto.mapper.GeoMapper;
 import com.emranhss.CourierManagement.dto.mapper.RiderMapper;
 import com.emranhss.CourierManagement.entity.PoliceStation;

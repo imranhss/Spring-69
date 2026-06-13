@@ -1,6 +1,6 @@
 package com.emranhss.CourierManagement.serviceimp;
 
-import com.emranhss.CourierManagement.dto.Response.CustomerResponseDTO;
+import com.emranhss.CourierManagement.dto.response.CustomerResponseDTO;
 import com.emranhss.CourierManagement.dto.mapper.CustomerMapper;
 import com.emranhss.CourierManagement.dto.request.CustomerRequestDTO;
 import com.emranhss.CourierManagement.entity.Customer;

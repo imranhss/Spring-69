@@ -1,8 +1,6 @@
 package com.emranhss.CourierManagement.service;
 
-import com.emranhss.CourierManagement.dto.DivisionDTO;
-import com.emranhss.CourierManagement.dto.Response.DivisionResponseDTO;
-import com.emranhss.CourierManagement.entity.Country;
+import com.emranhss.CourierManagement.dto.response.DivisionResponseDTO;
 import com.emranhss.CourierManagement.entity.Division;
 
 import java.util.List;

@@ -1,8 +1,7 @@
 package com.emranhss.CourierManagement.controller;
 
-import com.emranhss.CourierManagement.dto.Response.CustomerResponseDTO;
+import com.emranhss.CourierManagement.dto.response.CustomerResponseDTO;
 import com.emranhss.CourierManagement.dto.request.CustomerRequestDTO;
-import com.emranhss.CourierManagement.entity.Customer;
 import com.emranhss.CourierManagement.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,9 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tools.jackson.databind.ObjectMapper;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/customer/")

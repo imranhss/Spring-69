@@ -1,7 +1,6 @@
 package com.emranhss.CourierManagement.controller;
 
-import com.emranhss.CourierManagement.dto.DivisionDTO;
-import com.emranhss.CourierManagement.dto.Response.DivisionResponseDTO;
+import com.emranhss.CourierManagement.dto.response.DivisionResponseDTO;
 import com.emranhss.CourierManagement.entity.Division;
 import com.emranhss.CourierManagement.service.DivisionService;
 import org.springframework.beans.factory.annotation.Autowired;

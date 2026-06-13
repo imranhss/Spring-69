@@ -1,6 +1,6 @@
 package com.emranhss.CourierManagement.controller;
 
-import com.emranhss.CourierManagement.dto.Response.ParcelResponseDTO;
+import com.emranhss.CourierManagement.dto.response.ParcelResponseDTO;
 import com.emranhss.CourierManagement.dto.request.ParcelRequestDTO;
 import com.emranhss.CourierManagement.dto.request.StatusUpdateRequestDTO;
 import com.emranhss.CourierManagement.service.ParcelService;

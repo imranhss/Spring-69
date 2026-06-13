@@ -1,6 +1,6 @@
 package com.emranhss.CourierManagement.dto.mapper;
 
-import com.emranhss.CourierManagement.dto.Response.AgentResponseDTO;
+import com.emranhss.CourierManagement.dto.response.AgentResponseDTO;
 import com.emranhss.CourierManagement.entity.Agent;
 import com.emranhss.CourierManagement.entity.District;
 import com.emranhss.CourierManagement.entity.Division;

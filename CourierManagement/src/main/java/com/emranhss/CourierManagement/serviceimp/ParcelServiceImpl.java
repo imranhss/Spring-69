@@ -1,6 +1,6 @@
 package com.emranhss.CourierManagement.serviceimp;
 
-import com.emranhss.CourierManagement.dto.Response.ParcelResponseDTO;
+import com.emranhss.CourierManagement.dto.response.ParcelResponseDTO;
 import com.emranhss.CourierManagement.dto.mapper.ParcelMapper;
 import com.emranhss.CourierManagement.dto.request.ParcelRequestDTO;
 import com.emranhss.CourierManagement.dto.request.StatusUpdateRequestDTO;

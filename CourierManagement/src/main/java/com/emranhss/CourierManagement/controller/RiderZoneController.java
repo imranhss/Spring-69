@@ -1,7 +1,7 @@
 package com.emranhss.CourierManagement.controller;
 
-import com.emranhss.CourierManagement.dto.Response.PoliceStationResponseDTO;
-import com.emranhss.CourierManagement.dto.Response.RiderResponseDTO;
+import com.emranhss.CourierManagement.dto.response.PoliceStationResponseDTO;
+import com.emranhss.CourierManagement.dto.response.RiderResponseDTO;
 import com.emranhss.CourierManagement.service.RiderZoneService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

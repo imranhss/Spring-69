@@ -1,6 +1,6 @@
 package com.emranhss.CourierManagement.dto.mapper;
 
-import com.emranhss.CourierManagement.dto.Response.RiderResponseDTO;
+import com.emranhss.CourierManagement.dto.response.RiderResponseDTO;
 import com.emranhss.CourierManagement.dto.request.RiderRequestDTO;
 import com.emranhss.CourierManagement.entity.*;
 import com.emranhss.CourierManagement.enums.Role;

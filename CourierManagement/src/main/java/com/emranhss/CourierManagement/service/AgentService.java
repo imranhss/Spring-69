@@ -1,7 +1,7 @@
 package com.emranhss.CourierManagement.service;
 
-import com.emranhss.CourierManagement.dto.Response.AgentResponseDTO;
-import com.emranhss.CourierManagement.dto.Response.ParcelResponseDTO;
+import com.emranhss.CourierManagement.dto.response.AgentResponseDTO;
+import com.emranhss.CourierManagement.dto.response.ParcelResponseDTO;
 import com.emranhss.CourierManagement.dto.request.AgentParcelRequestDTO;
 import com.emranhss.CourierManagement.dto.request.AgentRequestDTO;
 import com.emranhss.CourierManagement.dto.request.StatusUpdateRequestDTO;

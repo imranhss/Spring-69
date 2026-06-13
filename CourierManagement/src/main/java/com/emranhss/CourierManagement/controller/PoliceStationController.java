@@ -1,11 +1,9 @@
 package com.emranhss.CourierManagement.controller;
 
 
-import com.emranhss.CourierManagement.dto.Response.DistrictResponseDTO;
-import com.emranhss.CourierManagement.dto.Response.PoliceStationResponseDTO;
+import com.emranhss.CourierManagement.dto.response.PoliceStationResponseDTO;
 import com.emranhss.CourierManagement.entity.PoliceStation;
 import com.emranhss.CourierManagement.service.PoliceStationService;
-import com.emranhss.CourierManagement.serviceimp.PoliceStationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

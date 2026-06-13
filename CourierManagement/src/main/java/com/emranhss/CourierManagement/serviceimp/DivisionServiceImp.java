@@ -1,7 +1,6 @@
 package com.emranhss.CourierManagement.serviceimp;
 
-import com.emranhss.CourierManagement.dto.DivisionDTO;
-import com.emranhss.CourierManagement.dto.Response.DivisionResponseDTO;
+import com.emranhss.CourierManagement.dto.response.DivisionResponseDTO;
 import com.emranhss.CourierManagement.dto.mapper.DivisionMapper;
 import com.emranhss.CourierManagement.entity.Country;
 import com.emranhss.CourierManagement.entity.Division;

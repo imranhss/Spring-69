@@ -1,11 +1,8 @@
 package com.emranhss.CourierManagement.controller;
 
-import com.emranhss.CourierManagement.dto.Response.RiderResponseDTO;
+import com.emranhss.CourierManagement.dto.response.RiderResponseDTO;
 import com.emranhss.CourierManagement.dto.request.RiderRequestDTO;
-import com.emranhss.CourierManagement.entity.Customer;
-import com.emranhss.CourierManagement.entity.Rider;
 import com.emranhss.CourierManagement.service.RiderService;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

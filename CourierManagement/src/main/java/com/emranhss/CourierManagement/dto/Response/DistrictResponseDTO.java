@@ -1,4 +1,4 @@
-package com.emranhss.CourierManagement.dto.Response;
+package com.emranhss.CourierManagement.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

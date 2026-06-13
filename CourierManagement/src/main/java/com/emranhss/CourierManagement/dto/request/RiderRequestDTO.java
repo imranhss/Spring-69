@@ -1,6 +1,6 @@
 package com.emranhss.CourierManagement.dto.request;
 
-import com.emranhss.CourierManagement.dto.Response.RiderResponseDTO;
+import com.emranhss.CourierManagement.dto.response.RiderResponseDTO;
 import lombok.Data;
 
 import java.util.List;

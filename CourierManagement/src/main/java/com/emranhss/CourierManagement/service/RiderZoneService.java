@@ -1,7 +1,7 @@
 package com.emranhss.CourierManagement.service;
 
-import com.emranhss.CourierManagement.dto.Response.PoliceStationResponseDTO;
-import com.emranhss.CourierManagement.dto.Response.RiderResponseDTO;
+import com.emranhss.CourierManagement.dto.response.PoliceStationResponseDTO;
+import com.emranhss.CourierManagement.dto.response.RiderResponseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

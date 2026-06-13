@@ -1,6 +1,6 @@
 package com.emranhss.CourierManagement.dto.mapper;
 
-import com.emranhss.CourierManagement.dto.Response.CountryResponseDTO;
+import com.emranhss.CourierManagement.dto.response.CountryResponseDTO;
 import com.emranhss.CourierManagement.dto.request.CountryRequestDTO;
 import com.emranhss.CourierManagement.entity.Country;
 

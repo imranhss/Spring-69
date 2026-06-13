@@ -1,6 +1,6 @@
 package com.emranhss.CourierManagement.controller;
 
-import com.emranhss.CourierManagement.dto.Response.DistrictResponseDTO;
+import com.emranhss.CourierManagement.dto.response.DistrictResponseDTO;
 import com.emranhss.CourierManagement.entity.District;
 import com.emranhss.CourierManagement.service.DistrictService;
 import org.springframework.beans.factory.annotation.Autowired;
