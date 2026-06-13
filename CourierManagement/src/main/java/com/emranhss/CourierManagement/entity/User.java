@@ -32,7 +32,7 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String phone;
 
-    @Size(max = 20, min = 4)
+
     private String password;
 
     @Enumerated(EnumType.STRING)

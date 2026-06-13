@@ -15,6 +15,7 @@ import com.emranhss.CourierManagement.service.AgentService;
 import com.emranhss.CourierManagement.util.parcel.TrackingCodeGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +39,7 @@ public class AgentServiceImpl implements AgentService {
     private final ParcelRepository parcelRepository;
     private final RiderRepository riderRepository;
     private final TrackingCodeGenerator trackingCodeGenerator;
+    private  final PasswordEncoder encoder;
 
 
     @Value("${image.upload.dir}")
@@ -58,7 +60,7 @@ public class AgentServiceImpl implements AgentService {
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setPhone(dto.getPhone());
-        user.setPassword(dto.getPassword());
+        user.setPassword(encoder.encode(dto.getPassword()));
         user.setRole(Role.AGENT);
         user.setPoliceStation(hub);
 

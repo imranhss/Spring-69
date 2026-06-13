@@ -12,6 +12,7 @@ import com.emranhss.CourierManagement.repository.UserRepository;
 import com.emranhss.CourierManagement.service.RiderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,7 @@ public class RiderServiceImpl implements RiderService {
     private final RiderRepository riderRepository;
     private final UserRepository userRepository;
     private final PoliceStationRepository policeStationRepository;
+    private  final PasswordEncoder encoder;
 
     @Value("${image.upload.dir}")
     private String uploadDir;
@@ -42,7 +44,11 @@ public class RiderServiceImpl implements RiderService {
         Rider rider = RiderMapper.toEntity(dto);
 
         // save user first
-        User savedUser = userRepository.save(rider.getUser());
+
+        User u = rider.getUser();
+        u.setPassword(encoder.encode(dto.getPassword()));
+
+        User savedUser = userRepository.save(u);
         rider.setUser(savedUser);
 
         // upload image

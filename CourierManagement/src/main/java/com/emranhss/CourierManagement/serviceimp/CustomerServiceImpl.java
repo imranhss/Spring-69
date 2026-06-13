@@ -15,6 +15,7 @@ import com.emranhss.CourierManagement.util.EmailService;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +37,8 @@ public class CustomerServiceImpl implements CustomerService {
     private final UserRepository userRepository;
     private final PoliceStationRepository policeStationRepository;
     private final EmailService emailService;
+    private  final PasswordEncoder encoder;
+
 
     @Value("${image.upload.dir}")
     private String uploadDir;
@@ -49,7 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setPhone(dto.getPhone());
-        user.setPassword(dto.getPassword()); // encode in security layer
+        user.setPassword(encoder.encode(dto.getPassword())); // encode in security layer
         user.setRole(Role.CUSTOMER);
         user.setActive(false);
 
