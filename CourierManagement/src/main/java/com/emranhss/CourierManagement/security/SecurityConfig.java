@@ -25,34 +25,22 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthFilter            jwtAuthFilter;
+    private final JwtAuthFilter jwtAuthFilter;
     private final CustomUserDetailsService userDetailsService;
 
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
+        http.csrf(AbstractHttpConfigurer::disable).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(auth -> auth
 
-                        // ── Public endpoints (no token needed) ────────────
-                        .requestMatchers(
-                                "/api/auth/login",
-                                "/api/parcels/track/**",          // public tracking
-                                "/api/parcels/calculate",          // price preview
-                                "/api/customer/",
-                                "/**"
-                        ).permitAll()
+                // ── Public endpoints (no token needed) ────────────
+                .requestMatchers("/api/auth/login", "/api/parcels/track/**",          // public tracking
+                        "/api/parcels/calculate",          // price preview
+                        "/api/customer/", "/**").permitAll()
 
 
-
-                )
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter,
-                        UsernamePasswordAuthenticationFilter.class);
+        ).authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
 
@@ -60,9 +48,7 @@ public class SecurityConfig {
     }
 
 
-
-
-        @Bean
+    @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
 
@@ -71,8 +57,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
