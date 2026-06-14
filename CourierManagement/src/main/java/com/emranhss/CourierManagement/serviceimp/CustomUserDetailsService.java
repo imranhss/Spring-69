@@ -3,6 +3,7 @@ package com.emranhss.CourierManagement.serviceimp;
 import com.emranhss.CourierManagement.entity.User;
 import com.emranhss.CourierManagement.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,6 +27,12 @@ public class CustomUserDetailsService implements UserDetailsService {
                 ));
         // Role stored as "ADMIN" → Spring Security needs "ROLE_ADMIN"
         String roleAuthority = "ROLE_" + user.getRole().name();
+
+        if (!user.isActive()) {
+            throw new DisabledException(
+                    "Your account is inactive. Please contact admin."
+            );
+        }
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),

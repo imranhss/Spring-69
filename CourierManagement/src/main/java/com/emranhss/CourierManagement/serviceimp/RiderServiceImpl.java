@@ -47,6 +47,7 @@ public class RiderServiceImpl implements RiderService {
 
         User u = rider.getUser();
         u.setPassword(encoder.encode(dto.getPassword()));
+        u.setActive(false);
 
         User savedUser = userRepository.save(u);
         rider.setUser(savedUser);

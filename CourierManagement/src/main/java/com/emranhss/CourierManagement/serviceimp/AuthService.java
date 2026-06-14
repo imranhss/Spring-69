@@ -1,16 +1,22 @@
 package com.emranhss.CourierManagement.serviceimp;
 
+import com.emranhss.CourierManagement.dto.request.ForgotPasswordRequestDTO;
 import com.emranhss.CourierManagement.dto.request.LoginRequestDTO;
+import com.emranhss.CourierManagement.dto.request.ResetPasswordRequestDTO;
 import com.emranhss.CourierManagement.dto.response.LoginResponseDTO;
 import com.emranhss.CourierManagement.entity.User;
 import com.emranhss.CourierManagement.enums.Role;
 import com.emranhss.CourierManagement.repository.AgentRepository;
 import com.emranhss.CourierManagement.repository.UserRepository;
 import com.emranhss.CourierManagement.security.JwtUtil;
+import com.emranhss.CourierManagement.util.EmailService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,6 +43,10 @@ public class AuthService {
      * Utility class for generating and validating JWT tokens.
      */
     private final JwtUtil jwtUtil;
+
+    private final EmailService emailService;
+
+    private final PasswordEncoder encoder;
 
     /**
      * Authenticates a user and returns login information
@@ -67,10 +77,15 @@ public LoginResponseDTO login(LoginRequestDTO dto){
                         dto.getPassword()
                 )
         );
-    } catch (AuthenticationException e) {
+    }
+    catch (Exception e) {
 
-        // Return custom error message
-        throw new RuntimeException("Invalid email or password");
+        System.out.println("Exception Class = " + e.getClass().getName());
+        System.out.println("Exception Message = " + e.getMessage());
+
+        e.printStackTrace();
+
+        throw e;
     }
 
     // =====================================================
@@ -181,7 +196,79 @@ public LoginResponseDTO login(LoginRequestDTO dto){
 
 }
 
+    // ── Send / resend verification email ─────────────────────────
+    public void sendVerificationEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
+        if (user.isActive()) {
+            throw new RuntimeException("Account is already verified");
+        }
+
+        String token = jwtUtil.generateVerificationToken(user.getEmail());
+
+        try {
+            emailService.sendVerificationEmail(user.getEmail(), user.getName(), token);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send verification email: " + e.getMessage());
+        }
+    }
+
+    // ── Confirm verification link ─────────────────────────────────
+    public void verifyEmail(String token) {
+
+        if (!jwtUtil.isValidForPurpose(token, "EMAIL_VERIFICATION")) {
+            throw new RuntimeException("Invalid or expired verification link");
+        }
+
+        String email = jwtUtil.extractEmail(token);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.isActive()) {
+            throw new RuntimeException("Account is already verified");
+        }
+
+        user.setActive(true);
+        userRepository.save(user);
+    }
+
+    // ── Forgot password — send reset link ────────────────────────
+    public void forgotPassword(ForgotPasswordRequestDTO dto) {
+
+        User user = userRepository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new RuntimeException(
+                        "No account found with email: " + dto.getEmail()));
+
+        String token = jwtUtil.generateResetToken(user.getEmail());
+
+        try {
+            emailService.sendPasswordResetEmail(user.getEmail(), user.getName(), token);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Failed to send reset email: " + e.getMessage());
+        }
+    }
+
+    // ── Reset password using token ────────────────────────────────
+    public void resetPassword(ResetPasswordRequestDTO dto) {
+
+        if (!jwtUtil.isValidForPurpose(dto.getToken(), "PASSWORD_RESET")) {
+            throw new RuntimeException("Invalid or expired reset link");
+        }
+
+        if (dto.getNewPassword() == null || dto.getNewPassword().length() < 4) {
+            throw new RuntimeException("Password must be at least 4 characters");
+        }
+
+        String email = jwtUtil.extractEmail(dto.getToken());
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setPassword(encoder.encode(dto.getNewPassword()));
+        userRepository.save(user);
+    }
 
 
 

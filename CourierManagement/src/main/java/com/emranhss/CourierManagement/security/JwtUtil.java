@@ -20,6 +20,12 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long expiration; // milliseconds e.g. 86400000 = 24h
 
+    @Value("${jwt.verification-expiration}")
+    private long verificationExpiration; // milliseconds e.g. 86400000 = 24h
+
+    @Value("${jwt.reset-expiration}")
+    private long resetExpiration; // milliseconds e.g. 86400000 = 24h
+
 
     // Generate token from email
     public String generateToken(String email, String role) {
@@ -31,6 +37,30 @@ public class JwtUtil {
                 .signWith(getKey())
                 .compact();
     }
+
+
+    // ── Password reset token (short-lived, single purpose) ─────────
+    public String generateResetToken(String email) {
+        return Jwts.builder()
+                .subject(email)
+                .claim("purpose", "PASSWORD_RESET")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + resetExpiration))
+                .signWith(getKey())
+                .compact();
+    }
+
+    // ── Email verification token (short-lived, single purpose) ────
+    public String generateVerificationToken(String email) {
+        return Jwts.builder()
+                .subject(email)
+                .claim("purpose", "EMAIL_VERIFICATION")
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + verificationExpiration))
+                .signWith(getKey())
+                .compact();
+    }
+
 
     // Extract email (subject) from token
     public String extractEmail(String token) {
@@ -48,6 +78,22 @@ public class JwtUtil {
         try {
             getClaims(token);
             return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+
+    public String extractPurpose(String token) {
+        return (String) getClaims(token).get("purpose");
+    }
+
+
+    // Validates token AND checks it was issued for the expected purpose
+    public boolean isValidForPurpose(String token, String expectedPurpose) {
+        try {
+            Claims claims = getClaims(token);
+            return expectedPurpose.equals(claims.get("purpose"));
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }

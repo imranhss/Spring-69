@@ -63,6 +63,7 @@ public class AgentServiceImpl implements AgentService {
         user.setPassword(encoder.encode(dto.getPassword()));
         user.setRole(Role.AGENT);
         user.setPoliceStation(hub);
+        user.setActive(false);
 
         User savedUser = userRepository.save(user);
 

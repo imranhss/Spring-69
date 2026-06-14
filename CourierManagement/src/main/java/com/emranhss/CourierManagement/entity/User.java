@@ -60,7 +60,7 @@ public class User implements UserDetails {
     public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isAccountNonLocked() { return true; }
+    public boolean isAccountNonLocked() { return active; }
 
     @Override
     public boolean isCredentialsNonExpired() { return true; }
