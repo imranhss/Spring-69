@@ -200,6 +200,7 @@ public LoginResponseDTO login(LoginRequestDTO dto){
 
     // ── Send / resend verification email ─────────────────────────
     public void sendVerificationEmail(String email) {
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
