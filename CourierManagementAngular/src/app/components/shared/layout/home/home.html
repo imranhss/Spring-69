@@ -1,0 +1,462 @@
+<!-- ══════════════════ NAV ══════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">
+      <div class="nav-logo-icon">🚚</div>
+      <span class="nav-logo-text">Swift<span>Route</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#" class="active">Home</a></li>
+      <li><a href="#" (click)="scrollTo('track-section')">Track Parcel</a></li>
+      <li><a href="#" (click)="scrollTo('calc-section')">Price Calculator</a></li>
+      <li><a href="#" (click)="scrollTo('services')">Services</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="btn-outline-nav">Log In</button>
+      <button class="btn-nav-primary">Send Parcel</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════════ HERO ══════════════════ -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <span></span>
+        Live tracking across Bangladesh
+      </div>
+      <h1 class="hero-h1">Deliver with<br/><em>Speed</em> &amp;<br/>Confidence</h1>
+      <p class="hero-sub">SwiftRoute connects senders to recipients across every district — with real-time tracking, instant pricing, and reliable doorstep delivery.</p>
+      <div class="hero-ctas">
+        <button class="btn-hero-primary" (click)="scrollTo('track-section')">
+          <i class="fas fa-magnifying-glass"></i>
+          Track Your Parcel
+        </button>
+        <button class="btn-hero-ghost" (click)="scrollTo('calc-section')">
+          <i class="fas fa-calculator"></i>
+          Calculate Price
+        </button>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="h-stat-val">3.8<span>K+</span></div>
+          <div class="h-stat-lbl">Daily Deliveries</div>
+        </div>
+        <div class="h-stat-divider"></div>
+        <div>
+          <div class="h-stat-val">64<span>+</span></div>
+          <div class="h-stat-lbl">Districts Covered</div>
+        </div>
+        <div class="h-stat-divider"></div>
+        <div>
+          <div class="h-stat-val">99<span>%</span></div>
+          <div class="h-stat-lbl">On-Time Rate</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="truck-visual">
+      <div class="floating-badge top-right">
+        <i class="fas fa-check-circle"></i> Just Delivered!
+      </div>
+      <div class="floating-badge bottom-left">
+        <i class="fas fa-bolt"></i> Express Active
+      </div>
+      <div class="truck-card">
+        <div class="truck-emoji-wrap">🚚</div>
+        <div class="mini-track">
+          <div class="mini-track-label">📡 Tracking — SR-20843</div>
+          <div style="display:flex; align-items:center; margin-bottom:10px;">
+            <div class="mts-step">
+              <div class="mts-dot done"><i class="fas fa-check" style="font-size:9px"></i></div>
+              <div class="mts-label">Picked Up</div>
+            </div>
+            <div class="mts-line done"></div>
+            <div class="mts-step">
+              <div class="mts-dot done"><i class="fas fa-check" style="font-size:9px"></i></div>
+              <div class="mts-label">In Transit</div>
+            </div>
+            <div class="mts-line partial"></div>
+            <div class="mts-step">
+              <div class="mts-dot active"><i class="fas fa-location-dot" style="font-size:9px"></i></div>
+              <div class="mts-label">Sorting</div>
+            </div>
+            <div class="mts-line wait"></div>
+            <div class="mts-step">
+              <div class="mts-dot pending"><i class="fas fa-home" style="font-size:9px"></i></div>
+              <div class="mts-label">Delivered</div>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-size:11px;color:#94A3B8;">ETA</div>
+              <div style="font-size:14px;font-weight:800;color:#F59E0B;">Today, 5:30 PM</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:11px;color:#94A3B8;">Courier</div>
+              <div style="font-size:13px;font-weight:700;color:#fff;">Mamun R. ⭐4.9</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ TRACK + CALCULATE ══════════════════ -->
+<section class="tools-section" id="track-section">
+  <div style="max-width:1200px;margin:0 auto 36px;">
+    <div class="section-eyebrow">Tools</div>
+    <h2 class="section-title">Track &amp; Price in seconds</h2>
+    <p class="section-sub">Enter your tracking ID to see live status, or use the price calculator to estimate delivery cost before sending.</p>
+  </div>
+
+  <div class="tools-grid" id="calc-section">
+
+    <!-- ── TRACKING CARD ── -->
+    <div class="tool-card">
+      <div class="tool-card-header">
+        <div class="tool-icon amber"><i class="fas fa-magnifying-glass-location"></i></div>
+        <div>
+          <div class="tool-card-title">Track Your Parcel</div>
+          <div class="tool-card-sub">Enter your tracking ID to see live status</div>
+        </div>
+      </div>
+      <div class="tool-body">
+        <div class="track-input-wrap">
+          <input
+            class="track-input"
+            [(ngModel)]="trackInput"
+            type="text"
+            placeholder="e.g. SR-20843"
+            maxlength="20"
+            (keydown)="onTrackKeydown($event)"
+          />
+          <button class="btn-track" [class.loading]="isTracking" (click)="doTrack()" [disabled]="isTracking">
+            <ng-container *ngIf="!isTracking">
+              <i class="fas fa-search"></i> Track
+            </ng-container>
+            <ng-container *ngIf="isTracking">
+              <i class="fas fa-spinner fa-spin"></i> Searching…
+            </ng-container>
+          </button>
+        </div>
+
+        <div class="track-quick-ids" style="margin-bottom:20px;">
+          <div style="font-size:11px;color:var(--slate);width:100%;margin-bottom:6px;font-weight:600;">Try a demo ID:</div>
+          <span class="quick-id" (click)="fillTrack('SR-20843')">SR-20843</span>
+          <span class="quick-id" (click)="fillTrack('SR-20847')">SR-20847</span>
+          <span class="quick-id" (click)="fillTrack('SR-20831')">SR-20831</span>
+          <span class="quick-id" (click)="fillTrack('SR-99999')">SR-99999</span>
+        </div>
+
+        <!-- ERROR -->
+        <div class="track-error" [class.visible]="trackError">
+          <i class="fas fa-circle-xmark" style="font-size:18px;flex-shrink:0"></i>
+          <div>
+            <div style="font-weight:700">Tracking ID not found</div>
+            <div style="font-size:12px;margin-top:2px;color:var(--red);opacity:.8">Check the ID and try again. IDs look like SR-XXXXX.</div>
+          </div>
+        </div>
+
+        <!-- RESULT -->
+        <div class="track-result" [class.visible]="trackResult !== null" *ngIf="trackResult">
+          <div class="track-found">
+            <div class="tf-header">
+              <div class="tf-id">{{ resultId }}</div>
+              <span [ngClass]="getStatusBadgeClass(trackResult.status)">{{ getStatusLabel(trackResult.status) }}</span>
+            </div>
+            <div class="track-timeline">
+              <div class="tl-item" *ngFor="let stop of trackResult.stops; let i = index">
+                <div class="tl-line">
+                  <div class="tl-dot" [ngClass]="stop.state"></div>
+                  <div *ngIf="!isLastStop(trackResult.stops, i)" [ngClass]="getVertClass(trackResult.stops, i)"></div>
+                </div>
+                <div class="tl-content">
+                  <div class="tl-city">{{ stop.city }}</div>
+                  <div class="tl-time">{{ stop.time }}</div>
+                  <div class="tl-note" [style.color]="getNoteColor(stop.state)">{{ stop.note }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="track-courier-row">
+            <div class="tc-avatar">{{ trackResult.courier.initials }}</div>
+            <div>
+              <div class="tc-name">{{ trackResult.courier.name }}</div>
+              <div class="tc-sub">Courier · ⭐ {{ trackResult.courier.rating }} · {{ trackResult.courier.zone }}</div>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:8px">
+              <div class="quick-id" style="cursor:pointer"><i class="fas fa-phone"></i></div>
+              <div class="quick-id" style="cursor:pointer"><i class="fas fa-comment"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PRICE CALCULATOR CARD ── -->
+    <div class="tool-card">
+      <div class="tool-card-header">
+        <div class="tool-icon blue"><i class="fas fa-calculator"></i></div>
+        <div>
+          <div class="tool-card-title">Price Calculator</div>
+          <div class="tool-card-sub">Instant quote before you send</div>
+        </div>
+      </div>
+      <div class="tool-body">
+        <div class="calc-form">
+
+          <!-- Service Type -->
+          <div class="form-group">
+            <label class="form-label">Service Type</label>
+            <div class="service-chips">
+              <div class="service-chip" [class.selected]="selectedService === 'STANDARD'" (click)="selectService('STANDARD')">
+                <span class="chip-icon">📦</span>
+                <div class="chip-label">Standard</div>
+                <div class="chip-sub">3–5 days</div>
+              </div>
+              <div class="service-chip" [class.selected]="selectedService === 'EXPRESS'" (click)="selectService('EXPRESS')">
+                <span class="chip-icon">⚡</span>
+                <div class="chip-label">Express</div>
+                <div class="chip-sub">Same day</div>
+              </div>
+              <div class="service-chip" [class.selected]="selectedService === 'OVERNIGHT'" (click)="selectService('OVERNIGHT')">
+                <span class="chip-icon">🌙</span>
+                <div class="chip-label">Overnight</div>
+                <div class="chip-sub">Next day</div>
+              </div>
+              <div class="service-chip" [class.selected]="selectedService === 'ECONOMY'" (click)="selectService('ECONOMY')">
+                <span class="chip-icon">💰</span>
+                <div class="chip-label">Economy</div>
+                <div class="chip-sub">5–7 days</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Weight + Zone -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Weight (kg)</label>
+              <input
+                class="form-input"
+                [(ngModel)]="weight"
+                type="number"
+                min="0.1"
+                max="50"
+                step="0.1"
+                placeholder="e.g. 2.5"
+                [style.borderColor]="weightError ? 'var(--red)' : ''"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Destination Zone</label>
+              <div class="select-wrap">
+                <select class="form-select" [(ngModel)]="zone">
+                  <option value="">Select zone…</option>
+                  <option value="DHAKA">Dhaka (Inside)</option>
+                  <option value="NEARBY">Nearby Districts</option>
+                  <option value="NATIONAL">National</option>
+                  <option value="REMOTE">Remote / Hill Tracts</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- COD Toggle -->
+          <div class="cod-toggle-row">
+            <div>
+              <div class="cod-toggle-label">Cash on Delivery (COD)</div>
+              <div class="cod-toggle-sub">Collect payment at doorstep</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" [(ngModel)]="hasCod" (change)="toggleCod()"/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <!-- COD Amount -->
+          <div class="cod-amount-row" [class.visible]="showCodAmount">
+            <div class="form-group">
+              <label class="form-label">COD Amount (৳)</label>
+              <input class="form-input" [(ngModel)]="codAmount" type="number" min="0" step="10" placeholder="e.g. 1500"/>
+            </div>
+          </div>
+
+          <button class="btn-calc" (click)="calcPrice()">
+            <i class="fas fa-calculator"></i>
+            Calculate Delivery Cost
+          </button>
+        </div>
+
+        <!-- PRICE RESULT -->
+        <div class="price-result" [class.visible]="showPriceResult" *ngIf="showPriceResult">
+          <div class="price-breakdown">
+            <div class="pb-service-tag">
+              <i class="fas fa-bolt"></i> {{ pbServiceTag }}
+            </div>
+            <div class="pb-total-label">Total Estimated Cost</div>
+            <div class="pb-total-value"><sup>৳</sup><span>{{ pbTotal }}</span></div>
+            <div class="pb-rows">
+              <div class="pb-row">
+                <span class="pb-row-label"><i class="fas fa-weight-hanging"></i> Base charge (weight)</span>
+                <span class="pb-row-value">{{ pbBase }}</span>
+              </div>
+              <div class="pb-row">
+                <span class="pb-row-label"><i class="fas fa-map-location-dot"></i> Zone surcharge</span>
+                <span class="pb-row-value">{{ pbZone }}</span>
+              </div>
+              <div class="pb-row" *ngIf="hasCod">
+                <span class="pb-row-label"><i class="fas fa-money-bill-wave"></i> COD fee (1%)</span>
+                <span class="pb-row-value">{{ pbCod }}</span>
+              </div>
+              <div class="pb-row">
+                <span class="pb-row-label"><i class="fas fa-star"></i> Service rate</span>
+                <span class="pb-row-value">{{ pbService }}</span>
+              </div>
+              <div class="pb-row total-row">
+                <span class="pb-row-label"><i class="fas fa-bangladeshi-taka-sign"></i> Total (incl. VAT)</span>
+                <span class="pb-row-value">{{ pbFinal }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════ HOW IT WORKS ══════════════════ -->
+<section class="section how-section">
+  <div class="section-inner">
+    <div class="section-eyebrow">How It Works</div>
+    <h2 class="section-title">Send a parcel in 4 steps</h2>
+    <p class="section-sub">From booking to doorstep delivery — it's quick, transparent, and trackable every step of the way.</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <span class="step-icon">📝</span>
+        <div class="step-title">Book Online</div>
+        <div class="step-desc">Fill in sender, recipient, and parcel details. Get an instant price quote.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <span class="step-icon">🏠</span>
+        <div class="step-title">We Pick Up</div>
+        <div class="step-desc">Our courier arrives at your address within 2 hours of booking.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <span class="step-icon">📡</span>
+        <div class="step-title">Track Live</div>
+        <div class="step-desc">Watch your parcel move in real time through every checkpoint.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-number">4</div>
+        <span class="step-icon">🎯</span>
+        <div class="step-title">Delivered</div>
+        <div class="step-desc">Safe doorstep delivery with photo confirmation and digital signature.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ SERVICES ══════════════════ -->
+<section class="section services-section" id="services">
+  <div class="section-inner">
+    <div class="section-eyebrow">Our Services</div>
+    <h2 class="section-title">Choose the right service</h2>
+    <p class="section-sub">From economy to lightning-fast express — we have a delivery plan for every need and budget.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <span class="sc-badge">Best Value</span>
+        <span class="sc-icon">💰</span>
+        <div class="sc-title">Economy Delivery</div>
+        <div class="sc-desc">Affordable shipping for non-urgent parcels. Ideal for bulk senders and e-commerce.</div>
+        <div class="sc-features">
+          <div class="sc-feature"><i class="fas fa-check"></i> 5–7 business days</div>
+          <div class="sc-feature"><i class="fas fa-check"></i> Up to 20 kg</div>
+          <div class="sc-feature"><i class="fas fa-check"></i> COD available</div>
+        </div>
+      </div>
+      <div class="service-card featured">
+        <span class="sc-badge">⚡ Most Popular</span>
+        <span class="sc-icon">📦</span>
+        <div class="sc-title">Standard Delivery</div>
+        <div class="sc-desc">Our most trusted service — reliable, trackable, and affordable for everyday needs.</div>
+        <div class="sc-features">
+          <div class="sc-feature"><i class="fas fa-check"></i> 3–5 business days</div>
+          <div class="sc-feature"><i class="fas fa-check"></i> Up to 30 kg</div>
+          <div class="sc-feature"><i class="fas fa-check"></i> Live GPS tracking</div>
+          <div class="sc-feature"><i class="fas fa-check"></i> COD + insurance</div>
+        </div>
+      </div>
+      <div class="service-card">
+        <span class="sc-badge">Fastest</span>
+        <span class="sc-icon">🚀</span>
+        <div class="sc-title">Express / Overnight</div>
+        <div class="sc-desc">When speed matters most. Same-day or next-day guaranteed delivery nationwide.</div>
+        <div class="sc-features">
+          <div class="sc-feature"><i class="fas fa-check"></i> Same-day or next-day</div>
+          <div class="sc-feature"><i class="fas fa-check"></i> Priority handling</div>
+          <div class="sc-feature"><i class="fas fa-check"></i> SMS + call alerts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a class="nav-logo" href="#">
+        <div class="nav-logo-icon">🚚</div>
+        <span class="nav-logo-text">Swift<span>Route</span></span>
+      </a>
+      <p class="footer-brand-desc">Bangladesh's trusted courier network — delivering speed, safety, and smiles to every doorstep.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Services</div>
+      <ul class="footer-links">
+        <li><a href="#">Standard Delivery</a></li>
+        <li><a href="#">Express Delivery</a></li>
+        <li><a href="#">Overnight</a></li>
+        <li><a href="#">Economy</a></li>
+        <li><a href="#">Bulk Shipping</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Support</div>
+      <ul class="footer-links">
+        <li><a href="#">Track Parcel</a></li>
+        <li><a href="#">FAQs</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Claim / Dispute</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2026 SwiftRoute Bangladesh. All rights reserved.</div>
+    <div class="footer-socials">
+      <div class="social-btn"><i class="fab fa-facebook-f"></i></div>
+      <div class="social-btn"><i class="fab fa-instagram"></i></div>
+      <div class="social-btn"><i class="fab fa-linkedin-in"></i></div>
+      <div class="social-btn"><i class="fab fa-whatsapp"></i></div>
+    </div>
+  </div>
+</footer>

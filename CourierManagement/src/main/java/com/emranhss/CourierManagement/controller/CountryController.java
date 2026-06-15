@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/country/")
+@CrossOrigin("*")
 public class CountryController {
 
     @Autowired

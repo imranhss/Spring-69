@@ -1,0 +1,295 @@
+<div class="container mt-4">
+
+  <h2 class="text-center mb-4">
+    Country Management
+  </h2>
+
+
+  <!-- FORM CARD -->
+  <div class="card shadow mb-4">
+
+    <div class="card-header bg-primary text-white">
+      {{isEdit ? 'Update Country' : 'Add Country'}}
+    </div>
+
+
+    <div class="card-body">
+
+
+      <form (ngSubmit)="save()">
+
+
+        <div class="row">
+
+
+          <!-- Name -->
+          <div class="col-md-6 mb-3">
+
+            <label class="form-label">
+              Country Name
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="country.name"
+              name="name"
+              required
+            >
+
+          </div>
+
+
+
+          <!-- Code -->
+          <div class="col-md-6 mb-3">
+
+            <label class="form-label">
+              Code
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="country.code"
+              name="code"
+            >
+
+          </div>
+
+
+
+
+          <!-- Phone Code -->
+          <div class="col-md-6 mb-3">
+
+            <label class="form-label">
+              Phone Code
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="country.phoneCode"
+              name="phoneCode"
+            >
+
+          </div>
+
+
+
+
+          <!-- Active -->
+          <div class="col-md-6 mb-3">
+
+            <label class="form-label d-block">
+              Status
+            </label>
+
+
+            <div class="form-check form-switch">
+
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [(ngModel)]="country.active"
+                name="active"
+              >
+
+              <label class="form-check-label">
+
+                {{country.active ? 'Active':'Inactive'}}
+
+              </label>
+
+
+            </div>
+
+
+          </div>
+
+
+        </div>
+
+
+
+        <button
+          class="btn btn-success me-2"
+          type="submit">
+
+          <i class="bi bi-save"></i>
+          {{isEdit?'Update':'Save'}}
+
+        </button>
+
+
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="reset()">
+
+          Clear
+
+        </button>
+
+
+      </form>
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <!-- TABLE CARD -->
+
+
+  <div class="card shadow">
+
+
+    <div class="card-header bg-dark text-white">
+
+      Country List
+
+    </div>
+
+
+
+    <div class="card-body">
+
+
+      <table class="table table-bordered table-hover">
+
+
+        <thead class="table-light">
+
+
+          <tr>
+
+            <th>ID</th>
+            <th>Name</th>
+            <th>Code</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th width="180">
+              Action
+            </th>
+
+          </tr>
+
+
+        </thead>
+
+
+
+        <tbody>
+
+
+          <tr *ngFor="let c of countries">
+
+
+            <td>
+              {{c.id}}
+            </td>
+
+
+            <td>
+              {{c.name}}
+            </td>
+
+
+            <td>
+              {{c.code}}
+            </td>
+
+
+            <td>
+              {{c.phoneCode}}
+            </td>
+
+
+
+            <td>
+
+
+              <span
+                class="badge"
+                [class.bg-success]="c.active"
+                [class.bg-danger]="!c.active">
+
+                {{c.active?'Active':'Inactive'}}
+
+              </span>
+
+
+            </td>
+
+
+
+
+            <td>
+
+
+              <button
+                class="btn btn-sm btn-warning me-2"
+                (click)="edit(c)">
+
+
+                Edit
+
+
+              </button>
+
+
+
+              <button
+                class="btn btn-sm btn-danger"
+                (click)="delete(c.id!)">
+
+
+                Delete
+
+
+              </button>
+
+
+
+            </td>
+
+
+          </tr>
+
+
+
+          <tr *ngIf="countries.length===0">
+
+
+            <td colspan="6"
+                class="text-center text-muted">
+
+              No country found
+
+            </td>
+
+
+          </tr>
+
+
+
+        </tbody>
+
+
+      </table>
+
+
+    </div>
+
+
+  </div>
+
+
+</div>
