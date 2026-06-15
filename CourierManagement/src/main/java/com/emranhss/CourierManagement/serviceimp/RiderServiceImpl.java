@@ -33,6 +33,7 @@ public class RiderServiceImpl implements RiderService {
     private final UserRepository userRepository;
     private final PoliceStationRepository policeStationRepository;
     private  final PasswordEncoder encoder;
+    private  final AuthService authService;
 
     @Value("${image.upload.dir}")
     private String uploadDir;
@@ -67,6 +68,9 @@ public class RiderServiceImpl implements RiderService {
         rider.setZones(zones);
 
         Rider saved = riderRepository.save(rider);
+
+        authService.sendVerificationEmail(saved.getUser().getEmail());
+
 
         return RiderMapper.toDTO(saved);
     }

@@ -40,6 +40,7 @@ public class AgentServiceImpl implements AgentService {
     private final RiderRepository riderRepository;
     private final TrackingCodeGenerator trackingCodeGenerator;
     private  final PasswordEncoder encoder;
+    private final AuthService authService;
 
 
     @Value("${image.upload.dir}")
@@ -79,6 +80,7 @@ public class AgentServiceImpl implements AgentService {
         }
 
         Agent saved = agentRepository.save(agent);
+        authService.sendVerificationEmail(saved.getUser().getEmail());
         return AgentMapper.toDTO(
                 agentRepository.findByIdWithDetails(saved.getId()).orElse(saved));
 

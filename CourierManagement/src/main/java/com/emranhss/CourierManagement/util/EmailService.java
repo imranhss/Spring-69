@@ -16,6 +16,9 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
 
 
+    @Value("${spring.mail.username}")
+    private String fromEmail;
+
     @Value("${app.frontend-url}")
     private String frontendUrl;
 
@@ -23,18 +26,25 @@ public class EmailService {
     public void sendSimpleMail(String to, String subject, String body) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
+
+        messageHelper.setFrom(fromEmail);
         messageHelper.setTo(to);
         messageHelper.setSubject(subject);
         messageHelper.setText(body, true);
 
-        javaMailSender.send(message);
+        try {
+            javaMailSender.send(message);
+            System.out.println("Mail sent successfully");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
     // ── Email verification ───────────────────────────────────────
     public void sendVerificationEmail(String to, String name, String token) throws MessagingException {
 
-        String link = frontendUrl + "/verify-email?token=" + token;
+        String link = frontendUrl + "/api/auth/verify-email?token=" + token;
 
         String body = """
             <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto;">
@@ -61,7 +71,7 @@ public class EmailService {
     // ── Password reset ────────────────────────────────────────────
     public void sendPasswordResetEmail(String to, String name, String token) throws MessagingException {
 
-        String link = frontendUrl + "/reset-password?token=" + token;
+        String link = frontendUrl + "/api/auth/reset-password?token=" + token;
 
         String body = """
             <div style="font-family: Arial, sans-serif; max-width: 500px; margin: auto;">

@@ -38,6 +38,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final PoliceStationRepository policeStationRepository;
     private final EmailService emailService;
     private  final PasswordEncoder encoder;
+    private  final AuthService authService;
 
 
     @Value("${image.upload.dir}")
@@ -87,6 +88,10 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
         Customer saved = customerRepository.save(customer);
+
+
+
+        authService.sendVerificationEmail(saved.getUser().getEmail());
 
         return CustomerMapper.toDTO(
                 customerRepository.findByIdWithDetails(saved.getId()).orElse(saved)
