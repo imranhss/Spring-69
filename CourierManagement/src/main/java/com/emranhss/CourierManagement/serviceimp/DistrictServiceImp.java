@@ -77,4 +77,27 @@ public class DistrictServiceImp implements DistrictService {
     }
 
 
+    @Override
+    public District update(Long id, District district) {
+
+        District existing = districtRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("District not found"));
+
+        existing.setName(district.getName());
+        existing.setNameBn(district.getName());
+        existing.setDistrictCode(district.getDistrictCode());
+        existing.setActive(district.getActive());
+
+        Division division = divisionRepository.findById(
+                        district.getDivision().getId())
+                .orElseThrow(() -> new RuntimeException("Division not found"));
+
+        existing.setDivision(division);
+
+        return districtRepository.save(existing);
+    }
+
+
+
+
 }

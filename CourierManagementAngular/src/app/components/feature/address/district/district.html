@@ -1,1 +1,179 @@
-<p>district works!</p>
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+            <h4>
+                {{ isEdit ? 'Update District' : 'Add District' }}
+            </h4>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">
+                        District Name
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="district.name">
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">
+                        District Name (Bangla)
+                    </label>
+
+                    <input
+                        type="text"
+                        class="form-control"
+                        [(ngModel)]="district.nameBn">
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <label class="form-label">
+                        Division
+                    </label>
+
+                    <select
+                        class="form-select"
+                        [(ngModel)]="district.division.id">
+
+                        <option [ngValue]="0">
+                            Select Division
+                        </option>
+
+                        <option
+                            *ngFor="let division of divisions "
+                            [ngValue]="division.id">
+
+                            {{ division.name  }} 
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <div class="form-check mt-4">
+
+                        <input
+                            type="checkbox"
+                            class="form-check-input"
+                            [(ngModel)]="district.active">
+
+                        <label class="form-check-label">
+                            Active
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button
+                class="btn btn-success"
+                (click)="saveDistrict()">
+
+                {{ isEdit ? 'Update' : 'Save' }}
+
+            </button>
+
+            <button
+                class="btn btn-secondary ms-2"
+                (click)="resetForm()">
+
+                Reset
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow mt-4">
+
+        <div class="card-header bg-dark text-white">
+            <h4>District List</h4>
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-striped">
+
+                <thead class="table-light">
+
+                    <tr>
+                        <th>SL</th>
+                        <th>Name</th>
+                        <th>Name BN</th>
+                        <th>Division</th>
+                        <th>DistrictCode</th>
+                        <th>Active</th>
+                        
+
+                        <th width="180">Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr *ngFor="let d of districts; let i = index">
+
+                        <td>{{ i+1 }}</td>
+                        <td>{{ d.name }}</td>
+                        <td>{{ d.nameBn }}</td>
+                        <td>{{ d.districtCode }}</td>
+                        <td>{{ d.division?.id }}</td>
+
+                        <td>
+                            <span
+                                class="badge"
+                                [class.bg-success]="d.active"
+                                [class.bg-danger]="!d.active">
+
+                                {{ d.active ? 'Active' : 'Inactive' }}
+
+                            </span>
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn btn-warning btn-sm me-2"
+                                (click)="editDistrict(d)">
+
+                                Edit
+
+                            </button>
+
+                            <button
+                                class="btn btn-danger btn-sm"
+                                (click)="deleteDistrict(d.id)">
+
+                                Delete
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>

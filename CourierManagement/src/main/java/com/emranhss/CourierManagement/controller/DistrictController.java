@@ -40,5 +40,22 @@ public class DistrictController {
         return ResponseEntity.ok(list);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<District> update(
+            @PathVariable Long id,
+            @RequestBody District district) {
+
+        return ResponseEntity.ok(
+                districtService.update(id, district)
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+
+        districtService.delete(id);
+        return ResponseEntity.ok("District Deleted");
+    }
+
 
 }

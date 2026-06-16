@@ -20,8 +20,8 @@ public class DivisionController {
     public ResponseEntity<Division> save(@RequestBody Division d){
         Division savedDivision = divisionService.save(d);
         return  ResponseEntity.ok(savedDivision);
-
     }
+
     @GetMapping
     public  ResponseEntity<List<Division>> getAll(){
 
@@ -42,5 +42,22 @@ public class DivisionController {
         return divisionService.getDivisionsByCountryName(name);
     }
 
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Division> update(
+            @PathVariable Long id,
+            @RequestBody Division division) {
+
+        return ResponseEntity.ok(
+                divisionService.update(id, division)
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+
+        divisionService.delete(id);
+        return ResponseEntity.ok("Division Deleted Successfully");
+    }
 
 }

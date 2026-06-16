@@ -65,6 +65,21 @@ public class PoliceStationServiceImpl implements PoliceStationService {
         return list.stream().map(PoliceStationMapper::toDTO).collect(Collectors.toList());
     }
 
+    @Override
+    public List<PoliceStationResponseDTO> search(String keyword) {
+
+        return stationRepository
+                .findAll()
+                .stream()
+                .filter(p ->
+                        p.getName().toLowerCase().contains(keyword.toLowerCase()) ||
+                                p.getNameBn().contains(keyword) ||
+                                p.getPostalCode().contains(keyword)
+                )
+                .map(PoliceStationMapper::toDTO)
+                .toList();
+    }
+
 
 
 

@@ -1,0 +1,120 @@
+<div class="container mt-4">
+
+  <div class="card shadow">
+
+    <div class="card-header bg-primary text-white">
+      <h4>Smart Courier Location System</h4>
+    </div>
+
+    <div class="card-body">
+
+      <!-- ⭐ SEARCH BOX -->
+      <div class="mb-3">
+        <label>Search Police Station</label>
+
+        <input type="text"
+               class="form-control"
+               placeholder="Type: Mirpur / Dhaka / 1216"
+               [(ngModel)]="keyword"
+               (input)="search()">
+      </div>
+
+      <hr>
+
+      <!-- COUNTRY -->
+      <div class="mb-3">
+        <label>Country</label>
+
+        <select class="form-select"
+                [(ngModel)]="selectedCountryId"
+                (change)="onCountryChange()">
+
+          <option [ngValue]="null">Select Country</option>
+
+          <option *ngFor="let c of countries"
+                  [ngValue]="c.id">
+            {{ c.name }}
+          </option>
+
+        </select>
+      </div>
+
+      <!-- DIVISION -->
+      <div class="mb-3">
+        <label>Division</label>
+
+        <select class="form-select"
+                [(ngModel)]="selectedDivisionId"
+                (change)="onDivisionChange()">
+
+          <option [ngValue]="null">Select Division</option>
+
+          <option *ngFor="let d of divisions"
+                  [ngValue]="d.id">
+            {{ d.name }}
+          </option>
+
+        </select>
+      </div>
+
+      <!-- DISTRICT -->
+      <div class="mb-3">
+        <label>District</label>
+
+        <select class="form-select"
+                [(ngModel)]="selectedDistrictId"
+                (change)="onDistrictChange()">
+
+          <option [ngValue]="null">Select District</option>
+
+          <option *ngFor="let d of districts"
+                  [ngValue]="d.id">
+            {{ d.name }}
+          </option>
+
+        </select>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RESULT TABLE -->
+  <div class="card mt-4 shadow">
+
+    <div class="card-header bg-dark text-white">
+      <h5>Police Stations Result</h5>
+    </div>
+
+    <div class="card-body">
+
+      <table class="table table-bordered table-striped">
+
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Bangla</th>
+            <th>Postal</th>
+            
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let s of stations">
+
+            <td>{{ s.name }}</td>
+            <td>{{ s.nameBn }}</td>
+            <td>{{ s.postalCode }}</td>
+            
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>

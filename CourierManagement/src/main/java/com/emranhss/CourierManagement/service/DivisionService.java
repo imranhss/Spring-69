@@ -13,8 +13,14 @@ public interface DivisionService {
     Optional<Division> getById(Long id);
     void delete(Long id);
 
+    Division update(Long id, Division division);
+
+
     List<DivisionResponseDTO> getDivisionsByCountryId(Long countryId);
 
     List<DivisionResponseDTO> getDivisionsByCountryName(String countryName);
+
+
+
 
 }

@@ -12,6 +12,7 @@ public interface DistrictService {
     List<District> findAll();
     Optional<District> getById(Long id);
     void delete(Long id);
+    District update(Long id, District district);
 
     List<DistrictResponseDTO> findByDivisionId(Long  divisionId);
 

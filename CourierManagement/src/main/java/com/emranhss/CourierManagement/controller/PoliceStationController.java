@@ -82,5 +82,10 @@ public class PoliceStationController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("search")
+    public ResponseEntity<List<PoliceStationResponseDTO>> search(@RequestParam String keyword) {
+        return ResponseEntity.ok(policeStationService.search(keyword));
+    }
+
 
 }

@@ -1,1 +1,142 @@
-<p>policestation works!</p>
+<div class="container mt-4">
+
+  <!-- FORM -->
+  <div class="card shadow">
+
+    <div class="card-header bg-primary text-white">
+      <h4>
+        {{ isEdit ? 'Update Police Station' : 'Add Police Station' }}
+      </h4>
+    </div>
+
+    <div class="card-body">
+
+      <div class="row">
+
+        <div class="col-md-6 mb-3">
+          <label>Name</label>
+          <input class="form-control" [(ngModel)]="station.name">
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label>Name Bangla</label>
+          <input class="form-control" [(ngModel)]="station.nameBn">
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label>Postal Code</label>
+          <input class="form-control" [(ngModel)]="station.postalCode">
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label>District</label>
+
+          <select class="form-select"
+                  [(ngModel)]="station.district.id">
+
+            <option [ngValue]="0">Select District</option>
+
+            <option *ngFor="let d of districts"
+                    [ngValue]="d.id">
+
+              {{ d.name }}
+
+            </option>
+
+          </select>
+        </div>
+
+        <div class="col-md-6 form-check mt-4">
+          <input type="checkbox"
+                 class="form-check-input"
+                 [(ngModel)]="station.active">
+
+          <label class="form-check-label">Active</label>
+        </div>
+
+      </div>
+
+      <button class="btn btn-success" (click)="save()">
+        {{ isEdit ? 'Update' : 'Save' }}
+      </button>
+
+      <button class="btn btn-secondary ms-2" (click)="reset()">
+        Reset
+      </button>
+
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card mt-4 shadow">
+
+    <div class="card-header bg-dark text-white">
+      <h4>Police Station List</h4>
+    </div>
+
+    <div class="card-body">
+
+      <table class="table table-bordered table-striped">
+
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Bangla</th>
+            <th>Postal</th>
+            <th>District</th>
+            <th>Division</th>
+            <th>Country</th>
+            <th>Active</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let s of stations">
+
+            <td>{{ s.id }}</td>
+            <td>{{ s.name }}</td>
+            <td>{{ s.nameBn }}</td>
+            <td>{{ s.postalCode }}</td>
+
+            <td>{{ s.district?.name }}</td>
+            <td>{{ s.district?.division?.name }}</td>
+            <td>{{ s.district?.division?.country?.name }}</td>
+
+            <td>
+              <span class="badge"
+                    [class.bg-success]="s.active"
+                    [class.bg-danger]="!s.active">
+
+                {{ s.active ? 'Active' : 'Inactive' }}
+
+              </span>
+            </td>
+
+            <td>
+
+              <button class="btn btn-warning btn-sm me-2"
+                      (click)="edit(s)">
+                Edit
+              </button>
+
+              <button class="btn btn-danger btn-sm"
+                      (click)="delete(s.id)">
+                Delete
+              </button>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</div>

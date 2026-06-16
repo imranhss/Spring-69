@@ -41,13 +41,13 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(auth -> auth
 
-                // ── Public endpoints (no token needed) ────────────
-                .requestMatchers("/api/auth/login", "/api/parcels/track/**",          // public tracking
-                        "/api/parcels/calculate",          // price preview
-                        "/api/customer/", "/**").permitAll()
+                        // ── Public endpoints (no token needed) ────────────
+                        .requestMatchers("/api/auth/login", "/api/parcels/track/**",          // public tracking
+                                "/api/parcels/calculate",          // price preview
+                                "/api/customer/", "/**").permitAll()
 
 
-        ).authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                ).authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
 
@@ -77,8 +77,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-      // configuration.setAllowedOrigins(List.of("http://localhost:4200", "http://192.168.88.250:4200"));
-        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedOrigins(List.of("http://localhost:4200", "http://192.168.88.250:4200"));
+        //configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);
@@ -87,8 +87,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
-
 
 
 }

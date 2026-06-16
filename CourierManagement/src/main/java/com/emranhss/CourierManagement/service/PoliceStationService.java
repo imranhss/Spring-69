@@ -16,6 +16,6 @@ public interface PoliceStationService {
     List<PoliceStationResponseDTO> findByDistrictId(Long  districtId);
 
     List<PoliceStationResponseDTO> findByDistrictName(String districtName);
-
+    List<PoliceStationResponseDTO> search(String keyword);
 
 }

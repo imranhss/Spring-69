@@ -69,4 +69,21 @@ public class DivisionServiceImp implements DivisionService {
     }
 
 
+    @Override
+    public Division update(Long id, Division division) {
+
+        Division existing = divisionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Division not found"));
+
+        existing.setName(division.getName());
+        existing.setNameBn(division.getNameBn());
+        existing.setActive(division.getActive());
+
+        return divisionRepository.save(existing);
+    }
+
+
+
+
+
 }
