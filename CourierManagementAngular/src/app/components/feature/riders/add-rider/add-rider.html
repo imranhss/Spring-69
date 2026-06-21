@@ -1,0 +1,367 @@
+<div class="container py-5">
+  <div class="card shadow border-0 mx-auto" style="max-width: 780px;">
+
+    <!-- ================= HEADER ================= -->
+    <div class="card-header bg-primary text-white py-4 px-4 px-md-5">
+      <h4 class="mb-1 fw-bold">
+        <i class="bi bi-bicycle me-2"></i>Add Rider
+      </h4>
+      <small class="opacity-75">Register a new rider and assign their delivery zones</small>
+    </div>
+
+    <div class="card-body p-4 p-md-5">
+      <form
+        #riderForm="ngForm"
+        (ngSubmit)="riderForm.valid && saveRider()"
+        novalidate
+        [class.was-validated]="submitted">
+
+        <!-- ================= ACCOUNT DETAILS ================= -->
+        <h6 class="text-uppercase text-primary fw-bold mb-3">
+          <i class="bi bi-person-vcard-fill me-2"></i>Account Details
+        </h6>
+        <hr class="mt-0 mb-3">
+
+        <div class="row g-3 mb-2">
+
+          <!-- Name -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Full Name</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+              <input
+                class="form-control"
+                [(ngModel)]="rider.name"
+                name="name"
+                #nameRef="ngModel"
+                required
+                placeholder="John Doe">
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="nameRef.invalid && (nameRef.touched || submitted)">
+              Name is required.
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Email</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+              <input
+                type="email"
+                class="form-control"
+                [(ngModel)]="rider.email"
+                name="email"
+                #emailRef="ngModel"
+                required
+                email
+                placeholder="you@example.com">
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="emailRef.invalid && (emailRef.touched || submitted)">
+              Enter a valid email address.
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Phone</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-telephone-fill"></i></span>
+              <input
+                class="form-control"
+                [(ngModel)]="rider.phone"
+                name="phone"
+                #phoneRef="ngModel"
+                required
+                placeholder="01XXXXXXXXX">
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="phoneRef.invalid && (phoneRef.touched || submitted)">
+              Phone number is required.
+            </div>
+          </div>
+
+          <!-- NID -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">NID Number</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+              <input
+                class="form-control"
+                [(ngModel)]="rider.nidNumber"
+                name="nidNumber"
+                #nidRef="ngModel"
+                required
+                placeholder="National ID number">
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="nidRef.invalid && (nidRef.touched || submitted)">
+              NID number is required.
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Password</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                class="form-control"
+                [(ngModel)]="rider.password"
+                name="password"
+                #passwordRef="ngModel"
+                required
+                minlength="6"
+                placeholder="At least 6 characters">
+              <button class="btn btn-outline-secondary" type="button" (click)="showPassword = !showPassword">
+                <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </button>
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="passwordRef.invalid && (passwordRef.touched || submitted)">
+              Password must be at least 6 characters.
+            </div>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Confirm Password</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+              <input
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                class="form-control"
+                [class.is-invalid]="confirmPassword && confirmPassword !== rider.password"
+                [(ngModel)]="confirmPassword"
+                name="confirmPassword"
+                #confirmPasswordRef="ngModel"
+                required
+                placeholder="Re-enter password">
+              <button class="btn btn-outline-secondary" type="button" (click)="showConfirmPassword = !showConfirmPassword">
+                <i class="bi" [ngClass]="showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </button>
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="confirmPassword && confirmPassword !== rider.password">
+              Passwords do not match.
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= VEHICLE ================= -->
+        <h6 class="text-uppercase text-primary fw-bold mb-3 mt-5">
+          <i class="bi bi-truck me-2"></i>Vehicle Information
+        </h6>
+        <hr class="mt-0 mb-3">
+
+        <div class="row g-3 mb-2">
+
+          <!-- Vehicle Type -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Vehicle Type</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-gear-fill"></i></span>
+              <select
+                class="form-select"
+                [(ngModel)]="rider.vehicleType"
+                name="vehicleType"
+                #vehicleTypeRef="ngModel"
+                required>
+                <option value="" disabled>Select Vehicle Type</option>
+                <option value="Bike">Bike</option>
+                <option value="Bicycle">Bicycle</option>
+                <option value="Car">Car</option>
+                <option value="Van">Van</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="vehicleTypeRef.invalid && (vehicleTypeRef.touched || submitted)">
+              Please select a vehicle type.
+            </div>
+          </div>
+
+          <!-- Vehicle Number -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Vehicle Number</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-credit-card-2-front-fill"></i></span>
+              <input
+                class="form-control"
+                [(ngModel)]="rider.vehicleNumber"
+                name="vehicleNumber"
+                #vehicleNumberRef="ngModel"
+                required
+                placeholder="Dhaka Metro-LA-123456">
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="vehicleNumberRef.invalid && (vehicleNumberRef.touched || submitted)">
+              Vehicle number is required.
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= DELIVERY ZONES ================= -->
+        <h6 class="text-uppercase text-primary fw-bold mb-3 mt-5">
+          <i class="bi bi-geo-alt-fill me-2"></i>Delivery Zones
+        </h6>
+        <hr class="mt-0 mb-3">
+
+        <div class="row g-3 mb-2">
+
+          <!-- Country -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Country</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-flag-fill"></i></span>
+              <select
+                class="form-select"
+                [(ngModel)]="selectedCountryId"
+                name="countryId"
+                (ngModelChange)="onCountryChange()">
+                <option [ngValue]="null">Select Country</option>
+                <option *ngFor="let c of countries" [ngValue]="c.id">{{ c.name }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Division -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Division</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-signpost-split-fill"></i></span>
+              <select
+                class="form-select"
+                [(ngModel)]="selectedDivisionId"
+                name="divisionId"
+                [disabled]="!divisions.length"
+                (ngModelChange)="onDivisionChange()">
+                <option [ngValue]="null">Select Division</option>
+                <option *ngFor="let d of divisions" [ngValue]="d.id">{{ d.name }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- District -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">District</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-map-fill"></i></span>
+              <select
+                class="form-select"
+                [(ngModel)]="selectedDistrictId"
+                name="districtId"
+                [disabled]="!districts.length"
+                (ngModelChange)="onDistrictChange()">
+                <option [ngValue]="null">Select District</option>
+                <option *ngFor="let d of districts" [ngValue]="d.id">{{ d.name }}</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Police Station -->
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Police Station</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-shield-fill"></i></span>
+              <select
+                class="form-select"
+                [(ngModel)]="selectedPoliceStationId"
+                name="policeStationId"
+                [disabled]="!policeStations.length">
+                <option [ngValue]="null">Select Police Station</option>
+                <option *ngFor="let p of policeStations" [ngValue]="p.id">{{ p.name }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-outline-primary mb-3"
+          [disabled]="!canAddZone"
+          (click)="addZone()">
+          <i class="bi bi-plus-circle me-1"></i>Add Zone
+        </button>
+
+        <!-- Assigned zones list -->
+        <div class="mb-2">
+          <div
+            *ngFor="let zone of rider.zones"
+            class="d-flex align-items-center justify-content-between border rounded p-2 mb-2 bg-light">
+            <div>
+              <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+              <strong>{{ zone.name }}</strong>
+              <span class="text-muted small"> — {{ zone.districtName }}, {{ zone.divisionName }}</span>
+            </div>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger"
+              (click)="removeZone(zone)">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+
+          <div *ngIf="rider.zones.length === 0" class="text-muted small">
+            No delivery zones assigned yet. Select a location above and click "Add Zone".
+          </div>
+
+          <div class="invalid-feedback d-block" *ngIf="submitted && rider.zones.length === 0">
+            Please assign at least one delivery zone.
+          </div>
+        </div>
+
+        <!-- ================= PHOTO ================= -->
+        <h6 class="text-uppercase text-primary fw-bold mb-3 mt-5">
+          <i class="bi bi-camera-fill me-2"></i>Photo
+        </h6>
+        <hr class="mt-0 mb-3">
+
+        <div class="mb-4 d-flex align-items-center gap-3">
+
+          <!-- Preview circle -->
+          <div class="position-relative flex-shrink-0">
+            <img
+              *ngIf="imagePreview"
+              [src]="imagePreview"
+              class="rounded-circle border"
+              style="width: 90px; height: 90px; object-fit: cover;">
+
+            <div
+              *ngIf="!imagePreview"
+              class="rounded-circle bg-light border d-flex align-items-center justify-content-center"
+              style="width: 90px; height: 90px;">
+              <i class="bi bi-person-fill text-secondary" style="font-size: 2.2rem;"></i>
+            </div>
+
+            <button
+              *ngIf="imagePreview"
+              type="button"
+              class="btn btn-danger rounded-circle position-absolute top-0 end-0 p-0 d-flex align-items-center justify-content-center"
+              style="width: 26px; height: 26px;"
+              (click)="removeSelectedFile(fileInput)">
+              <i class="bi bi-x-lg" style="font-size: 0.7rem;"></i>
+            </button>
+          </div>
+
+          <div class="flex-grow-1">
+            <input
+              #fileInput
+              type="file"
+              class="form-control"
+              accept="image/*"
+              (change)="onFileSelected($event)">
+            <small class="text-muted d-block mt-1" *ngIf="selectedFile">
+              <i class="bi bi-paperclip me-1"></i>{{ selectedFile.name }}
+            </small>
+          </div>
+        </div>
+
+        <!-- ================= SUBMIT ================= -->
+        <button
+          class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2"
+          type="submit"
+          (click)="submitted = true">
+          <i class="bi bi-check-circle-fill"></i>
+          Save Rider
+        </button>
+
+      </form>
+    </div>
+  </div>
+</div>

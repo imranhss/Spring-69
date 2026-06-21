@@ -4,14 +4,16 @@
     <!-- ================= HEADER ================= -->
     <div class="card-header bg-primary text-white py-4 px-4 px-md-5">
       <h4 class="mb-1 fw-bold">
-        <i class="bi bi-person-plus-fill me-2"></i>Customer Registration
+        <i class="bi bi-person-badge-fill me-2"></i>Create Agent
       </h4>
-      <small class="opacity-75">Fill in the details below to create a new account</small>
+      <small class="opacity-75">Add a new agent and assign their hub</small>
     </div>
 
     <div class="card-body p-4 p-md-5">
-      <form #customerForm="ngForm"
-        (ngSubmit)="customerForm.valid && customer.password === confirmPassword && register()" novalidate
+      <form
+        #agentForm="ngForm"
+        (ngSubmit)="agentForm.valid && agent.password === confirmPassword && saveAgent()"
+        novalidate
         [class.was-validated]="submitted">
 
         <!-- ================= ACCOUNT DETAILS ================= -->
@@ -27,7 +29,12 @@
             <label class="form-label fw-semibold">Full Name</label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-              <input class="form-control" [(ngModel)]="customer.name" name="name" #nameRef="ngModel" required
+              <input
+                class="form-control"
+                [(ngModel)]="agent.name"
+                name="name"
+                #nameRef="ngModel"
+                required
                 placeholder="John Doe">
             </div>
             <div class="invalid-feedback d-block" *ngIf="nameRef.invalid && (nameRef.touched || submitted)">
@@ -40,8 +47,15 @@
             <label class="form-label fw-semibold">Email</label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
-              <input type="email" class="form-control" [(ngModel)]="customer.email" name="email" #emailRef="ngModel"
-                required email placeholder="you@example.com">
+              <input
+                type="email"
+                class="form-control"
+                [(ngModel)]="agent.email"
+                name="email"
+                #emailRef="ngModel"
+                required
+                email
+                placeholder="you@example.com">
             </div>
             <div class="invalid-feedback d-block" *ngIf="emailRef.invalid && (emailRef.touched || submitted)">
               Enter a valid email address.
@@ -53,7 +67,12 @@
             <label class="form-label fw-semibold">Phone</label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-telephone-fill"></i></span>
-              <input class="form-control" [(ngModel)]="customer.phone" name="phone" #phoneRef="ngModel" required
+              <input
+                class="form-control"
+                [(ngModel)]="agent.phone"
+                name="phone"
+                #phoneRef="ngModel"
+                required
                 placeholder="01XXXXXXXXX">
             </div>
             <div class="invalid-feedback d-block" *ngIf="phoneRef.invalid && (phoneRef.touched || submitted)">
@@ -61,12 +80,17 @@
             </div>
           </div>
 
-          <!-- Date of Birth -->
+          <!-- Designation -->
           <div class="col-md-6">
-            <label class="form-label fw-semibold">
-              <i class="bi bi-calendar3 me-1"></i>Date of Birth
-            </label>
-            <input type="date" class="form-control" [(ngModel)]="customer.dob" name="dob">
+            <label class="form-label fw-semibold">Designation</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-briefcase-fill"></i></span>
+              <input
+                class="form-control"
+                [(ngModel)]="agent.designation"
+                name="designation"
+                placeholder="e.g. Field Agent">
+            </div>
           </div>
 
           <!-- Password -->
@@ -74,8 +98,15 @@
             <label class="form-label fw-semibold">Password</label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-              <input [type]="showPassword ? 'text' : 'password'" class="form-control" [(ngModel)]="customer.password"
-                name="password" #passwordRef="ngModel" required minlength="6" placeholder="At least 6 characters">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                class="form-control"
+                [(ngModel)]="agent.password"
+                name="password"
+                #passwordRef="ngModel"
+                required
+                minlength="6"
+                placeholder="At least 6 characters">
               <button class="btn btn-outline-secondary" type="button" (click)="showPassword = !showPassword">
                 <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
               </button>
@@ -90,50 +121,28 @@
             <label class="form-label fw-semibold">Confirm Password</label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
-              <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control"
-                [class.is-invalid]="confirmPassword && confirmPassword !== customer.password"
-                [(ngModel)]="confirmPassword" name="confirmPassword" #confirmPasswordRef="ngModel" required
+              <input
+                [type]="showConfirmPassword ? 'text' : 'password'"
+                class="form-control"
+                [class.is-invalid]="confirmPassword && confirmPassword !== agent.password"
+                [(ngModel)]="confirmPassword"
+                name="confirmPassword"
+                #confirmPasswordRef="ngModel"
+                required
                 placeholder="Re-enter password">
-              <button class="btn btn-outline-secondary" type="button"
-                (click)="showConfirmPassword = !showConfirmPassword">
+              <button class="btn btn-outline-secondary" type="button" (click)="showConfirmPassword = !showConfirmPassword">
                 <i class="bi" [ngClass]="showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
               </button>
             </div>
-            <div class="invalid-feedback d-block" *ngIf="confirmPassword && confirmPassword !== customer.password">
+            <div class="invalid-feedback d-block" *ngIf="confirmPassword && confirmPassword !== agent.password">
               Passwords do not match.
-            </div>
-          </div>
-
-          <!-- Gender -->
-          <div class="col-12">
-            <label class="form-label fw-semibold d-block">Gender</label>
-            <div class="btn-group w-100" role="group">
-
-              <input type="radio" class="btn-check" name="gender" id="genderMale" value="MALE"
-                [(ngModel)]="customer.gender" autocomplete="off">
-              <label class="btn btn-outline-primary" for="genderMale">
-                <i class="bi bi-gender-male me-1"></i>Male
-              </label>
-
-              <input type="radio" class="btn-check" name="gender" id="genderFemale" value="FEMALE"
-                [(ngModel)]="customer.gender" autocomplete="off">
-              <label class="btn btn-outline-primary" for="genderFemale">
-                <i class="bi bi-gender-female me-1"></i>Female
-              </label>
-
-              <input type="radio" class="btn-check" name="gender" id="genderOther" value="OTHER"
-                [(ngModel)]="customer.gender" autocomplete="off">
-              <label class="btn btn-outline-primary" for="genderOther">
-                <i class="bi bi-gender-ambiguous me-1"></i>Other
-              </label>
-
             </div>
           </div>
         </div>
 
-        <!-- ================= LOCATION ================= -->
+        <!-- ================= LOCATION & HUB ================= -->
         <h6 class="text-uppercase text-primary fw-bold mb-3 mt-5">
-          <i class="bi bi-geo-alt-fill me-2"></i>Location
+          <i class="bi bi-geo-alt-fill me-2"></i>Location &amp; Hub
         </h6>
         <hr class="mt-0 mb-3">
 
@@ -144,7 +153,10 @@
             <label class="form-label fw-semibold">Country</label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-flag-fill"></i></span>
-              <select class="form-select" [(ngModel)]="selectedCountryId" name="country"
+              <select
+                class="form-select"
+                [(ngModel)]="selectedCountryId"
+                name="countryId"
                 (ngModelChange)="onCountryChange()">
                 <option [ngValue]="null">Select Country</option>
                 <option *ngFor="let c of countries" [ngValue]="c.id">{{ c.name }}</option>
@@ -157,8 +169,12 @@
             <label class="form-label fw-semibold">Division</label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-signpost-split-fill"></i></span>
-              <select class="form-select" [(ngModel)]="selectedDivisionId" name="division"
-                [disabled]="!divisions.length" (ngModelChange)="onDivisionChange()">
+              <select
+                class="form-select"
+                [(ngModel)]="selectedDivisionId"
+                name="divisionId"
+                [disabled]="!divisions.length"
+                (ngModelChange)="onDivisionChange()">
                 <option [ngValue]="null">Select Division</option>
                 <option *ngFor="let d of divisions" [ngValue]="d.id">{{ d.name }}</option>
               </select>
@@ -170,47 +186,32 @@
             <label class="form-label fw-semibold">District</label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-map-fill"></i></span>
-              <select class="form-select" [(ngModel)]="selectedDistrictId" name="district"
-                [disabled]="!districts.length" (ngModelChange)="onDistrictChange()">
+              <select
+                class="form-select"
+                [(ngModel)]="selectedDistrictId"
+                name="districtId"
+                [disabled]="!districts.length"
+                (ngModelChange)="onDistrictChange()">
                 <option [ngValue]="null">Select District</option>
                 <option *ngFor="let d of districts" [ngValue]="d.id">{{ d.name }}</option>
               </select>
             </div>
           </div>
 
-          <!-- Police Station -->
+          <!-- Hub (Police Station) -->
           <div class="col-md-6">
-            <label class="form-label fw-semibold">Police Station</label>
+            <label class="form-label fw-semibold">Hub (Police Station)</label>
             <div class="input-group">
               <span class="input-group-text"><i class="bi bi-shield-fill"></i></span>
-              <select class="form-select" [(ngModel)]="customer.policeStationId" name="policeStation"
-                [disabled]="!policeStations.length" (ngModelChange)="generateFullAddress()">
-                <option [ngValue]="0">Select Police Station</option>
-                <option *ngFor="let p of policeStations" [ngValue]="p.id">{{ p.name }}</option>
+              <select
+                class="form-select"
+                [(ngModel)]="agent.hubId"
+                name="hubId"
+                [disabled]="!policeStations.length">
+                <option [ngValue]="null">Select Hub</option>
+                <option *ngFor="let ps of policeStations" [ngValue]="ps.id">{{ ps.name }}</option>
               </select>
             </div>
-          </div>
-        </div>
-
-        <!-- ================= ADDRESS ================= -->
-        <h6 class="text-uppercase text-primary fw-bold mb-3 mt-5">
-          <i class="bi bi-house-door-fill me-2"></i>Address
-        </h6>
-        <hr class="mt-0 mb-3">
-
-        <div class="mb-3">
-          <label class="form-label fw-semibold">Address (Street / Area)</label>
-          <textarea class="form-control" rows="2" [(ngModel)]="streetAddress" name="streetAddress"
-            (ngModelChange)="generateFullAddress()" placeholder="House no, Road, Area">
-          </textarea>
-        </div>
-
-        <div class="mb-2">
-          <label class="form-label fw-semibold">
-            <i class="bi bi-magic me-1"></i>Full Address (Auto Generated)
-          </label>
-          <div class="form-control bg-light text-secondary" style="min-height: 38px;">
-            {{ customer.address || 'Type your address and select location above to auto-generate' }}
           </div>
         </div>
 
@@ -224,24 +225,36 @@
 
           <!-- Preview circle -->
           <div class="position-relative flex-shrink-0">
-            <img *ngIf="imagePreview" [src]="imagePreview" class="rounded-circle border"
+            <img
+              *ngIf="imagePreview"
+              [src]="imagePreview"
+              class="rounded-circle border"
               style="width: 90px; height: 90px; object-fit: cover;">
 
-            <div *ngIf="!imagePreview"
+            <div
+              *ngIf="!imagePreview"
               class="rounded-circle bg-light border d-flex align-items-center justify-content-center"
               style="width: 90px; height: 90px;">
               <i class="bi bi-person-fill text-secondary" style="font-size: 2.2rem;"></i>
             </div>
 
-            <button *ngIf="imagePreview" type="button"
+            <button
+              *ngIf="imagePreview"
+              type="button"
               class="btn btn-danger rounded-circle position-absolute top-0 end-0 p-0 d-flex align-items-center justify-content-center"
-              style="width: 26px; height: 26px;" (click)="removeSelectedFile(fileInput)">
+              style="width: 26px; height: 26px;"
+              (click)="removeSelectedFile(fileInput)">
               <i class="bi bi-x-lg" style="font-size: 0.7rem;"></i>
             </button>
           </div>
 
           <div class="flex-grow-1">
-            <input #fileInput type="file" class="form-control" accept="image/*" (change)="onFileSelected($event)">
+            <input
+              #fileInput
+              type="file"
+              class="form-control"
+              accept="image/*"
+              (change)="onFileSelected($event)">
             <small class="text-muted d-block mt-1" *ngIf="selectedFile">
               <i class="bi bi-paperclip me-1"></i>{{ selectedFile.name }}
             </small>
@@ -249,10 +262,12 @@
         </div>
 
         <!-- ================= SUBMIT ================= -->
-        <button class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2"
-          type="submit" (click)="submitted = true">
+        <button
+          class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center gap-2"
+          type="submit"
+          (click)="submitted = true">
           <i class="bi bi-check-circle-fill"></i>
-          Create Account
+          Save Agent
         </button>
 
       </form>

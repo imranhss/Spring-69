@@ -51,6 +51,7 @@ export class AddCustomer implements OnInit {
 
   /** Customer profile image */
   selectedFile: File | null = null;
+  imagePreview: string | ArrayBuffer | null = null;
 
   // =========================
   // ADDRESS
@@ -102,7 +103,7 @@ export class AddCustomer implements OnInit {
     private divisionService: DivisionService,
     private districtService: DistrictService,
     private stationService: PolicestationService
-  ) {}
+  ) { }
 
   /**
    * Component initialization
@@ -222,16 +223,69 @@ export class AddCustomer implements OnInit {
       });
   }
 
-  // =====================================================
-  // FILE SELECTION
-  // =====================================================
 
   /**
-   * Captures selected image file from file input.
+   * Triggered when the user selects an image file from the file input.
+   * 
+   * Steps:
+   * 1. Retrieves the selected file from the input event.
+   * 2. Validates that a file was actually selected.
+   * 3. Stores the file in the component variable for later upload.
+   * 4. Uses FileReader to convert the image into a Base64 Data URL.
+   * 5. Displays the image preview on the UI.
+   * 6. Calls ChangeDetectorRef.markForCheck() to update the view
+   *    when using OnPush change detection strategy.
+   *
+   * @param event File input change event.
    */
   onFileSelected(event: any) {
-    this.selectedFile = event.target.files[0];
+    // Get the first selected file
+    const file: File = event.target.files[0];
+
+    // Exit if no file was selected
+    if (!file) return;
+
+    // Store the selected file for upload
+    this.selectedFile = file;
+
+    // Create FileReader to generate image preview
+    const reader = new FileReader();
+
+    // Execute when file reading is completed
+    reader.onload = () => {
+      // Save Base64 image data for preview
+      this.imagePreview = reader.result;
+
+      // Notify Angular to refresh UI
+      this.cdr.markForCheck();
+    };
+
+    // Read file as Data URL (Base64 string)
+    reader.readAsDataURL(file);
   }
+
+  /**
+   * Removes the currently selected image.
+   *
+   * Steps:
+   * 1. Clears the selected file object.
+   * 2. Removes the image preview.
+   * 3. Resets the file input control so the same file
+   *    can be selected again if needed.
+   *
+   * @param fileInput Reference to the HTML file input element.
+   */
+  removeSelectedFile(fileInput: HTMLInputElement) {
+    // Remove selected file reference
+    this.selectedFile = null;
+
+    // Remove image preview
+    this.imagePreview = null;
+
+    // Reset file input value
+    fileInput.value = '';
+  }
+
 
   // =====================================================
   // PASSWORD VISIBILITY
@@ -261,7 +315,7 @@ export class AddCustomer implements OnInit {
    */
   get passwordsMismatch(): boolean {
     return !!this.confirmPassword &&
-           this.customer.password !== this.confirmPassword;
+      this.customer.password !== this.confirmPassword;
   }
 
   // =====================================================
@@ -351,8 +405,8 @@ export class AddCustomer implements OnInit {
         division,
         country
       ]
-      .filter(v => v)
-      .join(', ');
+        .filter(v => v)
+        .join(', ');
 
     console.log('Generated Address:', this.customer.address);
   }
