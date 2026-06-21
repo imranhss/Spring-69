@@ -319,7 +319,7 @@ export class AddCustomer implements OnInit {
    *
    * Stored in customer.address
    */
-  generateSenderAddress() {
+  generateFullAddress() {
 
     console.log("Selected IDs:", {
       country: this.selectedCountryId,
