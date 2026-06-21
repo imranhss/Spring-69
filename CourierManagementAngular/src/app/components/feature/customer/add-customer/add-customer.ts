@@ -286,7 +286,7 @@ export class AddCustomer implements OnInit {
     }
 
     // Generate full address before save
-    this.generateSenderAddress();
+    this.generateFullAddress();
 
     this.customerService.create(
       this.customer,

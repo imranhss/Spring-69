@@ -226,7 +226,7 @@
                 [(ngModel)]="customer.policeStationId"
                 name="policeStation"
                 [disabled]="!policeStations.length"
-                (ngModelChange)="generateSenderAddress()">
+                (ngModelChange)="generateFullAddress()">
                 <option [ngValue]="0">Select Police Station</option>
                 <option *ngFor="let p of policeStations" [ngValue]="p.id">{{ p.name }}</option>
               </select>
@@ -268,7 +268,7 @@
         <hr class="mt-0 mb-3">
 
         <div class="mb-4">
-          <input type="file" class="form-control" accept="image/*" (change)="onFileSelected($event)">
+          <input type="file" class="form-control" accept="image/*" (change)="onFileSelected($event)" required>
           <small class="text-muted d-block mt-1" *ngIf="selectedFile">
             <i class="bi bi-paperclip me-1"></i>{{ selectedFile.name }}
           </small>
