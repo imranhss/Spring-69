@@ -23,7 +23,7 @@ export class District implements OnInit {
     active: true,
     districtCode: '',
     division: {
-      id: 0
+      id: null as any
     }
   };
 

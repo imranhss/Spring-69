@@ -8,5 +8,6 @@ export interface DistrictModel{
 
     division:{
         id:number;
+        name?: string
     }
 }

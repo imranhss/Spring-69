@@ -17,10 +17,7 @@
                         District Name
                     </label>
 
-                    <input
-                        type="text"
-                        class="form-control"
-                        [(ngModel)]="district.name">
+                    <input type="text" class="form-control" [(ngModel)]="district.name">
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -28,10 +25,7 @@
                         District Name (Bangla)
                     </label>
 
-                    <input
-                        type="text"
-                        class="form-control"
-                        [(ngModel)]="district.nameBn">
+                    <input type="text" class="form-control" [(ngModel)]="district.nameBn">
                 </div>
 
                 <div class="col-md-6 mb-3">
@@ -40,19 +34,15 @@
                         Division
                     </label>
 
-                    <select
-                        class="form-select"
-                        [(ngModel)]="district.division.id">
+                    <select class="form-select" [(ngModel)]="district.division.id">
 
                         <option [ngValue]="0">
                             Select Division
                         </option>
 
-                        <option
-                            *ngFor="let division of divisions "
-                            [ngValue]="division.id">
+                        <option *ngFor="let division of divisions " [ngValue]="division.id">
 
-                            {{ division.name  }} 
+                            {{ division.name }}
 
                         </option>
 
@@ -64,10 +54,7 @@
 
                     <div class="form-check mt-4">
 
-                        <input
-                            type="checkbox"
-                            class="form-check-input"
-                            [(ngModel)]="district.active">
+                        <input type="checkbox" class="form-check-input" [(ngModel)]="district.active">
 
                         <label class="form-check-label">
                             Active
@@ -79,17 +66,13 @@
 
             </div>
 
-            <button
-                class="btn btn-success"
-                (click)="saveDistrict()">
+            <button class="btn btn-success" (click)="saveDistrict()">
 
                 {{ isEdit ? 'Update' : 'Save' }}
 
             </button>
 
-            <button
-                class="btn btn-secondary ms-2"
-                (click)="resetForm()">
+            <button class="btn btn-secondary ms-2" (click)="resetForm()">
 
                 Reset
 
@@ -116,9 +99,9 @@
                         <th>Name</th>
                         <th>Name BN</th>
                         <th>Division</th>
-                        <th>DistrictCode</th>
+                       
                         <th>Active</th>
-                        
+
 
                         <th width="180">Action</th>
                     </tr>
@@ -132,14 +115,13 @@
                         <td>{{ i+1 }}</td>
                         <td>{{ d.name }}</td>
                         <td>{{ d.nameBn }}</td>
-                        <td>{{ d.districtCode }}</td>
-                        <td>{{ d.division?.id }}</td>
+                        
+                        <!-- Division -->
+                        <td>{{ d.division.name }}</td>
+                       
 
                         <td>
-                            <span
-                                class="badge"
-                                [class.bg-success]="d.active"
-                                [class.bg-danger]="!d.active">
+                            <span class="badge" [class.bg-success]="d.active" [class.bg-danger]="!d.active">
 
                                 {{ d.active ? 'Active' : 'Inactive' }}
 
@@ -148,17 +130,13 @@
 
                         <td>
 
-                            <button
-                                class="btn btn-warning btn-sm me-2"
-                                (click)="editDistrict(d)">
+                            <button class="btn btn-warning btn-sm me-2" (click)="editDistrict(d)">
 
                                 Edit
 
                             </button>
 
-                            <button
-                                class="btn btn-danger btn-sm"
-                                (click)="deleteDistrict(d.id)">
+                            <button class="btn btn-danger btn-sm" (click)="deleteDistrict(d.id)">
 
                                 Delete
 
