@@ -1,0 +1,313 @@
+<div class="container py-5">
+
+  <!-- ================= HEADER ================= -->
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h4 class="fw-bold mb-1">
+        <i class="bi bi-bicycle me-2 text-primary"></i>Riders
+      </h4>
+      <small class="text-muted">{{ filteredRiders.length }} of {{ riders.length }} riders shown</small>
+    </div>
+  </div>
+
+  <!-- ================= SEARCH BAR ================= -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body p-3">
+      <div class="input-group">
+        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by name, email, phone or vehicle type..."
+          [(ngModel)]="searchTerm"
+          name="searchTerm">
+        <button
+          *ngIf="searchTerm"
+          class="btn btn-outline-secondary"
+          type="button"
+          (click)="searchTerm = ''">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= LOADING ================= -->
+  <div *ngIf="loading" class="text-center py-5 text-muted">
+    <div class="spinner-border text-primary mb-2" role="status"></div>
+    <div>Loading riders...</div>
+  </div>
+
+  <!-- ================= ERROR ================= -->
+  <div *ngIf="!loading && errorMessage" class="alert alert-danger d-flex align-items-center gap-2">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <div class="flex-grow-1">{{ errorMessage }}</div>
+    <button class="btn btn-sm btn-outline-danger" (click)="loadRiders()">Retry</button>
+  </div>
+
+  <!-- ================= EMPTY STATE ================= -->
+  <div *ngIf="!loading && !errorMessage && filteredRiders.length === 0" class="text-center py-5 text-muted">
+    <i class="bi bi-person-x fs-1 d-block mb-2"></i>
+    <div *ngIf="riders.length === 0">No riders have been added yet.</div>
+    <div *ngIf="riders.length > 0">No riders match your search.</div>
+  </div>
+
+  <!-- ================= CARD GRID ================= -->
+  <div
+    class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4"
+    *ngIf="!loading && filteredRiders.length > 0">
+
+    <div class="col" *ngFor="let rider of filteredRiders">
+      <div class="card h-100 shadow-sm border-0 rider-card">
+        <div class="card-body text-center p-4">
+
+          <!-- Avatar -->
+          <img
+            *ngIf="getRiderImage(rider) && !rider._imageError"
+            [src]="getRiderImage(rider)"
+            (error)="onImageError(rider)"
+            class="rounded-circle border mb-3"
+            style="width: 88px; height: 88px; object-fit: cover;"
+            alt="{{ rider.name }}">
+
+          <div
+            *ngIf="!getRiderImage(rider) || rider._imageError"
+            class="rounded-circle bg-light border d-flex align-items-center justify-content-center mx-auto mb-3"
+            style="width: 88px; height: 88px;">
+            <i class="bi bi-person-fill text-secondary" style="font-size: 2.2rem;"></i>
+          </div>
+
+          <!-- Status badge -->
+          <span
+            class="badge mb-2"
+            [ngClass]="rider.active ? 'bg-success' : 'bg-secondary'">
+            {{ rider.active ? 'Active' : 'Inactive' }}
+          </span>
+
+          <h6 class="fw-bold mb-0">{{ rider.name }}</h6>
+          <small class="text-muted d-block mb-3">{{ rider.vehicleType }}</small>
+
+          <!-- Info rows -->
+          <ul class="list-unstyled text-start small mb-3">
+            <li class="mb-1 text-truncate">
+              <i class="bi bi-envelope-fill text-primary me-2"></i>{{ rider.email }}
+            </li>
+            <li class="mb-1">
+              <i class="bi bi-telephone-fill text-primary me-2"></i>{{ rider.phone }}
+            </li>
+            <li class="mb-1">
+              <i class="bi bi-credit-card-2-front-fill text-primary me-2"></i>{{ rider.vehicleNumber }}
+            </li>
+            <li class="mb-1">
+              <i class="bi bi-star-fill text-warning me-2"></i>
+              {{ rider.rating ?? '—' }}
+              <span class="text-muted"> / 5.0</span>
+            </li>
+            <li>
+              <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+              {{ rider.zones.length }} zone(s) assigned
+            </li>
+          </ul>
+
+          <!-- Actions -->
+          <div class="d-flex gap-2">
+            <button
+              class="btn btn-sm btn-outline-primary flex-grow-1"
+              type="button"
+              (click)="openModal(rider)">
+              <i class="bi bi-map-fill me-1"></i>Manage Zones
+            </button>
+
+            <button
+              class="btn btn-sm btn-outline-danger"
+              type="button"
+              (click)="deleteRider(rider)">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- =====================================================
+     ZONE MANAGEMENT MODAL
+     ===================================================== -->
+<div
+  class="modal-backdrop-custom"
+  *ngIf="showModal"
+  (click)="closeModal()">
+</div>
+
+<div class="zone-modal card shadow border-0" *ngIf="showModal">
+
+  <!-- Modal Header -->
+  <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between py-3 px-4">
+    <div>
+      <h6 class="fw-bold mb-0">
+        <i class="bi bi-map-fill me-2"></i>Manage Zones — {{ modalRider?.name }}
+      </h6>
+      <small class="opacity-75">Assign or remove delivery zones for this rider</small>
+    </div>
+    <button class="btn btn-sm btn-light" type="button" (click)="closeModal()">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="card-body p-4" style="overflow-y: auto; max-height: 70vh;">
+
+    <!-- ---- ASSIGNED ZONES ---- -->
+    <h6 class="text-uppercase text-primary fw-bold mb-3 small">
+      <i class="bi bi-check-circle-fill me-1"></i>Currently Assigned Zones
+    </h6>
+
+    <div *ngIf="zonesLoading" class="text-center text-muted py-3">
+      <div class="spinner-border spinner-border-sm text-primary me-2"></div> Loading zones...
+    </div>
+
+    <div *ngIf="!zonesLoading && assignedZones.length === 0" class="text-muted small mb-3">
+      No zones assigned yet.
+    </div>
+
+    <div *ngIf="!zonesLoading && assignedZones.length > 0" class="mb-3">
+      <div
+        *ngFor="let zone of assignedZones"
+        class="d-flex align-items-center justify-content-between border rounded p-2 mb-2"
+        [class.border-danger]="selectedToRemove.has(zone.id)"
+        [class.bg-danger-subtle]="selectedToRemove.has(zone.id)">
+
+        <div class="d-flex align-items-center gap-2">
+          <input
+            type="checkbox"
+            class="form-check-input mt-0"
+            [checked]="selectedToRemove.has(zone.id)"
+            (change)="toggleRemoveSelection(zone.id)">
+          <div>
+            <div class="fw-semibold small">{{ zone.name }}</div>
+            <div class="text-muted" style="font-size: 0.75rem;">
+              {{ zone.districtName }}, {{ zone.divisionName }}
+            </div>
+          </div>
+        </div>
+
+        <span *ngIf="selectedToRemove.has(zone.id)" class="badge bg-danger">Remove</span>
+      </div>
+
+      <button
+        class="btn btn-sm btn-danger mt-2"
+        type="button"
+        [disabled]="selectedToRemove.size === 0 || saving"
+        (click)="removeZones()">
+        <span *ngIf="saving" class="spinner-border spinner-border-sm me-1"></span>
+        <i class="bi bi-trash-fill me-1" *ngIf="!saving"></i>
+        Remove Selected ({{ selectedToRemove.size }})
+      </button>
+    </div>
+
+    <hr>
+
+    <!-- ---- ADD NEW ZONES ---- -->
+    <h6 class="text-uppercase text-primary fw-bold mb-3 small">
+      <i class="bi bi-plus-circle-fill me-1"></i>Add New Zone
+    </h6>
+
+    <div class="row g-2 mb-3">
+
+      <!-- Country -->
+      <div class="col-md-6">
+        <label class="form-label small fw-semibold">Country</label>
+        <div class="input-group input-group-sm">
+          <span class="input-group-text"><i class="bi bi-flag-fill"></i></span>
+          <select
+            class="form-select form-select-sm"
+            [(ngModel)]="selectedCountryId"
+            name="zoneCountry"
+            (ngModelChange)="onCountryChange()">
+            <option [ngValue]="null">Select Country</option>
+            <option *ngFor="let c of countries" [ngValue]="c.id">{{ c.name }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Division -->
+      <div class="col-md-6">
+        <label class="form-label small fw-semibold">Division</label>
+        <div class="input-group input-group-sm">
+          <span class="input-group-text"><i class="bi bi-signpost-split-fill"></i></span>
+          <select
+            class="form-select form-select-sm"
+            [(ngModel)]="selectedDivisionId"
+            name="zoneDivision"
+            [disabled]="!divisions.length"
+            (ngModelChange)="onDivisionChange()">
+            <option [ngValue]="null">Select Division</option>
+            <option *ngFor="let d of divisions" [ngValue]="d.id">{{ d.name }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- District -->
+      <div class="col-12">
+        <label class="form-label small fw-semibold">District</label>
+        <div class="input-group input-group-sm">
+          <span class="input-group-text"><i class="bi bi-map-fill"></i></span>
+          <select
+            class="form-select form-select-sm"
+            [(ngModel)]="selectedDistrictId"
+            name="zoneDistrict"
+            [disabled]="!districts.length"
+            (ngModelChange)="onDistrictChange()">
+            <option [ngValue]="null">Select District</option>
+            <option *ngFor="let d of districts" [ngValue]="d.id">{{ d.name }}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Police Station multi-select -->
+    <div *ngIf="policeStations.length > 0" class="mb-3">
+      <label class="form-label small fw-semibold">
+        <i class="bi bi-shield-fill text-primary me-1"></i>
+        Police Stations — tick all you want to add
+      </label>
+
+      <div style="max-height: 200px; overflow-y: auto;" class="border rounded p-2">
+        <div
+          *ngFor="let ps of policeStations"
+          class="form-check py-1 border-bottom"
+          [class.bg-primary-subtle]="selectedToAdd.has(ps.id)">
+
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [id]="'ps-' + ps.id"
+            [checked]="selectedToAdd.has(ps.id)"
+            (change)="toggleAddSelection(ps.id)">
+
+          <label class="form-check-label small w-100" [for]="'ps-' + ps.id">
+            {{ ps.name }}
+            <span *ngIf="ps.postalCode" class="text-muted"> — {{ ps.postalCode }}</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="selectedDistrictId && policeStations.length === 0" class="text-muted small mb-3">
+      All police stations in this district are already assigned to this rider.
+    </div>
+
+    <button
+      class="btn btn-primary btn-sm w-100"
+      type="button"
+      [disabled]="selectedToAdd.size === 0 || saving"
+      (click)="addZones()">
+      <span *ngIf="saving" class="spinner-border spinner-border-sm me-1"></span>
+      <i class="bi bi-plus-circle-fill me-1" *ngIf="!saving"></i>
+      Add Selected Zones ({{ selectedToAdd.size }})
+    </button>
+
+  </div>
+</div>

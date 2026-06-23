@@ -18,4 +18,7 @@ public interface CustomerService {
 
     void delete(Long id);
 
+    CustomerResponseDTO getByUserId(Long id);
+
+
 }

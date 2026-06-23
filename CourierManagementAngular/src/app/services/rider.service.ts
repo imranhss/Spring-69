@@ -19,7 +19,7 @@ export class RiderService {
   // =========================
  
   getAll(): Observable<RiderResponseModel[]> {
-    return this.http.get<RiderResponseModel[]>(this.apiUrl);
+    return this.http.get<RiderResponseModel[]>(this.apiUrl+"/");
   }
  
   getById(id: number): Observable<RiderResponseModel> {

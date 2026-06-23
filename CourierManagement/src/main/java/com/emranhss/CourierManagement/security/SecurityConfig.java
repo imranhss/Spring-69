@@ -44,7 +44,7 @@ public class SecurityConfig {
                         // ── Public endpoints (no token needed) ────────────
                         .requestMatchers("/api/auth/login", "/api/parcels/track/**",          // public tracking
                                 "/api/parcels/calculate",          // price preview
-                                "/api/customer/", "/**").permitAll()
+                                "/api/customer/", "/**", "/images/**").permitAll()
 
 
                 ).authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

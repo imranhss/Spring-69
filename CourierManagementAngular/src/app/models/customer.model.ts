@@ -10,9 +10,10 @@ export interface CustomerModel {
 
     // Customer profile fields
     address: string;
-      fullAddress?: string;  
+    fullAddress?: string;  
     gender: string;
     dob: string;
+    image?: string;
 
     // policeStation where customer lives (optional)
     policeStationId: number;

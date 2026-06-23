@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { CustomerModel } from '../models/customer.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +27,11 @@ export class CustomerService {
     return this.http.post<CustomerModel>(
       this.apiUrl, formData
     );
+  }
+
+
+  findByUserId(id: number | null): Observable<CustomerModel> {
+    return this.http.get<CustomerModel>(this.apiUrl +"user/"+ id);
   }
 
 

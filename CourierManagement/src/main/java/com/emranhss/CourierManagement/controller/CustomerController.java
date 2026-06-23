@@ -47,6 +47,11 @@ public class CustomerController {
         return customerService.getById(id);
     }
 
+    @GetMapping("/user/{id}")
+    public CustomerResponseDTO getByUserId(@PathVariable Long id) {
+        return customerService.getByUserId(id);
+    }
+
     @PutMapping("/{id}")
     public CustomerResponseDTO update(
             @PathVariable Long id,

@@ -163,6 +163,14 @@ public class CustomerServiceImpl implements CustomerService {
         customerRepository.deleteById(id);
     }
 
+    @Override
+    public CustomerResponseDTO getByUserId(Long id) {
+
+        Customer c = customerRepository.findByUserId(id)
+                .orElseThrow(() -> new RuntimeException("PoliceStation not found"));
+        return CustomerMapper.toDTO(c);
+    }
+
     // ── Image upload ──────────────────────────────────────────────
     private String uploadImage(MultipartFile file, String name) {
         try {

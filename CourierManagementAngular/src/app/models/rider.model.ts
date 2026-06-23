@@ -1,4 +1,3 @@
-
 /**
  * Mirrors RiderResponseDTO.ZoneSummary (backend).
  * Also used as the shape for RiderRequestDTO.zones, since the backend
@@ -39,11 +38,14 @@ export interface RiderResponseModel {
   vehicleType: string;
   vehicleNumber: string;
   nidNumber: string;
-  rating: number;
+  rating: number | null;
   totalDeliveries: number;
   totalEarnings: number;
   active: boolean;
   image: string;
   userId: number;
   zones: ZoneSummary[];
+
+  /** UI-only flag — set to true when the profile image fails to load. */
+  _imageError?: boolean;
 }
