@@ -1,6 +1,7 @@
 package com.emranhss.CourierManagement.service;
 
 import com.emranhss.CourierManagement.dto.response.AgentResponseDTO;
+import com.emranhss.CourierManagement.dto.response.CustomerResponseDTO;
 import com.emranhss.CourierManagement.dto.response.ParcelResponseDTO;
 import com.emranhss.CourierManagement.dto.request.AgentParcelRequestDTO;
 import com.emranhss.CourierManagement.dto.request.AgentRequestDTO;
@@ -43,4 +44,5 @@ public interface AgentService {
     ParcelResponseDTO updateParcelStatus(Long agentId, Long parcelId,
                                          StatusUpdateRequestDTO dto);
 
+    AgentResponseDTO getByUserId(Long id);
 }

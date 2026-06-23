@@ -1,6 +1,7 @@
 package com.emranhss.CourierManagement.controller;
 
 import com.emranhss.CourierManagement.dto.response.AgentResponseDTO;
+import com.emranhss.CourierManagement.dto.response.CustomerResponseDTO;
 import com.emranhss.CourierManagement.dto.response.ParcelResponseDTO;
 import com.emranhss.CourierManagement.dto.request.AgentParcelRequestDTO;
 import com.emranhss.CourierManagement.dto.request.AgentRequestDTO;
@@ -123,6 +124,12 @@ public class AgentController {
             @PathVariable Long parcelId,
             @RequestBody StatusUpdateRequestDTO dto) {
         return agentService.updateParcelStatus(agentId, parcelId, dto);
+    }
+
+
+    @GetMapping("/user/{id}")
+    public AgentResponseDTO getByUserId(@PathVariable Long id) {
+        return agentService.getByUserId(id);
     }
 
 }

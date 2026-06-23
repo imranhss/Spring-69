@@ -1,7 +1,9 @@
 package com.emranhss.CourierManagement.serviceimp;
 
 
+import com.emranhss.CourierManagement.dto.mapper.CustomerMapper;
 import com.emranhss.CourierManagement.dto.response.AgentResponseDTO;
+import com.emranhss.CourierManagement.dto.response.CustomerResponseDTO;
 import com.emranhss.CourierManagement.dto.response.ParcelResponseDTO;
 import com.emranhss.CourierManagement.dto.mapper.AgentMapper;
 import com.emranhss.CourierManagement.dto.mapper.ParcelMapper;
@@ -312,6 +314,14 @@ public class AgentServiceImpl implements AgentService {
 
         parcel.getHistory().add(h);
         return ParcelMapper.toDTO(parcelRepository.save(parcel));
+    }
+
+
+    @Override
+    public AgentResponseDTO getByUserId(Long id) {
+        Agent a = agentRepository.findByUserId(id)
+                .orElseThrow(() -> new RuntimeException("Agent not found"));
+        return AgentMapper.toDTO(a);
     }
 
 

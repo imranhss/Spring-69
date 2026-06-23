@@ -1,6 +1,7 @@
 package com.emranhss.CourierManagement.repository;
 
 import com.emranhss.CourierManagement.entity.Agent;
+import com.emranhss.CourierManagement.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -51,5 +52,7 @@ public interface AgentRepository extends JpaRepository<Agent, Long> {
     List<Agent> findByHubIdAndActiveTrue(Long hubId);
 
     boolean existsByUserId(Long userId);
+
+    Optional<Agent> findByUserId(Long userId);
 
 }

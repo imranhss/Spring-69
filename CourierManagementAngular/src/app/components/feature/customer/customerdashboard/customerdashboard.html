@@ -20,10 +20,14 @@
           class="rounded-circle bg-warning d-flex align-items-center justify-content-center text-dark fw-bold overflow-hidden"
           style="width: 72px; height: 72px; font-size: 1.8rem;">
 
-          <img *ngIf="customer.image" [src]="imageUrl + customer.image" alt="Customer Image"
-            class="w-100 h-100 object-fit-cover">
+          <img *ngIf="customer?.image" [src]="imageUrl + customer?.image" class="w-100 h-100 object-fit-cover" />
 
-          
+          <ng-template #defaultImg>
+            <div class="d-flex align-items-center justify-content-center w-100 h-100 bg-light">
+              <i class="bi bi-person fs-2"></i>
+            </div>
+          </ng-template>
+
 
         </div>
         <div>

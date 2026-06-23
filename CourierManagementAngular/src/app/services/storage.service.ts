@@ -3,9 +3,12 @@ import { LoginResponse } from '../models/auth.model';
 import { CryptoUtil } from '../utils/crypto.util';
 
 
-const KEYS = {
+export const KEYS = {
   TOKEN: 'cm_token',
   USER: 'cm_user',
+  CUSTOMER: 'cm_customer',
+  RIDER: 'cm_rider',
+  AGENT: 'cm_agent'
 };
 
 @Injectable({
@@ -61,6 +64,58 @@ export class StorageService {
     localStorage.removeItem(KEYS.USER);
   }
 
+
+  // Customer -------------------------------------------------
+
+  saveCustomer(customer: any): void {
+  localStorage.setItem(
+    KEYS.CUSTOMER,
+    CryptoUtil.encrypt(JSON.stringify(customer))
+  );
+}
+
+getCustomer(): any | null {
+  const raw = localStorage.getItem(KEYS.CUSTOMER);
+  if (!raw) return null;
+
+  try {
+    const json = CryptoUtil.decrypt(raw);
+    return json ? JSON.parse(json) : null;
+  } catch {
+    return null;
+  }
+}
+
+clearCustomer(): void {
+  localStorage.removeItem(KEYS.CUSTOMER);
+}
+
+
+// Generic Method for ALl
+
+saveData(key: string, data: any): void {
+  localStorage.setItem(
+    key,
+    CryptoUtil.encrypt(JSON.stringify(data))
+  );
+}
+
+
+getData<T>(key: string): T | null {
+  const raw = localStorage.getItem(key);
+  if (!raw) return null;
+
+  try {
+    const json = CryptoUtil.decrypt(raw);
+    return json ? JSON.parse(json) : null;
+  } catch {
+    return null;
+  }
+}
+
+removeData(key: string): void {
+  localStorage.removeItem(key);
+}
 
 
 

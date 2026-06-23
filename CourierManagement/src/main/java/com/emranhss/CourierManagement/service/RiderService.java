@@ -1,5 +1,6 @@
 package com.emranhss.CourierManagement.service;
 
+import com.emranhss.CourierManagement.dto.response.AgentResponseDTO;
 import com.emranhss.CourierManagement.dto.response.RiderResponseDTO;
 import com.emranhss.CourierManagement.dto.request.RiderRequestDTO;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ public interface RiderService {
     RiderResponseDTO getById(Long id);
 
     void delete(Long id);
+
+    RiderResponseDTO getByUserId(Long id);
 
 
 }

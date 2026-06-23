@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { CustomerResponseModel } from '../models/customer.model';
+import { Agent, AgentResponseModel } from '../models/agent.model';
 
 @Injectable({
   providedIn: 'root',
@@ -102,6 +104,14 @@ export class AgentService {
       statusData
     );
   }
+  
+
+   findByUserId(id: number | null): Observable<AgentResponseModel> {
+      return this.http.get<AgentResponseModel>(this.apiUrl +"/user/"+ id);
+    }
+  
+
+
 
 
 }

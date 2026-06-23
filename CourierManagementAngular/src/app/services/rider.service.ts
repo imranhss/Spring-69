@@ -48,4 +48,12 @@ export class RiderService {
   }
 
 
+  findByUserId(id: number | null): Observable<RiderResponseModel> {
+        return this.http.get<RiderResponseModel>(this.apiUrl +"/user/"+ id);
+      }
+
+
+      
+
+
 }

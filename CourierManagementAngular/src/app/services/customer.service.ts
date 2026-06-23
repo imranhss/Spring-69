@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { CustomerModel } from '../models/customer.model';
+import { CustomerModel, CustomerResponseModel } from '../models/customer.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -30,8 +30,8 @@ export class CustomerService {
   }
 
 
-  findByUserId(id: number | null): Observable<CustomerModel> {
-    return this.http.get<CustomerModel>(this.apiUrl +"user/"+ id);
+  findByUserId(id: number | null): Observable<CustomerResponseModel> {
+    return this.http.get<CustomerResponseModel>(this.apiUrl +"user/"+ id);
   }
 
 

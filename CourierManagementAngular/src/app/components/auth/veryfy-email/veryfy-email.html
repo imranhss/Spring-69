@@ -1,0 +1,80 @@
+<div class="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="card shadow border-0 text-center mx-3" style="width: 100%; max-width: 460px;">
+
+    <!-- ── LOADING ──────────────────────────────────────────────── -->
+    <div *ngIf="state === 'loading'" class="card-body py-5 px-4">
+      <div class="spinner-border text-primary mb-4" style="width: 3rem; height: 3rem;" role="status"></div>
+      <h5 class="fw-bold mb-2">Verifying your email...</h5>
+      <p class="text-muted mb-0">Please wait a moment.</p>
+    </div>
+
+    <!-- ── SUCCESS ──────────────────────────────────────────────── -->
+    <div *ngIf="state === 'success'" class="card-body py-5 px-4">
+
+      <div class="success-icon mx-auto mb-4">
+        <i class="bi bi-envelope-check-fill text-white" style="font-size: 2rem;"></i>
+      </div>
+
+      <h5 class="fw-bold mb-2">Email Verified!</h5>
+      <p class="text-muted mb-4">
+        Your account has been activated successfully.<br>
+        You can now sign in.
+      </p>
+
+      <div class="alert alert-success py-2 small mb-4">
+        <i class="bi bi-clock me-1"></i>
+        Redirecting to login in <strong>{{ countdown }}</strong> second{{ countdown !== 1 ? 's' : '' }}...
+      </div>
+
+      <button class="btn btn-primary w-100" (click)="goToLogin()">
+        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In Now
+      </button>
+
+    </div>
+
+    <!-- ── ERROR ────────────────────────────────────────────────── -->
+    <div *ngIf="state === 'error'" class="card-body py-5 px-4">
+
+      <div class="error-icon mx-auto mb-4">
+        <i class="bi bi-x-circle-fill text-white" style="font-size: 2rem;"></i>
+      </div>
+
+      <h5 class="fw-bold mb-2">Verification Failed</h5>
+      <p class="text-muted mb-4">{{ errorMessage }}</p>
+
+      <div class="d-grid gap-2">
+        <button class="btn btn-primary" (click)="goToLogin()">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Back to Login
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ── NO TOKEN ─────────────────────────────────────────────── -->
+    <div *ngIf="state === 'no-token'" class="card-body py-5 px-4">
+
+      <div class="error-icon mx-auto mb-4">
+        <i class="bi bi-link-45deg text-white" style="font-size: 2rem;"></i>
+      </div>
+
+      <h5 class="fw-bold mb-2">Invalid Link</h5>
+      <p class="text-muted mb-4">
+        This verification link is missing or malformed.<br>
+        Please use the link sent to your email.
+      </p>
+
+      <button class="btn btn-primary w-100" (click)="goToLogin()">
+        <i class="bi bi-box-arrow-in-right me-2"></i>Back to Login
+      </button>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer bg-transparent border-0 py-3">
+      <small class="text-muted">
+        <i class="bi bi-box-seam me-1"></i>Courier Management System
+      </small>
+    </div>
+
+  </div>
+</div>

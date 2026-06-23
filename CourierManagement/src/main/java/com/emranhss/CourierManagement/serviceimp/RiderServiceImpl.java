@@ -1,8 +1,10 @@
 package com.emranhss.CourierManagement.serviceimp;
 
+import com.emranhss.CourierManagement.dto.mapper.AgentMapper;
 import com.emranhss.CourierManagement.dto.response.RiderResponseDTO;
 import com.emranhss.CourierManagement.dto.mapper.RiderMapper;
 import com.emranhss.CourierManagement.dto.request.RiderRequestDTO;
+import com.emranhss.CourierManagement.entity.Agent;
 import com.emranhss.CourierManagement.entity.PoliceStation;
 import com.emranhss.CourierManagement.entity.Rider;
 import com.emranhss.CourierManagement.entity.User;
@@ -98,6 +100,12 @@ public class RiderServiceImpl implements RiderService {
     }
 
 
+    @Override
+    public RiderResponseDTO getByUserId(Long id) {
+        Rider r = riderRepository.findByUserId(id)
+                .orElseThrow(() -> new RuntimeException("Agent not found"));
+        return RiderMapper.toDTO(r);
+    }
 
 
     private String uploadImage(MultipartFile file, String name) {

@@ -1,5 +1,6 @@
 package com.emranhss.CourierManagement.repository;
 
+import com.emranhss.CourierManagement.entity.Agent;
 import com.emranhss.CourierManagement.entity.Rider;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,5 +43,6 @@ public interface RiderRepository extends JpaRepository<Rider, Long> {
     List<Rider> findByZonesIdIn(List<Long> policeStationIds);
     List<Rider> findByZonesIdInAndActiveTrue(List<Long> policeStationIds);
 
+    Optional<Rider> findByUserId(Long userId);
 
 }

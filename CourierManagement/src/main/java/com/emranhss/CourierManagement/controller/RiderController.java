@@ -1,7 +1,9 @@
 package com.emranhss.CourierManagement.controller;
 
+import com.emranhss.CourierManagement.dto.response.CustomerResponseDTO;
 import com.emranhss.CourierManagement.dto.response.RiderResponseDTO;
 import com.emranhss.CourierManagement.dto.request.RiderRequestDTO;
+import com.emranhss.CourierManagement.service.AgentService;
 import com.emranhss.CourierManagement.service.RiderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,8 @@ public class RiderController {
 
     @Autowired
     private RiderService riderService;
+    @Autowired
+    private AgentService agentService;
 
 
     @PostMapping
@@ -57,6 +61,11 @@ public class RiderController {
     public ResponseEntity<String> delete(@PathVariable Long id) {
         riderService.delete(id);
         return ResponseEntity.ok("Deleted successfully");
+    }
+
+    @GetMapping("/user/{id}")
+    public RiderResponseDTO getByUserId(@PathVariable Long id) {
+        return riderService.getByUserId(id);
     }
 
 

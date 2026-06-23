@@ -13,6 +13,11 @@ import { Riderlist } from './components/feature/riders/riderlist/riderlist';
 import { Login } from './components/auth/login/login';
 import { RoleRedirect } from './components/auth/role-redirect/role-redirect';
 import { Customerdashboard } from './components/feature/customer/customerdashboard/customerdashboard';
+import { Agentdashboard } from './components/feature/agents/agentdashboard/agentdashboard';
+import { Riderdashboard } from './components/feature/riders/riderdashboard/riderdashboard';
+import { ForgotPassword } from './components/auth/forgot-password/forgot-password';
+import { ResetPassword } from './components/auth/reset-password/reset-password';
+import { VeryfyEmail } from './components/auth/veryfy-email/veryfy-email';
 
 export const routes: Routes = [
 
@@ -31,6 +36,14 @@ export const routes: Routes = [
     {path: 'login', component: Login},
     {path: 'dashboard', component: RoleRedirect},
     {path: 'customer', component: Customerdashboard},
+    {path: 'agent', component: Agentdashboard},
+    {path: 'rider', component: Riderdashboard},
+
+
+
+    {path: 'forgot-password', component: ForgotPassword},
+    {path: 'reset-password', component: ResetPassword},
+    {path: 'verify-email', component: VeryfyEmail},
 
 
 ];

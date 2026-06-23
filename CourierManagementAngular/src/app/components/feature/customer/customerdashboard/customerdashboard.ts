@@ -5,7 +5,8 @@ import { AuthService } from '../../../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CustomerService } from '../../../../services/customer.service';
-import { CustomerModel } from '../../../../models/customer.model';
+import { CustomerModel, CustomerResponseModel } from '../../../../models/customer.model';
+import { KEYS } from '../../../../services/storage.service';
 
 @Component({
   selector: 'app-customerdashboard',
@@ -18,7 +19,7 @@ export class Customerdashboard implements OnInit {
 
   user: LoginResponse | null = null;
   userId!: number;
-  customer!: CustomerModel;
+  customer: CustomerResponseModel | null = null;
  imageUrl = 'http://localhost:8085/images/customer/';
 
 
@@ -39,7 +40,8 @@ export class Customerdashboard implements OnInit {
     }
     this.loadCustomer();
 
-    console.log(this.user + "3333333333333333333")
+    const customer = this.storage.getData<CustomerModel>(KEYS.CUSTOMER);
+    console.log(customer);
   }
 
   loadCustomer() {
@@ -50,7 +52,9 @@ export class Customerdashboard implements OnInit {
         next: res=>{
           this.customer = res;
           this.cdr.markForCheck();
-          console.log(res);
+          
+          this.storage.saveData(KEYS.CUSTOMER, res);
+
         },
         error: err=>{
           console.log(err);
@@ -62,6 +66,8 @@ export class Customerdashboard implements OnInit {
   }
 
 
-  logout(): void { this.auth.logout(); }
+  logout(): void { this.auth.logout();
+    this.storage.removeData(KEYS.CUSTOMER);
+   }
 
 }
