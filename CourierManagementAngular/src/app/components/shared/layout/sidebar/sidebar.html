@@ -33,40 +33,51 @@
     <span class="nav-badge">8</span>
   </a>
 
-  <a class="nav-item">
-    <i class="fas fa-motorcycle nav-icon"></i>
-    Couriers
-  </a>
+  <div *ngIf="userRole === 'ADMIN'">
 
-  <span class="sidebar-section-label">
-    Management
-  </span>
+    <a class="nav-item">
+      <i class="fas fa-motorcycle nav-icon"></i>
+      Couriers
+    </a>
 
-  <a class="nav-item" href="country">
-    <i class="bi-flag"></i>
-    Country
-  </a>
-  <a class="nav-item" href="division">
-    <i class="bi bi-map"></i>
-    Division
-  </a>
-  <a class="nav-item" href="district">
-    <i class="bi-flag"></i>
-    District
-  </a>
-  <a class="nav-item" href="police">
-    <i class="bi-flag"></i>
-    Police Station
-  </a>
-  <a class="nav-item" href="hub">
-    <i class="bi-flag"></i>
-    Find Hub 
-  </a>
+    <span class="sidebar-section-label">
+      Management
+    </span>
 
-  <a class="nav-item" href="addcustomer">
-    <i class="fas fa-users nav-icon"></i>
-    Customers
-  </a>
+    <a class="nav-item" href="country">
+      <i class="bi-flag"></i>
+      Country
+    </a>
+    <a class="nav-item" href="division">
+      <i class="bi bi-map"></i>
+      Division
+    </a>
+    <a class="nav-item" href="district">
+      <i class="bi-flag"></i>
+      District
+    </a>
+    <a class="nav-item" href="police">
+      <i class="bi-flag"></i>
+      Police Station
+    </a>
+    <a class="nav-item" href="hub">
+      <i class="bi-flag"></i>
+      Find Hub
+    </a>
+  </div>
+
+
+
+
+
+  <div *ngIf="userRole === 'CUSTOMER'">
+
+    <a class="nav-item" href="addcustomer">
+      <i class="fas fa-users nav-icon"></i>
+      Customers
+    </a>
+  </div>
+
 
   <a class="nav-item" href="addagent">
     <i class="fas fa-warehouse nav-icon"></i>

@@ -167,7 +167,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerResponseDTO getByUserId(Long id) {
 
         Customer c = customerRepository.findByUserId(id)
-                .orElseThrow(() -> new RuntimeException("PoliceStation not found"));
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
         return CustomerMapper.toDTO(c);
     }
 

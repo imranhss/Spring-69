@@ -18,32 +18,66 @@ import { Riderdashboard } from './components/feature/riders/riderdashboard/rider
 import { ForgotPassword } from './components/auth/forgot-password/forgot-password';
 import { ResetPassword } from './components/auth/reset-password/reset-password';
 import { VeryfyEmail } from './components/auth/veryfy-email/veryfy-email';
+import { Component } from '@angular/core';
+import { BlankLayout } from './components/shared/layout/blank-layout/blank-layout';
+import { MainLayout } from './components/shared/layout/main-layout/main-layout';
 
 export const routes: Routes = [
 
 
-    {path: '', component: Home},
-    {path: 'country', component: Country},
-    {path: 'division', component: Division},
-    {path: 'district', component: District},
-    {path: 'police', component: Policestation},
-    {path: 'hub', component: LocationSearchcomponent},
-    {path: 'addcustomer', component: AddCustomer},
-    {path: 'addagent', component: AddAgent},
-    {path: 'agentList', component: AgentList},
-    {path: 'addrider', component: AddRider},
-    {path: 'riderlist', component: Riderlist},
-    {path: 'login', component: Login},
-    {path: 'dashboard', component: RoleRedirect},
-    {path: 'customer', component: Customerdashboard},
-    {path: 'agent', component: Agentdashboard},
-    {path: 'rider', component: Riderdashboard},
+    {
+        path: '',
+        component: BlankLayout,
+        children: [
+            { path: 'home', component: Home },
+            { path: 'addcustomer', component: AddCustomer },
+            { path: 'addagent', component: AddAgent },
+            { path: 'addrider', component: AddRider },
+            { path: 'login', component: Login },
+            { path: 'forgot-password', component: ForgotPassword },
+            { path: 'reset-password', component: ResetPassword },
+            { path: 'verify-email', component: VeryfyEmail },
+        ]
 
 
 
-    {path: 'forgot-password', component: ForgotPassword},
-    {path: 'reset-password', component: ResetPassword},
-    {path: 'verify-email', component: VeryfyEmail},
+    },
+
+
+
+    {
+        path: '',
+        component: MainLayout,
+        children: [
+
+            { path: 'country', component: Country },
+            { path: 'division', component: Division },
+            { path: 'district', component: District },
+            { path: 'police', component: Policestation },
+            { path: 'hub', component: LocationSearchcomponent },
+
+            { path: 'agentList', component: AgentList },
+
+            { path: 'riderlist', component: Riderlist },
+
+            { path: 'dashboard', component: RoleRedirect },
+            { path: 'customer', component: Customerdashboard },
+            { path: 'agent', component: Agentdashboard },
+            { path: 'rider', component: Riderdashboard },
+        ]
+
+
+
+    },
+
+    { path: '**', redirectTo: '' }
+
+
+
+
+
+
+
 
 
 ];

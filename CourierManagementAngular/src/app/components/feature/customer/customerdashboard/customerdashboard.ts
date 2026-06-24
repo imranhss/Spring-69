@@ -20,7 +20,7 @@ export class Customerdashboard implements OnInit {
   user: LoginResponse | null = null;
   userId!: number;
   customer: CustomerResponseModel | null = null;
- imageUrl = 'http://localhost:8085/images/customer/';
+  imageUrl = 'http://localhost:8085/images/customer/';
 
 
   constructor(
@@ -49,14 +49,14 @@ export class Customerdashboard implements OnInit {
     this.customerService.findByUserId(this.userId).subscribe(
 
       {
-        next: res=>{
+        next: res => {
           this.customer = res;
           this.cdr.markForCheck();
-          
+
           this.storage.saveData(KEYS.CUSTOMER, res);
 
         },
-        error: err=>{
+        error: err => {
           console.log(err);
         }
       }
@@ -66,8 +66,9 @@ export class Customerdashboard implements OnInit {
   }
 
 
-  logout(): void { this.auth.logout();
+  logout(): void {
+    this.auth.logout();
     this.storage.removeData(KEYS.CUSTOMER);
-   }
+  }
 
 }

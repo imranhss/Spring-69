@@ -67,28 +67,7 @@ export class StorageService {
 
   // Customer -------------------------------------------------
 
-  saveCustomer(customer: any): void {
-  localStorage.setItem(
-    KEYS.CUSTOMER,
-    CryptoUtil.encrypt(JSON.stringify(customer))
-  );
-}
-
-getCustomer(): any | null {
-  const raw = localStorage.getItem(KEYS.CUSTOMER);
-  if (!raw) return null;
-
-  try {
-    const json = CryptoUtil.decrypt(raw);
-    return json ? JSON.parse(json) : null;
-  } catch {
-    return null;
-  }
-}
-
-clearCustomer(): void {
-  localStorage.removeItem(KEYS.CUSTOMER);
-}
+ 
 
 
 // Generic Method for ALl
