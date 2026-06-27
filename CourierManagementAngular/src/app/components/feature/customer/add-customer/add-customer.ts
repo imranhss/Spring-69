@@ -7,10 +7,11 @@ import { DistrictService } from '../../../../services/district.service';
 import { PolicestationService } from '../../../../services/policestation.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Navbar } from '../../../shared/layout/navbar/navbar';
 
 @Component({
   selector: 'app-add-customer',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, Navbar],
   templateUrl: './add-customer.html',
   styleUrl: './add-customer.css',
 })

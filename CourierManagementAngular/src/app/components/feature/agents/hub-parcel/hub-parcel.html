@@ -1,0 +1,320 @@
+<div class="container-fluid py-4">
+
+  <!-- ── Header ──────────────────────────────────────────────── -->
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h5 class="fw-bold mb-0">
+        <i class="bi bi-box-seam-fill text-primary me-2"></i>Hub Parcels
+      </h5>
+      <small class="text-muted">{{ filteredParcels.length }} of {{ parcels.length }} parcels shown</small>
+    </div>
+  </div>
+
+  <!-- ── Search + Status filter ──────────────────────────────── -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body p-3">
+      <div class="row g-2 align-items-center">
+
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search tracking code, sender or receiver..."
+              [(ngModel)]="searchTerm">
+            <button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button" (click)="searchTerm = ''">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-funnel-fill"></i></span>
+            <select
+              class="form-select"
+              [(ngModel)]="selectedStatus"
+              (ngModelChange)="onStatusFilterChange()">
+              <option *ngFor="let s of statusOptions" [value]="s.value">{{ s.label }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md-2 d-grid">
+          <button class="btn btn-outline-primary btn-sm" (click)="loadParcels()">
+            <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Loading ─────────────────────────────────────────────── -->
+  <div *ngIf="loading" class="text-center py-5 text-muted">
+    <div class="spinner-border text-primary mb-2" role="status"></div>
+    <div>Loading parcels...</div>
+  </div>
+
+  <!-- ── Error ───────────────────────────────────────────────── -->
+  <div *ngIf="!loading && errorMessage" class="alert alert-danger d-flex gap-2 align-items-center">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <div class="flex-grow-1">{{ errorMessage }}</div>
+    <button class="btn btn-sm btn-outline-danger" (click)="loadParcels()">Retry</button>
+  </div>
+
+  <!-- ── Empty ───────────────────────────────────────────────── -->
+  <div *ngIf="!loading && !errorMessage && filteredParcels.length === 0" class="text-center py-5 text-muted">
+    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+    <div>No parcels found.</div>
+  </div>
+
+  <!-- ── Table ───────────────────────────────────────────────── -->
+  <div class="card shadow-sm border-0" *ngIf="!loading && filteredParcels.length > 0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Tracking Code</th>
+            <th>Sender</th>
+            <th>Receiver</th>
+            <th>Type</th>
+            <th>Charge</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let parcel of filteredParcels">
+
+            <td>
+              <span class="fw-semibold text-primary font-monospace">
+                {{ parcel.trackingCode }}
+              </span>
+            </td>
+
+            <td>
+              <div class="fw-semibold small">{{ parcel.senderName }}</div>
+              <div class="text-muted" style="font-size: 0.75rem;">{{ parcel.senderPhone }}</div>
+            </td>
+
+            <td>
+              <div class="fw-semibold small">{{ parcel.receiverName }}</div>
+              <div class="text-muted" style="font-size: 0.75rem;">{{ parcel.receiverPhone }}</div>
+            </td>
+
+            <td>
+              <span class="badge bg-light text-dark border">{{ parcel.parcelType }}</span>
+            </td>
+
+            <td class="fw-semibold">৳ {{ parcel.deliveryCharge }}</td>
+
+            <td>
+              <span class="badge" [ngClass]="badgeClass(parcel.status)">
+                {{ badgeLabel(parcel.status) }}
+              </span>
+            </td>
+
+            <td class="text-muted small">
+              {{ parcel.createdAt | date:'dd MMM, HH:mm' }}
+            </td>
+
+            <td class="text-center">
+              <div class="d-flex gap-1 justify-content-center">
+                <button
+                  class="btn btn-sm btn-outline-primary"
+                  title="View Details"
+                  (click)="openDetail(parcel)">
+                  <i class="bi bi-eye-fill"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-outline-warning"
+                  title="Update Status"
+                  (click)="openUpdatePanel(parcel)">
+                  <i class="bi bi-pencil-fill"></i>
+                </button>
+              </div>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- =====================================================
+     DETAIL MODAL
+     ===================================================== -->
+<div class="modal-backdrop-custom" *ngIf="showDetail" (click)="closeDetail()"></div>
+
+<div class="side-panel card shadow border-0" *ngIf="showDetail && detailParcel">
+
+  <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between py-3 px-4">
+    <div>
+      <h6 class="fw-bold mb-0"><i class="bi bi-box-seam-fill me-2"></i>Parcel Details</h6>
+      <small class="opacity-75 font-monospace">{{ detailParcel.trackingCode }}</small>
+    </div>
+    <button class="btn btn-sm btn-light" (click)="closeDetail()"><i class="bi bi-x-lg"></i></button>
+  </div>
+
+  <div class="card-body p-4" style="overflow-y: auto; max-height: calc(100vh - 70px);">
+
+    <!-- Status badge -->
+    <div class="mb-4 text-center">
+      <span class="badge fs-6" [ngClass]="badgeClass(detailParcel.status)">
+        {{ badgeLabel(detailParcel.status) }}
+      </span>
+    </div>
+
+    <!-- Sender / Receiver -->
+    <div class="row g-3 mb-3">
+      <div class="col-6">
+        <div class="card bg-light border-0 p-3">
+          <div class="text-muted small fw-bold mb-1"><i class="bi bi-person-fill me-1"></i>SENDER</div>
+          <div class="fw-semibold">{{ detailParcel.senderName }}</div>
+          <div class="small text-muted">{{ detailParcel.senderPhone }}</div>
+          <div class="small text-muted mt-1">{{ detailParcel.senderAddress }}</div>
+          <div class="small text-muted">{{ detailParcel.originPoliceStation }}, {{ detailParcel.originDistrict }}</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card bg-light border-0 p-3">
+          <div class="text-muted small fw-bold mb-1"><i class="bi bi-person-fill me-1"></i>RECEIVER</div>
+          <div class="fw-semibold">{{ detailParcel.receiverName }}</div>
+          <div class="small text-muted">{{ detailParcel.receiverPhone }}</div>
+          <div class="small text-muted mt-1">{{ detailParcel.receiverAddress }}</div>
+          <div class="small text-muted">{{ detailParcel.destinationPoliceStation }}, {{ detailParcel.destinationDistrict }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Parcel info -->
+    <div class="card border-0 bg-light p-3 mb-3">
+      <div class="text-muted small fw-bold mb-2">PARCEL INFO</div>
+      <div class="row g-2 small">
+        <div class="col-6"><span class="text-muted">Type:</span> <strong>{{ detailParcel.parcelType }}</strong></div>
+        <div class="col-6"><span class="text-muted">Weight:</span> <strong>{{ detailParcel.weight }} kg</strong></div>
+        <div class="col-6"><span class="text-muted">Service:</span> <strong>{{ detailParcel.serviceType }}</strong></div>
+        <div class="col-6"><span class="text-muted">Priority:</span> <strong>{{ detailParcel.priority }}</strong></div>
+        <div class="col-6"><span class="text-muted">Charge:</span> <strong>৳ {{ detailParcel.deliveryCharge }}</strong></div>
+        <div class="col-6"><span class="text-muted">COD:</span> <strong>৳ {{ detailParcel.codAmount ?? 0 }}</strong></div>
+        <div class="col-6"><span class="text-muted">Payment:</span> <strong>{{ detailParcel.paymentMethod }}</strong></div>
+        <div class="col-6"><span class="text-muted">Pay Status:</span> <strong>{{ detailParcel.paymentStatus }}</strong></div>
+        <div class="col-12" *ngIf="detailParcel.description">
+          <span class="text-muted">Description:</span> {{ detailParcel.description }}
+        </div>
+        <div class="col-12" *ngIf="detailParcel.specialInstructions">
+          <span class="text-muted">Instructions:</span> {{ detailParcel.specialInstructions }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Rider info -->
+    <div class="card border-0 bg-light p-3 mb-3" *ngIf="detailParcel.riderName">
+      <div class="text-muted small fw-bold mb-1"><i class="bi bi-bicycle me-1"></i>RIDER</div>
+      <div class="small">{{ detailParcel.riderName }} — {{ detailParcel.riderPhone }}</div>
+    </div>
+
+    <!-- Tracking history -->
+    <div *ngIf="detailParcel.history.length">
+      <div class="text-muted small fw-bold mb-2"><i class="bi bi-clock-history me-1"></i>TRACKING HISTORY</div>
+      <div class="timeline">
+        <div class="timeline-item" *ngFor="let h of detailParcel.history">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="fw-semibold small">{{ h.status }}</div>
+            <div class="text-muted" style="font-size: 0.75rem;">
+              {{ h.timestamp | date:'dd MMM yyyy, HH:mm' }}
+              <span *ngIf="h.location"> — {{ h.location }}</span>
+            </div>
+            <div class="small" *ngIf="h.note">{{ h.note }}</div>
+            <div class="text-muted" style="font-size: 0.75rem;" *ngIf="h.performedBy">by {{ h.performedBy }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- =====================================================
+     STATUS UPDATE SIDE PANEL
+     ===================================================== -->
+<div class="modal-backdrop-custom" *ngIf="showPanel" (click)="closePanel()"></div>
+
+<div class="side-panel card shadow border-0" *ngIf="showPanel && selectedParcel">
+
+  <div class="card-header bg-warning text-dark d-flex align-items-center justify-content-between py-3 px-4">
+    <div>
+      <h6 class="fw-bold mb-0"><i class="bi bi-pencil-fill me-2"></i>Update Status</h6>
+      <small class="font-monospace">{{ selectedParcel.trackingCode }}</small>
+    </div>
+    <button class="btn btn-sm btn-light" (click)="closePanel()"><i class="bi bi-x-lg"></i></button>
+  </div>
+
+  <div class="card-body p-4">
+
+    <!-- Current status -->
+    <div class="mb-4">
+      <div class="text-muted small mb-1">Current Status</div>
+      <span class="badge fs-6" [ngClass]="badgeClass(selectedParcel.status)">
+        {{ badgeLabel(selectedParcel.status) }}
+      </span>
+    </div>
+
+    <!-- Error -->
+    <div *ngIf="updateError" class="alert alert-danger d-flex gap-2 py-2 mb-3">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <span>{{ updateError }}</span>
+    </div>
+
+    <!-- Form -->
+    <div class="mb-3">
+      <label class="form-label fw-semibold">New Status <span class="text-danger">*</span></label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-arrow-repeat"></i></span>
+        <select class="form-select" [(ngModel)]="updateDto.status">
+          <option *ngFor="let s of statusOptions" [value]="s.value" [disabled]="s.value === 'ALL'">
+            {{ s.label }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-semibold">Location</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
+        <input
+          class="form-control"
+          [(ngModel)]="updateDto.location"
+          placeholder="e.g. Mirpur Hub">
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label fw-semibold">Note</label>
+      <textarea
+        class="form-control"
+        rows="3"
+        [(ngModel)]="updateDto.note"
+        placeholder="Optional note about this status change...">
+      </textarea>
+    </div>
+
+    <button
+      class="btn btn-warning w-100 fw-semibold d-flex align-items-center justify-content-center gap-2"
+      type="button"
+      [disabled]="saving"
+      (click)="submitStatusUpdate()">
+      <span *ngIf="saving" class="spinner-border spinner-border-sm"></span>
+      <i class="bi bi-check-circle-fill" *ngIf="!saving"></i>
+      {{ saving ? 'Saving...' : 'Update Status' }}
+    </button>
+
+  </div>
+</div>

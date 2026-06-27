@@ -6,5 +6,6 @@ public enum PaymentMethod {
     BKASH,
     NAGAD,
     SSLCOMMERZ,
-    PREPAID
+    PREPAID,
+    CASH
 }

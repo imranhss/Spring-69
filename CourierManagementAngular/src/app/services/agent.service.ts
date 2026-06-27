@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { CustomerResponseModel } from '../models/customer.model';
 import { Agent, AgentResponseModel } from '../models/agent.model';
+import { ParcelResponse, ParcelStatus, StatusUpdateRequest } from '../models/parcel.model';
 
 @Injectable({
   providedIn: 'root',
@@ -68,48 +69,71 @@ export class AgentService {
     });
   }
 
-  // =========================
-  // Parcel Operations
-  // =========================
-
-  bookParcel(parcelData: any): Observable<any> {
-    return this.http.post<any>(
-      `${this.apiUrl}/parcels/book`,
-      parcelData
-    );
-  }
-
-  getHubParcels(agentId: number): Observable<any[]> {
-    return this.http.get<any[]>(
-      `${this.apiUrl}/${agentId}/parcels`
-    );
-  }
-
-  getHubParcelsByStatus(
-    agentId: number,
-    status: string
-  ): Observable<any[]> {
-    return this.http.get<any[]>(
-      `${this.apiUrl}/${agentId}/parcels/status/${status}`
-    );
-  }
-
-  updateParcelStatus(
-    agentId: number,
-    parcelId: number,
-    statusData: any
-  ): Observable<any> {
-    return this.http.patch<any>(
-      `${this.apiUrl}/${agentId}/parcels/${parcelId}/status`,
-      statusData
-    );
-  }
   
 
    findByUserId(id: number | null): Observable<AgentResponseModel> {
       return this.http.get<AgentResponseModel>(this.apiUrl +"/user/"+ id);
     }
   
+
+
+    // =========================
+  // Parcel operations (Agent)
+  // =========================
+
+  /**
+   * Book a walk-in parcel at the hub counter.
+   * POST /api/agents/parcels/book
+   * Body shape will be completed once AgentParcelRequestDTO is shared.
+   */
+  bookParcel(parcelData: any): Observable<ParcelResponse> {
+    return this.http.post<ParcelResponse>(`${this.apiUrl}/parcels/book`, parcelData);
+  }
+
+  /**
+   * All parcels at the agent's hub (origin OR destination).
+   * GET /api/agents/{agentId}/parcels
+   */
+  getHubParcels(agentId: number): Observable<ParcelResponse[]> {
+    return this.http.get<ParcelResponse[]>(`${this.apiUrl}/${agentId}/parcels`);
+  }
+
+  /**
+   * Hub parcels filtered by a specific status.
+   * GET /api/agents/{agentId}/parcels/status/{status}
+   */
+  getHubParcelsByStatus(agentId: number, status: ParcelStatus): Observable<ParcelResponse[]> {
+    return this.http.get<ParcelResponse[]>(
+      `${this.apiUrl}/${agentId}/parcels/status/${status}`
+    );
+  }
+
+  /**
+   * Update the status of a parcel at the hub.
+   * PATCH /api/agents/{agentId}/parcels/{parcelId}/status
+   */
+  updateParcelStatus(
+    agentId: number,
+    parcelId: number,
+    dto: StatusUpdateRequest
+  ): Observable<ParcelResponse> {
+    return this.http.patch<ParcelResponse>(
+      `${this.apiUrl}/${agentId}/parcels/${parcelId}/status`,
+      dto
+    );
+  }
+
+    /**
+   * Preview delivery charge before booking.
+   * GET /api/parcels/calculate?weight=2.5&serviceType=EXPRESS&codAmount=1500
+   */
+  calculateCharge(weight: number, serviceType: string, codAmount: number = 0): Observable<number> {
+    const params = new HttpParams()
+      .set('weight', weight)
+      .set('serviceType', serviceType)
+      .set('codAmount', codAmount);
+    return this.http.get<number>(`${environment.apiUrl}parcels/calculate`, { params });
+  }
 
 
 

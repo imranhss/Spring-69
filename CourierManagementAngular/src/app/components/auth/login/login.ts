@@ -4,10 +4,11 @@ import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Navbar } from '../../shared/layout/navbar/navbar';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, Navbar],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -42,6 +43,7 @@ export class Login {
       }
     });
   }
+
 
 
 }

@@ -21,6 +21,9 @@ import { VeryfyEmail } from './components/auth/veryfy-email/veryfy-email';
 import { Component } from '@angular/core';
 import { BlankLayout } from './components/shared/layout/blank-layout/blank-layout';
 import { MainLayout } from './components/shared/layout/main-layout/main-layout';
+import { HubParcel } from './components/feature/agents/hub-parcel/hub-parcel';
+import { AgentParcelRequestComponent } from './components/feature/agents/agent-parcel-request/agent-parcel-request';
+import { BookingReceiptComponent } from './components/feature/print/booking-receipt-component/booking-receipt-component';
 
 export const routes: Routes = [
 
@@ -29,7 +32,7 @@ export const routes: Routes = [
         path: '',
         component: BlankLayout,
         children: [
-            { path: 'home', component: Home },
+            { path: '', component: Home },
             { path: 'addcustomer', component: AddCustomer },
             { path: 'addagent', component: AddAgent },
             { path: 'addrider', component: AddRider },
@@ -64,6 +67,9 @@ export const routes: Routes = [
             { path: 'customer', component: Customerdashboard },
             { path: 'agent', component: Agentdashboard },
             { path: 'rider', component: Riderdashboard },
+            { path: 'hubparcel', component: HubParcel },
+            { path: 'agentbook', component: AgentParcelRequestComponent },
+            { path: 'print', component: BookingReceiptComponent },
         ]
 
 

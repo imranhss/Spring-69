@@ -59,9 +59,8 @@ export class StorageService {
 
  // ── Clear ─────────────────────────────────────────────
 
-  clearSession(): void {
-    localStorage.removeItem(KEYS.TOKEN);
-    localStorage.removeItem(KEYS.USER);
+ clearSession(): void {
+    Object.values(KEYS).forEach(k => localStorage.removeItem(k));
   }
 
 
@@ -95,9 +94,6 @@ getData<T>(key: string): T | null {
 removeData(key: string): void {
   localStorage.removeItem(key);
 }
-
-
-
 
 
 

@@ -1,0 +1,170 @@
+<!-- ── Screen action bar (hidden on print) ─────────────────────── -->
+<div class="no-print d-flex justify-content-between align-items-center px-4 py-3 bg-white border-bottom shadow-sm mb-4">
+  <div>
+    <h6 class="fw-bold mb-0 text-success">
+      <i class="bi bi-check-circle-fill me-2"></i>Booking Confirmed
+    </h6>
+    <small class="text-muted">Your receipt is ready to print</small>
+  </div>
+  <div class="d-flex gap-2">
+    <button class="btn btn-outline-secondary btn-sm" (click)="bookAnother.emit()">
+      <i class="bi bi-plus-circle me-1"></i>Book Another
+    </button>
+    <button class="btn btn-primary btn-sm" (click)="print()">
+      <i class="bi bi-printer-fill me-1"></i>Print Receipt
+    </button>
+  </div>
+</div>
+
+<!-- ── Receipt ──────────────────────────────────────────────────── -->
+<div class="receipt-wrapper" #receiptRoot>
+  <div class="receipt">
+
+    <!-- Header -->
+    <div class="receipt-header">
+      <div class="brand">
+        <i class="bi bi-box-seam-fill brand-icon"></i>
+        <div>
+          <div class="brand-name">Courier Management</div>
+          <div class="brand-sub">Money Receipt</div>
+        </div>
+      </div>
+      <div class="receipt-meta">
+        <div class="receipt-label">RECEIPT NO.</div>
+        <div class="receipt-tracking">{{ parcel.trackingCode }}</div>
+        <div class="receipt-date">{{ today | date:'dd MMM yyyy, hh:mm a' }}</div>
+      </div>
+    </div>
+
+    <div class="divider-dashed"></div>
+
+    <!-- Booking source badge -->
+    <div class="source-row">
+      <span class="source-badge" *ngIf="parcel.agentName">
+        <i class="bi bi-person-badge-fill me-1"></i>
+        Hub Booking — {{ parcel.agentName }}
+        <span *ngIf="parcel.agentHubName"> · {{ parcel.agentHubName }}</span>
+      </span>
+      <span class="source-badge source-online" *ngIf="!parcel.agentName">
+        <i class="bi bi-globe me-1"></i>Online Booking
+      </span>
+    </div>
+
+    <!-- Sender / Receiver -->
+    <div class="parties-row">
+      <div class="party-box">
+        <div class="party-label">FROM (SENDER)</div>
+        <div class="party-name">{{ parcel.senderName }}</div>
+        <div class="party-detail">{{ parcel.senderPhone }}</div>
+        <div class="party-detail" *ngIf="parcel.senderAddress">{{ parcel.senderAddress }}</div>
+        <div class="party-location">
+          {{ parcel.originPoliceStation }}<span *ngIf="parcel.originDistrict">, {{ parcel.originDistrict }}</span>
+        </div>
+        <div class="party-location" *ngIf="parcel.originDivision">{{ parcel.originDivision }}</div>
+      </div>
+
+      <div class="arrow-col">
+        <i class="bi bi-arrow-right-circle-fill"></i>
+      </div>
+
+      <div class="party-box party-box-right">
+        <div class="party-label">TO (RECEIVER)</div>
+        <div class="party-name">{{ parcel.receiverName }}</div>
+        <div class="party-detail">{{ parcel.receiverPhone }}</div>
+        <div class="party-detail" *ngIf="parcel.receiverAddress">{{ parcel.receiverAddress }}</div>
+        <div class="party-location">
+          {{ parcel.destinationPoliceStation }}<span *ngIf="parcel.destinationDistrict">, {{ parcel.destinationDistrict }}</span>
+        </div>
+        <div class="party-location" *ngIf="parcel.destinationDivision">{{ parcel.destinationDivision }}</div>
+      </div>
+    </div>
+
+    <div class="divider-solid"></div>
+
+    <!-- Parcel details table -->
+    <table class="detail-table">
+      <tbody>
+        <tr>
+          <td class="detail-key">Parcel Type</td>
+          <td class="detail-val">{{ parcel.parcelType }}</td>
+          <td class="detail-key">Weight</td>
+          <td class="detail-val">{{ parcel.weight }} kg</td>
+        </tr>
+        <tr>
+          <td class="detail-key">Service</td>
+          <td class="detail-val">{{ parcel.serviceType }}</td>
+          <td class="detail-key">Priority</td>
+          <td class="detail-val">{{ parcel.priority }}</td>
+        </tr>
+        <tr>
+          <td class="detail-key">Payment Method</td>
+          <td class="detail-val">{{ parcel.paymentMethod }}</td>
+          <td class="detail-key">Payment Status</td>
+          <td class="detail-val">{{ parcel.paymentStatus }}</td>
+        </tr>
+        <tr *ngIf="parcel.description">
+          <td class="detail-key">Description</td>
+          <td class="detail-val" colspan="3">{{ parcel.description }}</td>
+        </tr>
+        <tr *ngIf="parcel.specialInstructions">
+          <td class="detail-key">Instructions</td>
+          <td class="detail-val" colspan="3">{{ parcel.specialInstructions }}</td>
+        </tr>
+        <tr *ngIf="parcel.estimatedDelivery">
+          <td class="detail-key">Est. Delivery</td>
+          <td class="detail-val" colspan="3">{{ parcel.estimatedDelivery | date:'dd MMM yyyy' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="divider-solid"></div>
+
+    <!-- Charges summary -->
+    <div class="charges-section">
+      <div class="charge-row" *ngIf="parcel.codAmount && parcel.codAmount > 0">
+        <span class="charge-label">COD Amount</span>
+        <span class="charge-value">৳ {{ parcel.codAmount | number:'1.2-2' }}</span>
+      </div>
+      <div class="charge-row total-row">
+        <span class="charge-label">Delivery Charge</span>
+        <span class="charge-total">৳ {{ parcel.deliveryCharge | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <div class="divider-dashed"></div>
+
+    <!-- Status + tracking -->
+    <div class="footer-section">
+      <div class="status-col">
+        <div class="receipt-label">STATUS</div>
+        <span class="status-pill">{{ parcel.status }}</span>
+      </div>
+      <div class="tracking-col">
+        <div class="receipt-label">TRACK YOUR PARCEL</div>
+        <div class="tracking-code">{{ parcel.trackingCode }}</div>
+        <div class="tracking-hint">Use this code to track at our website</div>
+      </div>
+    </div>
+
+    <div class="divider-dashed"></div>
+
+    <!-- Footer note -->
+    <div class="receipt-footer-note">
+      <p>Thank you for choosing Courier Management. Keep this receipt for your records.</p>
+      <p>For support, contact your nearest hub agent.</p>
+    </div>
+
+    <!-- Signature row -->
+    <div class="signature-row">
+      <div class="sig-box">
+        <div class="sig-line"></div>
+        <div class="sig-label">Sender / Customer Signature</div>
+      </div>
+      <div class="sig-box">
+        <div class="sig-line"></div>
+        <div class="sig-label">Agent / Authorized Signature</div>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,9 +1,11 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { StorageService } from '../../../../services/storage.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [],
+  imports: [CommonModule, FormsModule],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })

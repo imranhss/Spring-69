@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Navbar } from '../../shared/layout/navbar/navbar';
 
 @Component({
   selector: 'app-forgot-password',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, Navbar],
   templateUrl: './forgot-password.html',
   styleUrl: './forgot-password.css',
 })
@@ -35,4 +36,10 @@ export class ForgotPassword {
       }
     });
   }
+
+
+  scrollTo(id: string): void {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  }
+
 }
