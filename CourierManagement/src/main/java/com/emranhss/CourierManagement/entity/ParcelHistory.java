@@ -35,6 +35,8 @@ public class ParcelHistory {
     private Rider performedBy;
 
 
+
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

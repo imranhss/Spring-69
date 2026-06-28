@@ -168,7 +168,7 @@
           <div class="track-found">
             <div class="tf-header">
               <div class="tf-id">{{ resultId }}</div>
-              <span [ngClass]="getStatusBadgeClass(trackResult.status)">{{ getStatusLabel(trackResult.status) }}</span>
+              <span class="badge-sm" [ngClass]="getStatusBadgeClass(trackResult.status)">{{ getStatusLabel(trackResult.status) }}</span>
             </div>
             <div class="track-timeline">
               <div class="tl-item" *ngFor="let stop of trackResult.stops; let i = index">

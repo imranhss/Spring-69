@@ -31,6 +31,16 @@
     Book Parcel(A)
     <span class="nav-badge">24</span>
   </a>
+  <a class="nav-item" href="customerbook">
+    <i class="fas fa-box nav-icon"></i>
+    Book Parcel
+    <span class="nav-badge">24</span>
+  </a>
+  <a class="nav-item" href="myparcel">
+    <i class="fas fa-box nav-icon"></i>
+    My Parcel
+    <span class="nav-badge">24</span>
+  </a>
 
   <a class="nav-item">
     <i class="fas fa-route nav-icon"></i>
@@ -43,7 +53,25 @@
     <span class="nav-badge">8</span>
   </a>
 
-  <div *ngIf="userRole === 'ADMIN'">
+ <div *ngIf="userRole === 'ADMIN' || userRole === 'AGENT'">
+
+    <a class="nav-item" href="addagent">
+      <i class="fas fa-warehouse nav-icon"></i>
+      Agent
+    </a>
+
+    <a class="nav-item" href="agentList">
+      <i class="fas fa-warehouse nav-icon"></i>
+      Agent List
+    </a>
+    <a class="nav-item" href="addrider">
+      <i class="fas fa-warehouse nav-icon"></i>
+      Rider
+    </a>
+    <a class="nav-item" href="riderlist">
+      <i class="fas fa-warehouse nav-icon"></i>
+      Rider List
+    </a>
 
     <a class="nav-item">
       <i class="fas fa-motorcycle nav-icon"></i>
@@ -74,6 +102,7 @@
       <i class="bi-flag"></i>
       Find Hub
     </a>
+
   </div>
 
 
@@ -86,27 +115,21 @@
       <i class="fas fa-users nav-icon"></i>
       Customers
     </a>
+
+    <a class="nav-item" href="customerbook">
+      <i class="fas fa-box nav-icon"></i>
+      Book Parcel
+      <span class="nav-badge">24</span>
+    </a>
+    <a class="nav-item" href="myparcel">
+      <i class="fas fa-box nav-icon"></i>
+      My Parcel
+      <span class="nav-badge">24</span>
+    </a>
   </div>
 
 
-  <a class="nav-item" href="addagent">
-    <i class="fas fa-warehouse nav-icon"></i>
-    Agent
-  </a>
-
-  <a class="nav-item" href="agentList">
-    <i class="fas fa-warehouse nav-icon"></i>
-    Agent List
-  </a>
-  <a class="nav-item" href="addrider">
-    <i class="fas fa-warehouse nav-icon"></i>
-    Rider
-  </a>
-  <a class="nav-item" href="riderlist">
-    <i class="fas fa-warehouse nav-icon"></i>
-    Rider List
-  </a>
-
+  
   <a class="nav-item">
     <i class="fas fa-file-invoice nav-icon"></i>
     Invoices

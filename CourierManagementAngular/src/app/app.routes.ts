@@ -24,6 +24,8 @@ import { MainLayout } from './components/shared/layout/main-layout/main-layout';
 import { HubParcel } from './components/feature/agents/hub-parcel/hub-parcel';
 import { AgentParcelRequestComponent } from './components/feature/agents/agent-parcel-request/agent-parcel-request';
 import { BookingReceiptComponent } from './components/feature/print/booking-receipt-component/booking-receipt-component';
+import { BookParcelComponent } from './components/feature/customer/book-parcel-component/book-parcel-component';
+import { MyParcelsComponent } from './components/feature/customer/my-parcels-component/my-parcels-component';
 
 export const routes: Routes = [
 
@@ -70,6 +72,8 @@ export const routes: Routes = [
             { path: 'hubparcel', component: HubParcel },
             { path: 'agentbook', component: AgentParcelRequestComponent },
             { path: 'print', component: BookingReceiptComponent },
+            { path: 'customerbook', component: BookParcelComponent },
+            { path: 'myparcel', component: MyParcelsComponent },
         ]
 
 

@@ -216,7 +216,7 @@
     <!-- Rider info -->
     <div class="card border-0 bg-light p-3 mb-3" *ngIf="detailParcel.riderName">
       <div class="text-muted small fw-bold mb-1"><i class="bi bi-bicycle me-1"></i>RIDER</div>
-      <div class="small">{{ detailParcel.riderName }} — {{ detailParcel.riderPhone }}</div>
+      <div class="small">Name: {{ detailParcel.riderName }} —Cell: {{ detailParcel.riderPhone }}</div>
     </div>
 
     <!-- Tracking history -->
@@ -232,6 +232,8 @@
               <span *ngIf="h.location"> — {{ h.location }}</span>
             </div>
             <div class="small" *ngIf="h.note">{{ h.note }}</div>
+            <!-- <div class="small" *ngIf="detailParcel.riderName">{{ detailParcel.riderName}}</div>
+            <div class="small" *ngIf="detailParcel.riderPhone">{{ detailParcel.riderPhone}}</div> -->
             <div class="text-muted" style="font-size: 0.75rem;" *ngIf="h.performedBy">by {{ h.performedBy }}</div>
           </div>
         </div>
@@ -256,7 +258,7 @@
     <button class="btn btn-sm btn-light" (click)="closePanel()"><i class="bi bi-x-lg"></i></button>
   </div>
 
-  <div class="card-body p-4">
+  <div class="card-body p-4" style="overflow-y: auto; max-height: calc(100vh - 70px);">
 
     <!-- Current status -->
     <div class="mb-4">
@@ -272,12 +274,13 @@
       <span>{{ updateError }}</span>
     </div>
 
-    <!-- Form -->
+    <!-- New Status -->
     <div class="mb-3">
       <label class="form-label fw-semibold">New Status <span class="text-danger">*</span></label>
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-arrow-repeat"></i></span>
-        <select class="form-select" [(ngModel)]="updateDto.status">
+        <select class="form-select" [(ngModel)]="updateDto.status"
+          (ngModelChange)="onNewStatusChange()">
           <option *ngFor="let s of statusOptions" [value]="s.value" [disabled]="s.value === 'ALL'">
             {{ s.label }}
           </option>
@@ -285,25 +288,96 @@
       </div>
     </div>
 
+    <!-- ── HUB TRANSFER (shown when IN_TRANSIT) ──────────────────── -->
+    <div *ngIf="updateDto.status === 'IN_TRANSIT'" class="card border-primary border-opacity-25 bg-primary-subtle p-3 mb-3">
+      <div class="fw-semibold small mb-2">
+        <i class="bi bi-send-fill text-primary me-1"></i>Transfer to Hub
+      </div>
+      <small class="text-muted d-block mb-3">
+        Select the next hub this parcel is being transferred to.
+        The receiving hub agent will then see this parcel in their list.
+      </small>
+
+      <div class="mb-2">
+        <label class="form-label fw-semibold small">Country</label>
+        <select class="form-select form-select-sm" [(ngModel)]="transitCountryId"
+          name="tCountry" (ngModelChange)="onTransitCountryChange()">
+          <option [ngValue]="null">Select</option>
+          <option *ngFor="let c of transitCountries" [ngValue]="c.id">{{ c.name }}</option>
+        </select>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label fw-semibold small">Division</label>
+        <select class="form-select form-select-sm" [(ngModel)]="transitDivisionId"
+          name="tDivision" [disabled]="!transitDivisions.length"
+          (ngModelChange)="onTransitDivisionChange()">
+          <option [ngValue]="null">Select</option>
+          <option *ngFor="let d of transitDivisions" [ngValue]="d.id">{{ d.name }}</option>
+        </select>
+      </div>
+
+      <div class="mb-2">
+        <label class="form-label fw-semibold small">District</label>
+        <select class="form-select form-select-sm" [(ngModel)]="transitDistrictId"
+          name="tDistrict" [disabled]="!transitDistricts.length"
+          (ngModelChange)="onTransitDistrictChange()">
+          <option [ngValue]="null">Select</option>
+          <option *ngFor="let d of transitDistricts" [ngValue]="d.id">{{ d.name }}</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label fw-semibold small">Destination Hub (Police Station)</label>
+        <select class="form-select form-select-sm"
+          [(ngModel)]="updateDto.nextHubPoliceStationId"
+          name="tStation" [disabled]="!transitStations.length">
+          <option [ngValue]="null">Select Hub</option>
+          <option *ngFor="let s of transitStations" [ngValue]="s.id">{{ s.name }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ── RIDER ASSIGNMENT (shown when OUT_FOR_DELIVERY) ────────── -->
+    <div *ngIf="updateDto.status === 'OUT_FOR_DELIVERY'" class="card border-success border-opacity-25 bg-success-subtle p-3 mb-3">
+      <div class="fw-semibold small mb-2">
+        <i class="bi bi-bicycle text-success me-1"></i>Assign Rider
+      </div>
+
+      <div *ngIf="ridersLoading" class="text-muted small">
+        <span class="spinner-border spinner-border-sm me-1"></span>Loading available riders...
+      </div>
+
+      <div *ngIf="!ridersLoading">
+        <select class="form-select form-select-sm" [(ngModel)]="updateDto.riderId" name="riderId">
+          <option [ngValue]="null">— Select Rider —</option>
+          <option *ngFor="let r of availableRiders" [ngValue]="r.id">
+            {{ r.name }} — {{ r.vehicleType }}
+            <span *ngIf="r.rating"> (★ {{ r.rating }})</span>
+          </option>
+        </select>
+
+        <small class="text-muted d-block mt-1" *ngIf="availableRiders.length === 0">
+          No active riders found for the delivery area.
+          You can still proceed — a rider can be assigned later by admin.
+        </small>
+      </div>
+    </div>
+
+    <!-- Location -->
     <div class="mb-3">
       <label class="form-label fw-semibold">Location</label>
       <div class="input-group">
         <span class="input-group-text"><i class="bi bi-geo-alt-fill"></i></span>
-        <input
-          class="form-control"
-          [(ngModel)]="updateDto.location"
-          placeholder="e.g. Mirpur Hub">
+        <input class="form-control" [(ngModel)]="updateDto.location" placeholder="e.g. Mirpur Hub">
       </div>
     </div>
 
+    <!-- Note -->
     <div class="mb-4">
       <label class="form-label fw-semibold">Note</label>
-      <textarea
-        class="form-control"
-        rows="3"
-        [(ngModel)]="updateDto.note"
-        placeholder="Optional note about this status change...">
-      </textarea>
+      <textarea class="form-control" rows="3" [(ngModel)]="updateDto.note"
+        placeholder="Optional note about this status change..."></textarea>
     </div>
 
     <button

@@ -1,10 +1,8 @@
 package com.emranhss.CourierManagement.dto.mapper;
 
 import com.emranhss.CourierManagement.dto.response.ParcelResponseDTO;
-import com.emranhss.CourierManagement.entity.Agent;
-import com.emranhss.CourierManagement.entity.Parcel;
-import com.emranhss.CourierManagement.entity.ParcelHistory;
-import com.emranhss.CourierManagement.entity.PoliceStation;
+import com.emranhss.CourierManagement.entity.*;
+import com.emranhss.CourierManagement.enums.ParcelStatus;
 
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -17,6 +15,7 @@ public class ParcelMapper {
 
         dto.setId(parcel.getId());
         dto.setTrackingCode(parcel.getTrackingCode());
+
 
         dto.setSenderName(parcel.getSenderName());
         dto.setSenderPhone(parcel.getSenderPhone());
@@ -35,6 +34,7 @@ public class ParcelMapper {
         dto.setPriority(parcel.getPriority());
         dto.setDeliveryCharge(parcel.getDeliveryCharge());
         dto.setCodAmount(parcel.getCodAmount());
+
 
         dto.setPaymentMethod(parcel.getPaymentMethod());
         dto.setPaymentStatus(parcel.getPaymentStatus());
@@ -114,10 +114,16 @@ public class ParcelMapper {
         e.setNote(h.getNote());
         e.setLocation(h.getLocation());
         e.setTimestamp(h.getCreatedAt());
-        e.setPerformedBy(
-                h.getPerformedBy() != null && h.getPerformedBy().getUser() != null
-                        ? h.getPerformedBy().getUser().getName() : "System"
-        );
+
+
+        Rider performedBy = h.getPerformedBy();
+        if (performedBy != null) {
+            e.setRiderId(performedBy.getId());
+            e.setPerformedBy(performedBy.getUser() != null ? performedBy.getUser().getName() : "System");
+        } else {
+            e.setPerformedBy("System");
+        }
+
         return e;
     }
 

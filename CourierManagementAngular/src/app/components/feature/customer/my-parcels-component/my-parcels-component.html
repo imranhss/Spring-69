@@ -1,0 +1,192 @@
+<div class="container-fluid py-4">
+
+  <!-- Header -->
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h5 class="fw-bold mb-0"><i class="bi bi-box-seam-fill text-primary me-2"></i>My Parcels</h5>
+      <small class="text-muted">{{ filteredParcels.length }} of {{ parcels.length }} shown</small>
+    </div>
+    <a class="btn btn-primary btn-sm" routerLink="/customer/book">
+      <i class="bi bi-plus-circle me-1"></i>Book New
+    </a>
+  </div>
+
+  <!-- Search + Status pills -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body p-3">
+      <div class="row g-2 align-items-center">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control" placeholder="Search tracking code or receiver..."
+              [(ngModel)]="searchTerm">
+            <button *ngIf="searchTerm" class="btn btn-outline-secondary" (click)="searchTerm = ''">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex gap-2 flex-wrap">
+            <button
+              *ngFor="let s of statusOptions"
+              class="btn btn-sm"
+              [ngClass]="selectedStatus === s.value ? 'btn-primary' : 'btn-outline-secondary'"
+              (click)="selectedStatus = s.value">
+              {{ s.label }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5 text-muted">
+    <div class="spinner-border text-primary mb-2"></div>
+    <div>Loading parcels...</div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="!loading && errorMessage" class="alert alert-danger d-flex gap-2">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <div class="flex-grow-1">{{ errorMessage }}</div>
+    <button class="btn btn-sm btn-outline-danger" (click)="loadParcels()">Retry</button>
+  </div>
+
+  <!-- Empty -->
+  <div *ngIf="!loading && !errorMessage && filteredParcels.length === 0" class="text-center py-5 text-muted">
+    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+    <div *ngIf="parcels.length === 0">No parcels yet. <a routerLink="/customer/book">Book one now!</a></div>
+    <div *ngIf="parcels.length > 0">No parcels match your filter.</div>
+  </div>
+
+  <!-- Parcel Cards -->
+  <div class="row g-3" *ngIf="!loading && filteredParcels.length > 0">
+    <div class="col-12 col-md-6 col-xl-4" *ngFor="let p of filteredParcels">
+      <div class="card border-0 shadow-sm parcel-card h-100" (click)="openDetail(p)" style="cursor:pointer;">
+        <div class="card-body p-3">
+
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <span class="fw-bold font-monospace text-primary small">{{ p.trackingCode }}</span>
+            <span class="badge" [ngClass]="badgeClass(p.status)">{{ badgeLabel(p.status) }}</span>
+          </div>
+
+          <div class="small mb-2">
+            <div class="text-muted">To</div>
+            <div class="fw-semibold">{{ p.receiverName }}</div>
+            <div class="text-muted">{{ p.receiverPhone }}</div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center small text-muted border-top pt-2 mt-2">
+            <span><i class="bi bi-geo-alt-fill me-1 text-primary"></i>{{ p.destinationPoliceStation }}</span>
+            <span class="fw-semibold text-dark">৳ {{ p.deliveryCharge }}</span>
+          </div>
+
+          <div class="text-muted mt-1" style="font-size: 0.72rem;">
+            {{ p.createdAt | date:'dd MMM yyyy, HH:mm' }}
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- =====================================================
+     DETAIL SIDE PANEL
+     ===================================================== -->
+<div class="modal-backdrop-custom" *ngIf="showDetail" (click)="closeDetail()"></div>
+
+<div class="side-panel card shadow border-0" *ngIf="showDetail && detailParcel">
+
+  <div class="card-header bg-primary text-white d-flex align-items-center justify-content-between py-3 px-4">
+    <div>
+      <h6 class="fw-bold mb-0"><i class="bi bi-box-seam-fill me-2"></i>Parcel Details</h6>
+      <small class="opacity-75 font-monospace">{{ detailParcel.trackingCode }}</small>
+    </div>
+    <button class="btn btn-sm btn-light" (click)="closeDetail()"><i class="bi bi-x-lg"></i></button>
+  </div>
+
+  <div class="card-body p-4" style="overflow-y: auto; max-height: calc(100vh - 70px);">
+
+    <div class="text-center mb-4">
+      <span class="badge fs-6" [ngClass]="badgeClass(detailParcel.status)">
+        {{ badgeLabel(detailParcel.status) }}
+      </span>
+      <div class="text-muted small mt-1" *ngIf="detailParcel.estimatedDelivery">
+        Est. delivery: <strong>{{ detailParcel.estimatedDelivery | date:'dd MMM yyyy' }}</strong>
+      </div>
+    </div>
+
+    <!-- Sender / Receiver -->
+    <div class="row g-2 mb-3">
+      <div class="col-6">
+        <div class="card bg-light border-0 p-2">
+          <div class="text-muted" style="font-size:0.7rem; font-weight:600;">FROM</div>
+          <div class="fw-semibold small">{{ detailParcel.senderName }}</div>
+          <div class="text-muted" style="font-size:0.75rem;">{{ detailParcel.senderPhone }}</div>
+          <div class="text-muted" style="font-size:0.72rem;">{{ detailParcel.originPoliceStation }}, {{ detailParcel.originDistrict }}</div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card bg-light border-0 p-2">
+          <div class="text-muted" style="font-size:0.7rem; font-weight:600;">TO</div>
+          <div class="fw-semibold small">{{ detailParcel.receiverName }}</div>
+          <div class="text-muted" style="font-size:0.75rem;">{{ detailParcel.receiverPhone }}</div>
+          <div class="text-muted" style="font-size:0.72rem;">{{ detailParcel.destinationPoliceStation }}, {{ detailParcel.destinationDistrict }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="card border-0 bg-light p-3 mb-3">
+      <div class="row g-2 small">
+        <div class="col-6"><span class="text-muted">Type:</span> <strong>{{ detailParcel.parcelType }}</strong></div>
+        <div class="col-6"><span class="text-muted">Weight:</span> <strong>{{ detailParcel.weight }} kg</strong></div>
+        <div class="col-6"><span class="text-muted">Service:</span> <strong>{{ detailParcel.serviceType }}</strong></div>
+        <div class="col-6"><span class="text-muted">Priority:</span> <strong>{{ detailParcel.priority }}</strong></div>
+        <div class="col-6"><span class="text-muted">Charge:</span> <strong>৳ {{ detailParcel.deliveryCharge }}</strong></div>
+        <div class="col-6"><span class="text-muted">COD:</span> <strong>৳ {{ detailParcel.codAmount ?? 0 }}</strong></div>
+        <div class="col-6"><span class="text-muted">Payment:</span> <strong>{{ detailParcel.paymentMethod }}</strong></div>
+        <div class="col-6"><span class="text-muted">Pay Status:</span> <strong>{{ detailParcel.paymentStatus }}</strong></div>
+      </div>
+    </div>
+
+    <!-- Rider -->
+    <div class="card border-0 bg-light p-3 mb-3" *ngIf="detailParcel.riderName">
+      <div class="text-muted small fw-bold mb-1"><i class="bi bi-bicycle me-1"></i>RIDER</div>
+      <div class="small">{{ detailParcel.riderName }} — {{ detailParcel.riderPhone }}</div>
+    </div>
+
+    <!-- Tracking timeline -->
+    <div *ngIf="detailParcel.history.length">
+      <div class="text-muted small fw-bold mb-2"><i class="bi bi-clock-history me-1"></i>TRACKING HISTORY</div>
+      <div class="timeline">
+        <div class="timeline-item" *ngFor="let h of detailParcel.history">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="fw-semibold small">{{ h.status }}</div>
+            <div class="text-muted" style="font-size:0.72rem;">
+              {{ h.timestamp | date:'dd MMM yyyy, HH:mm' }}
+              <span *ngIf="h.location"> — {{ h.location }}</span>
+            </div>
+            <div class="small" *ngIf="h.note">{{ h.note }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cancel -->
+    <button
+      *ngIf="canCancel(detailParcel)"
+      class="btn btn-outline-danger w-100 mt-4"
+      [disabled]="cancelling"
+      (click)="cancelParcel(detailParcel)">
+      <span *ngIf="cancelling" class="spinner-border spinner-border-sm me-1"></span>
+      <i class="bi bi-x-circle-fill me-1" *ngIf="!cancelling"></i>
+      {{ cancelling ? 'Cancelling...' : 'Cancel Parcel' }}
+    </button>
+
+  </div>
+</div>

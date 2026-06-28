@@ -8,6 +8,7 @@ import { CountryService } from '../../../../services/country.service';
 import { DivisionService } from '../../../../services/division.service';
 import { DistrictService } from '../../../../services/district.service';
 import { PolicestationService } from '../../../../services/policestation.service';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-riderlist',
@@ -16,6 +17,8 @@ import { PolicestationService } from '../../../../services/policestation.service
   styleUrl: './riderlist.css',
 })
 export class Riderlist {
+
+  imageUrl = environment.imgUrl+'rider/'
 
  // =========================
   // LIST STATE
@@ -122,7 +125,8 @@ export class Riderlist {
   }
  
   getRiderImage(rider: RiderResponseModel): string | null {
-    return rider.image || null;
+    
+    return rider.image ? this.imageUrl + rider.image : '';
   }
  
   onImageError(rider: any): void {

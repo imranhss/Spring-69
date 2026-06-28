@@ -1,11 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CustomerModel } from '../../../../models/customer.model';
 import { CustomerService } from '../../../../services/customer.service';
 import { CountryService } from '../../../../services/country.service';
 import { DivisionService } from '../../../../services/division.service';
 import { DistrictService } from '../../../../services/district.service';
 import { PolicestationService } from '../../../../services/policestation.service';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Navbar } from '../../../shared/layout/navbar/navbar';
 
@@ -16,6 +16,11 @@ import { Navbar } from '../../../shared/layout/navbar/navbar';
   styleUrl: './add-customer.css',
 })
 export class AddCustomer implements OnInit {
+
+
+  @ViewChild('customerForm') customerForm!: NgForm;
+  @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;
+
 
   // =========================
   // LOCATION DROPDOWN DATA
@@ -350,6 +355,7 @@ export class AddCustomer implements OnInit {
 
       next: () => {
         alert('Registration Successful');
+        this.resetForm();
       },
 
       error: err => {
@@ -410,5 +416,56 @@ export class AddCustomer implements OnInit {
         .join(', ');
 
     console.log('Generated Address:', this.customer.address);
+  }
+
+
+  /**
+   * Resets the customer registration form completely:
+   * - clears the model back to defaults
+   * - clears location dropdown state
+   * - clears street address / generated address
+   * - clears the selected photo + preview
+   * - resets Angular form state (touched/dirty/submitted/validation classes)
+   */
+  resetForm(): void {
+    this.customer = {
+      name: '',
+      email: '',
+      phone: '',
+      password: '',
+      address: '',
+      gender: '',
+      dob: '',
+      policeStationId: 0
+    };
+
+    this.streetAddress = '';
+
+    this.confirmPassword = '';
+    this.submitted = false;
+
+    this.selectedFile = null;
+    this.imagePreview = null;
+
+    this.selectedCountryId = null;
+    this.selectedDivisionId = null;
+    this.selectedDistrictId = null;
+
+    this.divisions = [];
+    this.districts = [];
+    this.policeStations = [];
+
+    // Native file input isn't bound via ngModel — clear it manually
+    if (this.fileInputRef) {
+      this.fileInputRef.nativeElement.value = '';
+    }
+
+    // Reset Angular's form state: clears touched/dirty/ngSubmitted
+    // and removes was-validated / is-invalid styling from the template
+    if (this.customerForm) {
+      this.customerForm.resetForm();
+    }
+
+    this.cdr.markForCheck();
   }
 }

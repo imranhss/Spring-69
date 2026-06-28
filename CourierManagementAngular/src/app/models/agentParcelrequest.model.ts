@@ -1,5 +1,6 @@
 export interface AgentParcelRequest {
   agentId: number;
+  customerId?: number;
 
   // Sender (walk-in customer)
   senderName: string;
@@ -26,4 +27,6 @@ export interface AgentParcelRequest {
   // Payment
   paymentMethod: string;
   codAmount: number;
+
+
 }

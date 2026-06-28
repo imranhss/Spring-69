@@ -9,5 +9,6 @@ public class StatusUpdateRequestDTO {
     private String note;
     private String location;
     private Long   riderId;
+    private Long nextHubPoliceStationId; // which hub to route to next
 
 }

@@ -79,6 +79,7 @@ public class ParcelResponseDTO {
         private String        location;
         private LocalDateTime timestamp;
         private String        performedBy;
+        private Long   riderId;
     }
 
 }

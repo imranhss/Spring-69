@@ -105,6 +105,7 @@ public interface ParcelRepository extends JpaRepository<Parcel, Long> {
         LEFT JOIN FETCH p.history
         WHERE p.originPoliceStation.id = :hubId
            OR p.destinationPoliceStation.id = :hubId
+               OR p.currentHub.id = :hubId
         ORDER BY p.createdAt DESC
     """)
     List<Parcel> findByHubWithDetails(@Param("hubId") Long hubId);

@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { CustomerService } from '../../../../services/customer.service';
 import { CustomerModel, CustomerResponseModel } from '../../../../models/customer.model';
 import { KEYS } from '../../../../services/storage.service';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-customerdashboard',
@@ -20,7 +21,7 @@ export class Customerdashboard implements OnInit {
   user: LoginResponse | null = null;
   userId!: number;
   customer: CustomerResponseModel | null = null;
-  imageUrl = 'http://localhost:8085/images/customer/';
+  imageUrl = environment.imgUrl+'customer/'
 
 
   constructor(

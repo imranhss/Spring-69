@@ -1,7 +1,7 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { AgentService } from '../../../../services/agent.service';
 import { PolicestationService } from '../../../../services/policestation.service';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CountryService } from '../../../../services/country.service';
 import { DivisionService } from '../../../../services/division.service';
@@ -15,6 +15,8 @@ import { DistrictService } from '../../../../services/district.service';
 })
 export class AddAgent {
 
+  @ViewChild('agentForm') agentForm!: NgForm;
+  @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;
 
   // =========================
   // LOCATION DROPDOWN DATA
@@ -159,6 +161,7 @@ export class AddAgent {
       .subscribe({
         next: (res) => {
           alert('Agent Saved Successfully');
+          this.resetForm();
 
           this.agent = {
             name: '',
@@ -278,6 +281,51 @@ export class AddAgent {
 
         this.cdr.markForCheck();
       });
+  }
+
+
+   /**
+   * Resets the agent form completely:
+   * - clears the model
+   * - clears location dropdown state
+   * - clears the selected photo + preview
+   * - resets Angular form state (touched/dirty/submitted/validation classes)
+   */
+  resetForm(): void {
+    this.agent = {
+      name: '',
+      email: '',
+      phone: '',
+      password: '',
+      designation: '',
+      hubId: null
+    };
+
+    this.confirmPassword = '';
+    this.submitted = false;
+
+    this.selectedFile = null;
+    this.imagePreview = null;
+
+    this.selectedCountryId = null;
+    this.selectedDivisionId = null;
+    this.selectedDistrictId = null;
+    this.divisions = [];
+    this.districts = [];
+    this.policeStations = [];
+
+    // Reset native file input (ngModel won't touch this one)
+    if (this.fileInputRef) {
+      this.fileInputRef.nativeElement.value = '';
+    }
+
+    // Reset Angular's form state: clears touched/dirty/ngSubmitted
+    // and removes validation CSS classes from the template
+    if (this.agentForm) {
+      this.agentForm.resetForm();
+    }
+
+    this.cdr.markForCheck();
   }
 
 }

@@ -77,6 +77,10 @@ public class Parcel {
     @JoinColumn(name = "destination_ps_id")
     private PoliceStation destinationPoliceStation;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "current_hub_ps_id")
+    private PoliceStation currentHub; // updates at every hub stop
+
     @OneToMany(mappedBy = "parcel", cascade = CascadeType.ALL,
             orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ParcelHistory> history = new ArrayList<>();
@@ -95,6 +99,9 @@ public class Parcel {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "agent_id")
     private Agent bookedByAgent;
+
+
+
 
     // ── Booking source ────────────────────────────────────────────
     // Exactly one of these will be set:

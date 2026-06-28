@@ -8,5 +8,6 @@ public enum ParcelStatus {
     OUT_FOR_DELIVERY,
     DELIVERED,
     CANCELLED,
-    RETURNED
+    RETURNED,
+    AT_HUB
 }

@@ -1,24 +1,22 @@
 // ── Enums ─────────────────────────────────────────────────────────────────────
 
-export type ParcelType    = 'DOCUMENT' | 'PACKAGE' | 'FRAGILE' | 'PERISHABLE' | 'OTHER';
+export type ParcelType    = 'DOCUMENT' | 'PRODUCT' | 'FRAGILE' | 'HEAVY' | 'PERISHABLE';
 export type ServiceType   = 'STANDARD' | 'EXPRESS' | 'SAME_DAY' | 'OVERNIGHT';
 export type Priority      = 'LOW' | 'NORMAL' | 'HIGH' | 'URGENT';
-export type PaymentMethod = 'CASH' | 'ONLINE' | 'COD';
+export type PaymentMethod = 'CASH' | 'BKASH' | 'COD' | 'NAGAD' | 'SSLCOMMERZ' | 'PREPAID';
 export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED';
 export type ParcelStatus  =
   | 'PENDING'
-  | 'CONFIRMED'
-  | 'PICKED_UP'
-  | 'IN_TRANSIT'
-  | 'AT_HUB'
+  | 'PICKED_UP'  
+  | 'IN_TRANSIT'  
   | 'OUT_FOR_DELIVERY'
   | 'DELIVERED'
-  | 'FAILED_DELIVERY'
-  | 'RETURNED'
-  | 'CANCELLED';
+  | 'CANCELLED'
+  | 'RETURNED';
 
+ 
 // ── Tracking history entry ─────────────────────────────────────────────────────
-
+ 
 export interface HistoryEntry {
   id: number;
   status: string;
@@ -26,10 +24,11 @@ export interface HistoryEntry {
   location: string;
   timestamp: string;
   performedBy: string;
+  riderId: number;
 }
-
+ 
 // ── Full parcel response (mirrors ParcelResponseDTO) ──────────────────────────
-
+ 
 export interface ParcelResponse {
   id: number;
   trackingCode: string;
@@ -88,26 +87,25 @@ export interface ParcelResponse {
   // History
   history: HistoryEntry[];
 }
-
+ 
 // ── Status update request (mirrors StatusUpdateRequestDTO) ────────────────────
-
+ 
 export interface StatusUpdateRequest {
   status: ParcelStatus;
   note?: string;
   location?: string;
+  riderId?: number | null;       // assign rider when OUT_FOR_DELIVERY
+  nextHubPoliceStationId?: number | null; // target hub when IN_TRANSIT
 }
-
+ 
 // ── UI badge config helper ────────────────────────────────────────────────────
-
+ 
 export const PARCEL_STATUS_META: Record<ParcelStatus, { label: string; badge: string }> = {
-  PENDING:           { label: 'Pending',           badge: 'bg-secondary'   },
-  CONFIRMED:         { label: 'Confirmed',          badge: 'bg-info text-dark' },
+  PENDING:           { label: 'Pending',           badge: 'bg-secondary'   }, 
   PICKED_UP:         { label: 'Picked Up',          badge: 'bg-primary'    },
   IN_TRANSIT:        { label: 'In Transit',         badge: 'bg-primary'    },
-  AT_HUB:            { label: 'At Hub',             badge: 'bg-warning text-dark' },
   OUT_FOR_DELIVERY:  { label: 'Out for Delivery',   badge: 'bg-info text-dark' },
   DELIVERED:         { label: 'Delivered',          badge: 'bg-success'    },
-  FAILED_DELIVERY:   { label: 'Failed Delivery',    badge: 'bg-danger'     },
   RETURNED:          { label: 'Returned',           badge: 'bg-dark'       },
   CANCELLED:         { label: 'Cancelled',          badge: 'bg-danger'     },
 };

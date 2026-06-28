@@ -1,30 +1,30 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ParcelService } from '../../../../services/parcel.service';
+import { PARCEL_STATUS_META, ParcelResponse, ParcelStatus } from '../../../../models/parcel.model';
 
 
-interface Stop {
+interface TrackStop {
   city: string;
   time: string;
   note: string;
   state: 'done' | 'active' | 'wait';
 }
- 
-interface Courier {
+
+interface TrackCourier {
   name: string;
   initials: string;
   rating: string;
   zone: string;
 }
- 
-interface Parcel {
-  status: 'transit' | 'delivered' | 'failed';
-  recipient: string;
-  weight: string;
-  courier: Courier;
-  stops: Stop[];
+
+interface TrackDisplay {
+  status: ParcelStatus;
+  stops: TrackStop[];
+  courier: TrackCourier;
 }
- 
+
 interface ServiceConfig {
   base: number;
   perKg: number;
@@ -45,112 +45,164 @@ interface ServiceConfig {
 })
 export class Home {
 
-// ── Tracking ──────────────────────────────────────────────
+
+
+
+  readonly statusMeta = PARCEL_STATUS_META;
+
+  // ── Tracking ────────────────────────────────────────────────
   trackInput = '';
   isTracking = false;
-  trackResult: Parcel | null = null;
   trackError = false;
+  trackResult: TrackDisplay | null = null;
   resultId = '';
 
-  readonly DEMO_PARCELS: Record<string, Parcel> = {
-    'SR-20843': {
-      status: 'transit',
-      recipient: 'Karim Uddin',
-      weight: '5.1 kg',
-      courier: { name: 'Mamun Rahman', initials: 'MR', rating: '4.9', zone: 'Dhaka Zone' },
-      stops: [
-        { city: 'Sylhet Hub',          time: 'Dispatched 10:15 AM', note: '✓ Departed',          state: 'done'   },
-        { city: 'Narsingdi Checkpoint', time: 'Arrived 2:42 PM',    note: '✓ Cleared',            state: 'done'   },
-        { city: 'Gazipur Sorting',      time: 'ETA 4:15 PM',        note: '⟳ En route…',          state: 'active' },
-        { city: 'Dhaka — Mirpur 10',    time: 'ETA 5:30 PM',        note: 'Awaiting delivery',    state: 'wait'   },
-      ]
-    },
-    'SR-20847': {
-      status: 'delivered',
-      recipient: 'Nusrat Jahan',
-      weight: '2.4 kg',
-      courier: { name: 'Rifat Hossain', initials: 'RH', rating: '4.7', zone: 'Chittagong Zone' },
-      stops: [
-        { city: 'Dhaka Hub',                  time: 'Dispatched 8:00 AM', note: '✓ Departed',   state: 'done' },
-        { city: 'Cumilla Checkpoint',          time: '10:30 AM',           note: '✓ Cleared',    state: 'done' },
-        { city: 'Chittagong Sorting',          time: '1:00 PM',            note: '✓ Processed',  state: 'done' },
-        { city: 'Delivered — Nasirabad, Ctg', time: '3:20 PM Today',      note: '✅ Delivered',  state: 'done' },
-      ]
-    },
-    'SR-20831': {
-      status: 'failed',
-      recipient: 'Tahmina Akter',
-      weight: '1.6 kg',
-      courier: { name: 'Rakib Alam', initials: 'RA', rating: '4.5', zone: 'Barisal Zone' },
-      stops: [
-        { city: 'Dhaka Hub',         time: 'Dispatched 9:00 AM',  note: '✓ Departed',               state: 'done'   },
-        { city: 'Faridpur Checkpoint', time: '12:00 PM',           note: '✓ Cleared',                state: 'done'   },
-        { city: 'Barisal Sadar',     time: '3:15 PM',             note: '❌ Recipient unreachable',  state: 'active' },
-        { city: 'Return to Hub',     time: 'Scheduled tomorrow',  note: 'Will retry',               state: 'wait'   },
-      ]
-    }
-  };
+  // The happy-path sequence shown in the timeline
+  private readonly trackSteps: ParcelStatus[] = [
+    'PENDING', 'PICKED_UP', 'IN_TRANSIT', 'OUT_FOR_DELIVERY', 'DELIVERED'
+  ];
 
-  fillTrack(id: string): void {
-    this.trackInput = id;
+  constructor(private parcelService: ParcelService, private cdr: ChangeDetectorRef) { }
+
+  doTrack(): void {
+    const code = this.trackInput.trim();
+    if (!code) return;
+
+    this.isTracking = true;
+    this.trackError = false;
+    this.trackResult = null;
+
+    this.parcelService.track(code).subscribe({
+      next: (res) => {
+        this.isTracking = false;
+        this.resultId = res.trackingCode;
+        this.trackResult = this.buildTrackDisplay(res);
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.isTracking = false;
+        this.trackError = true;
+      }
+    });
+  }
+
+  fillTrack(code: string): void {
+    this.trackInput = code;
     this.doTrack();
   }
 
-  doTrack(): void {
-    const val = this.trackInput.trim().toUpperCase();
-    this.trackResult = null;
-    this.trackError = false;
-
-    if (!val) return;
-
-    this.isTracking = true;
-
-    setTimeout(() => {
-      this.isTracking = false;
-      const parcel = this.DEMO_PARCELS[val];
-      if (!parcel) {
-        this.trackError = true;
-        return;
-      }
-      this.resultId = val;
-      this.trackResult = parcel;
-    }, 800);
-  }
-
   onTrackKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Enter') this.doTrack();
+    if (event.key === 'Enter') {
+      this.doTrack();
+    }
   }
 
-  getStatusBadgeClass(status: string): string {
-    const map: Record<string, string> = {
-      transit:   'badge-transit',
-      delivered: 'badge-delivered',
-      failed:    'badge-failed',
+  private buildTrackDisplay(res: ParcelResponse): TrackDisplay {
+    const isTerminalFailure = res.status === 'CANCELLED' || res.status === 'RETURNED';
+    const currentIndex = this.trackSteps.indexOf(res.status as ParcelStatus);
+
+    const stops: TrackStop[] = this.trackSteps.map((step, i) => {
+      let state: 'done' | 'active' | 'wait' = 'wait';
+
+      if (isTerminalFailure) {
+        state = 'wait';
+      } else if (currentIndex === -1) {
+        state = 'wait';
+      } else if (i < currentIndex) {
+        state = 'done';
+      } else if (i === currentIndex) {
+        state = 'active';
+      }
+
+      const historyEntry = res.history?.find(h => h.status === step);
+
+      return {
+        city: historyEntry?.location || res.destinationPoliceStation || '',
+        time: historyEntry?.timestamp ? this.formatDate(historyEntry.timestamp) : '',
+        note: historyEntry?.note || this.statusMeta[step]?.label || step,
+        state
+      };
+    });
+
+    // If the parcel was cancelled/returned, surface that as a final stop
+    if (isTerminalFailure) {
+      const lastEntry = res.history?.[res.history.length - 1];
+      stops.push({
+        city: lastEntry?.location || '',
+        time: lastEntry?.timestamp ? this.formatDate(lastEntry.timestamp) : '',
+        note: lastEntry?.note || this.statusMeta[res.status]?.label || res.status,
+        state: 'active'
+      });
+    }
+
+    const courier: TrackCourier = {
+      name: res.riderName || 'Not assigned yet',
+      initials: this.getInitials(res.riderName),
+      rating: '—',
+      zone: res.destinationPoliceStation || res.destinationDistrict || ''
     };
-    return 'badge-sm ' + (map[status] ?? 'badge-transit');
+
+    return { status: res.status, stops, courier };
   }
 
-  getStatusLabel(status: string): string {
-    const map: Record<string, string> = { transit: 'In Transit', delivered: 'Delivered', failed: 'Failed' };
-    return map[status] ?? 'Unknown';
+  private getInitials(name?: string | null): string {
+    if (!name) return '?';
+    return name
+      .split(' ')
+      .filter(Boolean)
+      .map(n => n[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase();
   }
 
-  getNoteColor(state: string): string {
-    if (state === 'active') return 'var(--amber)';
-    if (state === 'done')   return 'var(--green)';
-    return 'var(--slate-light)';
+  private formatDate(value: string | Date): string {
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleString('en-GB', {
+      day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+    });
   }
 
-  getVertClass(stops: Stop[], index: number): string {
-    if (index >= stops.length - 1) return '';
-    const next = stops[index + 1];
-    const curr = stops[index];
-    if (next.state === 'wait') return 'tl-vert partial';
-    return 'tl-vert ' + curr.state;
+  // ── Timeline helpers used directly in template ──────────────
+  getStatusBadgeClass(status: ParcelStatus): string {
+    switch (status) {
+      case 'DELIVERED':
+        return 'badge-delivered';
+      case 'CANCELLED':
+      case 'RETURNED':
+        return 'badge-failed';
+      default: // PENDING, PICKED_UP, IN_TRANSIT, OUT_FOR_DELIVERY
+        return 'badge-transit';
+    }
   }
 
-  isLastStop(stops: Stop[], index: number): boolean {
-    return index === stops.length - 1;
+  getStatusLabel(status: ParcelStatus): string {
+    return this.statusMeta[status]?.label ?? status;
+  }
+
+  isLastStop(stops: TrackStop[], i: number): boolean {
+    return i === stops.length - 1;
+  }
+
+  getVertClass(stops: TrackStop[], i: number): string {
+    const current = stops[i];
+    const next = stops[i + 1];
+    if (current.state === 'done' && next?.state === 'done') return 'tl-vert done';
+    if (current.state === 'done' && next?.state === 'active') return 'tl-vert partial';
+    return 'tl-vert wait';
+  }
+
+  getNoteColor(state: 'done' | 'active' | 'wait'): string {
+    switch (state) {
+      case 'done': return '#22C55E';
+      case 'active': return '#F59E0B';
+      default: return '#94A3B8';
+    }
+  }
+
+  scrollTo(id: string): void {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   }
 
   // ── Price Calculator ───────────────────────────────────────
@@ -198,27 +250,23 @@ export class Home {
       return;
     }
 
-    const cfg       = this.SERVICE_CONFIG[this.selectedService];
-    const codAmt    = this.hasCod ? (this.codAmount || 0) : 0;
+    const cfg        = this.SERVICE_CONFIG[this.selectedService];
+    const codAmt     = this.hasCod ? (this.codAmount || 0) : 0;
     const baseCharge = cfg.base + (this.weight * cfg.perKg);
-    const zoneFee   = this.ZONE_SURCHARGE[this.zone] ?? 0;
-    const codFee    = codAmt * 0.01;
-    const subtotal  = (baseCharge + zoneFee) * cfg.multiplier;
-    const vat       = subtotal * 0.05;
-    const total     = subtotal + codFee + vat;
+    const zoneFee    = this.ZONE_SURCHARGE[this.zone] ?? 0;
+    const codFee     = codAmt * 0.01;
+    const subtotal   = (baseCharge + zoneFee) * cfg.multiplier;
+    const vat        = subtotal * 0.05;
+    const total      = subtotal + codFee + vat;
 
-    this.pbServiceTag = `${cfg.icon} ${cfg.label}`;
-    this.pbTotal      = Math.round(total).toLocaleString();
-    this.pbBase       = `৳ ${Math.round(baseCharge)}`;
-    this.pbZone       = `৳ ${zoneFee}`;
-    this.pbCod        = `৳ ${Math.round(codFee)}`;
-    this.pbService    = `×${cfg.multiplier.toFixed(1)} + 5% VAT`;
-    this.pbFinal      = `৳ ${Math.round(total).toLocaleString()}`;
+    this.pbServiceTag  = `${cfg.icon} ${cfg.label}`;
+    this.pbTotal        = Math.round(total).toLocaleString();
+    this.pbBase         = `৳ ${Math.round(baseCharge)}`;
+    this.pbZone         = `৳ ${zoneFee}`;
+    this.pbCod          = `৳ ${Math.round(codFee)}`;
+    this.pbService      = `×${cfg.multiplier.toFixed(1)} + 5% VAT`;
+    this.pbFinal        = `৳ ${Math.round(total).toLocaleString()}`;
 
     this.showPriceResult = true;
-  }
-
-  scrollTo(id: string): void {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   }
 }

@@ -3,6 +3,7 @@ import { PolicestationService } from '../../../../services/policestation.service
 import { AgentService } from '../../../../services/agent.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-agent-list',
@@ -12,7 +13,9 @@ import { CommonModule } from '@angular/common';
 })
 export class AgentList {
 
-  
+ imageUrl = environment.imgUrl+'agent/'
+
+
 
   agents: any[] = [];
   hubs: any[] = [];
@@ -97,7 +100,7 @@ export class AgentList {
    * for the agent's photo (e.g. imageUrl, photoUrl, imagePath...).
    */
   getAgentImage(agent: any): string | null {
-    return agent.imageUrl || agent.photoUrl || agent.image || null;
+    return agent.image ? this.imageUrl + agent.image : '';
   }
 
   onImageError(agent: any): void {
