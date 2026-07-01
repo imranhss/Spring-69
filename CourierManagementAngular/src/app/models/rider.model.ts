@@ -49,3 +49,14 @@ export interface RiderResponseModel {
   /** UI-only flag — set to true when the profile image fails to load. */
   _imageError?: boolean;
 }
+
+
+
+
+export interface RiderZone {
+  id: number;
+  name: string;         // police station name
+  districtName: string;
+  divisionName: string;
+}
+

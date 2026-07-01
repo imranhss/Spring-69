@@ -136,4 +136,47 @@ public class RiderServiceImpl implements RiderService {
             throw new RuntimeException("Image upload failed");
         }
     }
+
+    // In RiderServiceImpl
+
+    @Override
+    public List<RiderResponseDTO> getByPoliceStation(Long policeStationId) {
+        return riderRepository.findByZonesId(policeStationId)
+                .stream().map(RiderMapper::toDTO).toList();
+    }
+
+    @Override
+    public List<RiderResponseDTO> getActiveByPoliceStation(Long policeStationId) {
+        return riderRepository.findByZonesIdAndActiveTrue(policeStationId)
+                .stream().map(RiderMapper::toDTO).toList();
+    }
+
+    @Override
+    public List<RiderResponseDTO> getByDistrict(Long districtId) {
+        // fetch all police station IDs in this district first
+        List<Long> stationIds = policeStationRepository.findByDistrictId(districtId)
+                .stream().map(PoliceStation::getId).toList();
+        return riderRepository.findByZonesIdIn(stationIds)
+                .stream().map(RiderMapper::toDTO).toList();
+    }
+
+    @Override
+    public List<RiderResponseDTO> getActiveByDistrict(Long districtId) {
+        List<Long> stationIds = policeStationRepository.findByDistrictId(districtId)
+                .stream().map(PoliceStation::getId).toList();
+        return riderRepository.findByZonesIdInAndActiveTrue(stationIds)
+                .stream().map(RiderMapper::toDTO).toList();
+    }
+
+    @Override
+    @Transactional
+    public RiderResponseDTO setActive(Long id, boolean active) {
+        Rider rider = riderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Rider not found: " + id));
+        rider.setActive(active);
+        return RiderMapper.toDTO(riderRepository.save(rider));
+    }
+
+
+
 }

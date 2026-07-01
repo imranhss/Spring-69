@@ -35,5 +35,31 @@ export class CustomerService {
   }
 
 
+   /** All customers — used for admin/agent customer search (track-on-behalf, lists, etc). */
+  getAll(): Observable<CustomerResponseModel[]> {
+    return this.http.get<CustomerResponseModel[]>(this.apiUrl);
+  }
+ 
+
+   /**
+   * Update an existing customer's details (and optionally their photo).
+   * PUT /api/customer/{id} — multipart, same pattern as create().
+   */
+  update(id: number, customer: CustomerModel, image: File | null): Observable<CustomerResponseModel> {
+    const formData = new FormData();
+ 
+    formData.append('customer', JSON.stringify(customer));
+ 
+    if (image) {
+      formData.append('image', image);
+    }
+ 
+    return this.http.put<CustomerResponseModel>(
+      this.apiUrl + id, formData
+    );
+  }
+ 
+
+
 
 }

@@ -1,0 +1,190 @@
+<div class="container py-5">
+  <div class="card shadow border-0 mx-auto" style="max-width: 760px;">
+
+    <!-- ── Header ──────────────────────────────────────────────── -->
+    <div class="card-header bg-success text-white py-4 px-4 px-md-5 d-flex align-items-center justify-content-between">
+      <div>
+        <h4 class="mb-1 fw-bold"><i class="bi bi-person-gear me-2"></i>My Profile</h4>
+        <small class="opacity-75">Update your personal details</small>
+      </div>
+      <a routerLink="/agent" class="btn btn-outline-light btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Back
+      </a>
+    </div>
+
+    <!-- ── Loading ─────────────────────────────────────────────── -->
+    <div *ngIf="loading" class="card-body text-center py-5 text-muted">
+      <div class="spinner-border text-success mb-2"></div>
+      <div>Loading profile...</div>
+    </div>
+
+    <div class="card-body p-4 p-md-5" *ngIf="!loading">
+
+      <!-- Success / Error -->
+      <div *ngIf="successMessage" class="alert alert-success d-flex gap-2 align-items-center">
+        <i class="bi bi-check-circle-fill"></i><span>{{ successMessage }}</span>
+      </div>
+      <div *ngIf="errorMessage" class="alert alert-danger d-flex gap-2 align-items-center">
+        <i class="bi bi-exclamation-triangle-fill"></i><span>{{ errorMessage }}</span>
+      </div>
+
+      <form #profileForm="ngForm" (ngSubmit)="saveProfile()" novalidate>
+
+        <!-- ── PHOTO ───────────────────────────────────────────── -->
+        <div class="d-flex align-items-center gap-3 mb-4">
+
+          <div class="position-relative flex-shrink-0">
+            <img
+              *ngIf="currentPhotoUrl"
+              [src]="currentPhotoUrl"
+              class="rounded-circle border"
+              style="width: 96px; height: 96px; object-fit: cover;">
+
+            <div
+              *ngIf="!currentPhotoUrl"
+              class="rounded-circle bg-light border d-flex align-items-center justify-content-center"
+              style="width: 96px; height: 96px;">
+              <i class="bi bi-person-fill text-secondary" style="font-size: 2.4rem;"></i>
+            </div>
+
+            <button
+              *ngIf="imagePreview"
+              type="button"
+              class="btn btn-danger rounded-circle position-absolute top-0 end-0 p-0 d-flex align-items-center justify-content-center"
+              style="width: 26px; height: 26px;"
+              (click)="removeSelectedFile(fileInput)">
+              <i class="bi bi-x-lg" style="font-size: 0.7rem;"></i>
+            </button>
+          </div>
+
+          <div class="flex-grow-1">
+            <label class="form-label fw-semibold mb-1">Profile Photo</label>
+            <input
+              #fileInput
+              type="file"
+              class="form-control"
+              accept="image/*"
+              (change)="onFileSelected($event)">
+            <small class="text-muted d-block mt-1" *ngIf="selectedFile">
+              <i class="bi bi-paperclip me-1"></i>{{ selectedFile.name }}
+            </small>
+          </div>
+        </div>
+
+        <!-- ── PERSONAL DETAILS ───────────────────────────────────── -->
+        <h6 class="text-uppercase text-success fw-bold mb-3">
+          <i class="bi bi-person-vcard-fill me-2"></i>Personal Details
+        </h6>
+        <hr class="mt-0 mb-3">
+
+        <div class="row g-3 mb-2">
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+              <input class="form-control" [(ngModel)]="form.name" name="name"
+                required [class.is-invalid]="submitted && !form.name">
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="submitted && !form.name">Required.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+              <input type="email" class="form-control" [(ngModel)]="form.email" name="email"
+                required [class.is-invalid]="submitted && !form.email">
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="submitted && !form.email">Required.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Phone <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-telephone-fill"></i></span>
+              <input class="form-control" [(ngModel)]="form.phone" name="phone"
+                required [class.is-invalid]="submitted && !form.phone">
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="submitted && !form.phone">Required.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Designation</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-briefcase-fill"></i></span>
+              <input class="form-control" [(ngModel)]="form.designation" name="designation"
+                placeholder="e.g. Field Agent">
+            </div>
+          </div>
+
+          <div class="col-12" *ngIf="user?.hubName">
+            <label class="form-label fw-semibold">Hub</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-shield-fill"></i></span>
+              <input class="form-control" [value]="user?.hubName" disabled readonly>
+            </div>
+            <small class="text-muted">Hub assignment is managed by an administrator.</small>
+          </div>
+
+        </div>
+
+        <!-- ── PASSWORD (optional) ─────────────────────────────────── -->
+        <div class="d-flex align-items-center justify-content-between mt-5 mb-3">
+          <h6 class="text-uppercase text-success fw-bold mb-0">
+            <i class="bi bi-lock-fill me-2"></i>Change Password
+          </h6>
+          <div class="form-check form-switch mb-0">
+            <input class="form-check-input" type="checkbox" id="pwToggle"
+              [(ngModel)]="showPasswordSection" name="pwToggle">
+            <label class="form-check-label small" for="pwToggle">Enable</label>
+          </div>
+        </div>
+        <hr class="mt-0 mb-3">
+
+        <div class="row g-3 mb-2" *ngIf="showPasswordSection">
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">New Password</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+              <input [type]="showPassword ? 'text' : 'password'" class="form-control"
+                [(ngModel)]="newPassword" name="newPassword"
+                minlength="6" placeholder="At least 6 characters">
+              <button class="btn btn-outline-secondary" type="button" (click)="showPassword = !showPassword">
+                <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Confirm Password</label>
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+              <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control"
+                [class.is-invalid]="passwordsMismatch"
+                [(ngModel)]="confirmPassword" name="confirmPassword"
+                placeholder="Re-enter password">
+              <button class="btn btn-outline-secondary" type="button" (click)="showConfirmPassword = !showConfirmPassword">
+                <i class="bi" [ngClass]="showConfirmPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+              </button>
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="passwordsMismatch">Passwords do not match.</div>
+          </div>
+
+        </div>
+
+        <!-- ── SUBMIT ──────────────────────────────────────────────── -->
+        <button
+          class="btn btn-success btn-lg w-100 d-flex align-items-center justify-content-center gap-2 mt-4"
+          type="submit"
+          [disabled]="saving">
+          <span *ngIf="saving" class="spinner-border spinner-border-sm"></span>
+          <i class="bi bi-check-circle-fill" *ngIf="!saving"></i>
+          {{ saving ? 'Saving...' : 'Save Changes' }}
+        </button>
+
+      </form>
+    </div>
+  </div>
+</div>

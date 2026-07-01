@@ -101,6 +101,7 @@ export class BookParcelComponent {
     if (this.iAmSender && user) {
       this.parcel.senderName = user.name;
       this.parcel.senderPhone = user.phone;
+      
     } else {
       this.parcel.senderName = '';
       this.parcel.senderPhone = '';

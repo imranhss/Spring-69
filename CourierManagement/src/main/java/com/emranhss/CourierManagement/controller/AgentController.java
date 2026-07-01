@@ -109,11 +109,22 @@ public class AgentController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
-        List<ParcelResponseDTO> list = agentService.getHubParcelsByStatus(agentId, parcelStatus);
-        return list.isEmpty()
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.ok(list);
+        return ResponseEntity.ok(agentService.getHubParcelsByStatus(agentId, parcelStatus));
     }
+//    public ResponseEntity<List<ParcelResponseDTO>> getHubParcelsByStatus(
+//            @PathVariable Long agentId,
+//            @PathVariable String status) {
+//        ParcelStatus parcelStatus;
+//        try {
+//            parcelStatus = ParcelStatus.valueOf(status.toUpperCase());
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//        List<ParcelResponseDTO> list = agentService.getHubParcelsByStatus(agentId, parcelStatus);
+//        return list.isEmpty()
+//                ? ResponseEntity.noContent().build()
+//                : ResponseEntity.ok(list);
+//    }
 
     // Agent updates status of a parcel at their hub
     // PATCH /api/agents/1/parcels/5/status

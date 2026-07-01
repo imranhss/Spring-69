@@ -1,0 +1,150 @@
+<div class="container-fluid py-4">
+
+  <!-- ── Header ──────────────────────────────────────────────── -->
+  <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+    <div>
+      <h5 class="fw-bold mb-0">
+        <i class="bi bi-bicycle text-primary me-2"></i>Hub Riders
+      </h5>
+      <small class="text-muted">
+        <i class="bi bi-shield-fill me-1"></i>{{ hubName }}
+        &nbsp;·&nbsp; {{ filteredRiders.length }} of {{ riders.length }} riders
+      </small>
+    </div>
+    <button class="btn btn-outline-primary btn-sm" (click)="loadRiders()">
+      <i class="bi bi-arrow-clockwise me-1"></i>Refresh
+    </button>
+  </div>
+
+  <!-- ── Search + Active toggle ───────────────────────────────── -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body p-3">
+      <div class="row g-2 align-items-center">
+
+        <div class="col-md-7">
+          <div class="input-group">
+            <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Search by name, phone, vehicle type..."
+              [(ngModel)]="searchTerm">
+            <button *ngIf="searchTerm" class="btn btn-outline-secondary"
+              type="button" (click)="searchTerm = ''">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-5 d-flex align-items-center gap-2">
+          <div class="form-check form-switch mb-0">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="activeToggle"
+              [(ngModel)]="showActive"
+              (ngModelChange)="onToggleActive()">
+            <label class="form-check-label fw-semibold small" for="activeToggle">
+              Active Riders Only
+            </label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Loading ──────────────────────────────────────────────── -->
+  <div *ngIf="loading" class="text-center py-5 text-muted">
+    <div class="spinner-border text-primary mb-2" role="status"></div>
+    <div>Loading riders...</div>
+  </div>
+
+  <!-- ── Error ────────────────────────────────────────────────── -->
+  <div *ngIf="!loading && errorMessage"
+    class="alert alert-danger d-flex gap-2 align-items-center">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <div class="flex-grow-1">{{ errorMessage }}</div>
+    <button class="btn btn-sm btn-outline-danger" (click)="loadRiders()">Retry</button>
+  </div>
+
+  <!-- ── Empty ────────────────────────────────────────────────── -->
+  <div *ngIf="!loading && !errorMessage && filteredRiders.length === 0"
+    class="text-center py-5 text-muted">
+    <i class="bi bi-bicycle fs-1 d-block mb-2"></i>
+    <div *ngIf="riders.length === 0">No riders are assigned to {{ hubName }} yet.</div>
+    <div *ngIf="riders.length > 0">No riders match your search.</div>
+  </div>
+
+  <!-- ── Cards ────────────────────────────────────────────────── -->
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-3"
+    *ngIf="!loading && filteredRiders.length > 0">
+
+    <div class="col" *ngFor="let rider of filteredRiders">
+      <div class="card h-100 border-0 shadow-sm rider-card">
+        <div class="card-body p-4">
+
+          <div class="d-flex align-items-center gap-3 mb-3">
+
+            <!-- Avatar -->
+            <img
+              *ngIf="rider.image && !rider._imgError"
+              [src]="imageBase + rider.image"
+              (error)="onImageError(rider)"
+              class="rounded-circle border"
+              style="width:56px;height:56px;object-fit:cover;"
+              alt="{{ rider.name }}">
+
+            <div
+              *ngIf="!rider.image || rider._imgError"
+              class="rounded-circle bg-light border d-flex align-items-center
+                     justify-content-center flex-shrink-0"
+              style="width:56px;height:56px;">
+              <i class="bi bi-person-fill text-secondary" style="font-size:1.5rem;"></i>
+            </div>
+
+            <div class="overflow-hidden">
+              <div class="fw-bold text-truncate">{{ rider.name }}</div>
+              <div class="text-muted small">{{ rider.phone }}</div>
+              <span
+                class="badge mt-1"
+                [ngClass]="rider.active ? 'bg-success' : 'bg-secondary'">
+                {{ rider.active ? 'Active' : 'Inactive' }}
+              </span>
+            </div>
+          </div>
+
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-1">
+              <i class="bi bi-credit-card-2-front-fill text-primary me-2"></i>
+              <span class="text-muted">Vehicle:</span>
+              <strong class="ms-1">{{ rider.vehicleType }}</strong>
+            </li>
+            <li class="mb-1">
+              <i class="bi bi-card-text text-primary me-2"></i>
+              <span class="text-muted">Plate:</span>
+              <strong class="ms-1">{{ rider.vehicleNumber }}</strong>
+            </li>
+            <li class="mb-1">
+              <i class="bi bi-star-fill text-warning me-2"></i>
+              <span class="text-muted">Rating:</span>
+              <strong class="ms-1">{{ rider.rating ?? '—' }} / 5.0</strong>
+            </li>
+            <li class="mb-1">
+              <i class="bi bi-box-seam-fill text-primary me-2"></i>
+              <span class="text-muted">Deliveries:</span>
+              <strong class="ms-1">{{ rider.totalDeliveries ?? 0 }}</strong>
+            </li>
+            <li>
+              <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+              <span class="text-muted">Zones:</span>
+              <strong class="ms-1">{{ rider.zones?.length ?? 0 }}</strong>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

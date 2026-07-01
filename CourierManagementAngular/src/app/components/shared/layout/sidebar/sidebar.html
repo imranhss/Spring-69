@@ -1,157 +1,194 @@
 <aside class="sidebar">
 
+  <!-- Logo -->
   <div class="sidebar-logo">
     <div class="logo-icon">🚚</div>
-    <div class="logo-text">
-      Swift<span>Route</span>
-    </div>
+    <div class="logo-text">Swift<span>Route</span></div>
   </div>
 
-  <span class="sidebar-section-label">
-    Main Menu
-  </span>
+  <!-- ═══════════════════════════════════════════
+       ADMIN
+  ════════════════════════════════════════════ -->
+  <ng-container *ngIf="userRole === 'ADMIN'">
 
-  <a class="nav-item active">
-    <i class="fas fa-chart-pie nav-icon"></i>
-    Dashboard
-  </a>
+    <span class="sidebar-section-label">Main Menu</span>
 
-  <a class="nav-item">
-    <i class="fas fa-box nav-icon"></i>
-    Parcels
-    <span class="nav-badge">24</span>
-  </a>
-  <a class="nav-item" href="hubparcel">
-    <i class="fas fa-box nav-icon"></i>
-    Hub Parcel
-    <span class="nav-badge">24</span>
-  </a>
-  <a class="nav-item" href="agentbook">
-    <i class="fas fa-box nav-icon"></i>
-    Book Parcel(A)
-    <span class="nav-badge">24</span>
-  </a>
-  <a class="nav-item" href="customerbook">
-    <i class="fas fa-box nav-icon"></i>
-    Book Parcel
-    <span class="nav-badge">24</span>
-  </a>
-  <a class="nav-item" href="myparcel">
-    <i class="fas fa-box nav-icon"></i>
-    My Parcel
-    <span class="nav-badge">24</span>
-  </a>
-
-  <a class="nav-item">
-    <i class="fas fa-route nav-icon"></i>
-    Shipments
-  </a>
-
-  <a class="nav-item">
-    <i class="fas fa-map-location-dot nav-icon"></i>
-    Live Tracking
-    <span class="nav-badge">8</span>
-  </a>
-
- <div *ngIf="userRole === 'ADMIN' || userRole === 'AGENT'">
-
-    <a class="nav-item" href="addagent">
-      <i class="fas fa-warehouse nav-icon"></i>
-      Agent
+    <a class="nav-item" routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+      <i class="fas fa-chart-pie nav-icon"></i>Dashboard
     </a>
 
-    <a class="nav-item" href="agentList">
-      <i class="fas fa-warehouse nav-icon"></i>
-      Agent List
-    </a>
-    <a class="nav-item" href="addrider">
-      <i class="fas fa-warehouse nav-icon"></i>
-      Rider
-    </a>
-    <a class="nav-item" href="riderlist">
-      <i class="fas fa-warehouse nav-icon"></i>
-      Rider List
+    <span class="sidebar-section-label">Parcels</span>
+
+    <a class="nav-item" routerLink="/admin/parcels" routerLinkActive="active">
+      <i class="fas fa-box nav-icon"></i>All Parcels
     </a>
 
-    <a class="nav-item">
-      <i class="fas fa-motorcycle nav-icon"></i>
-      Couriers
+    <span class="sidebar-section-label">People</span>
+
+    <a class="nav-item" routerLink="/addagentbyAdmin" routerLinkActive="active">
+      <i class="fas fa-user-plus nav-icon"></i>Add Agent
+    </a>
+    <a class="nav-item" routerLink="/agentList" routerLinkActive="active">
+      <i class="fas fa-id-badge nav-icon"></i>Agent List
+    </a>
+    <a class="nav-item" routerLink="/addriderbyadmin" routerLinkActive="active">
+      <i class="fas fa-user-plus nav-icon"></i>Add Rider
+    </a>
+    <a class="nav-item" routerLink="/riderlist" routerLinkActive="active">
+      <i class="fas fa-motorcycle nav-icon"></i>Rider List
+    </a>
+    <a class="nav-item" routerLink="/addcustomerbyAdmin" routerLinkActive="active">
+      <i class="fas fa-user-plus nav-icon"></i>Add Customer
+    </a>
+    <a class="nav-item" routerLink="/admin/customers" routerLinkActive="active">
+      <i class="fas fa-users nav-icon"></i>Customer List
     </a>
 
-    <span class="sidebar-section-label">
-      Management
-    </span>
+    <span class="sidebar-section-label">Management</span>
 
-    <a class="nav-item" href="country">
-      <i class="bi-flag"></i>
-      Country
+    <a class="nav-item" routerLink="/country" routerLinkActive="active">
+      <i class="bi bi-flag nav-icon"></i>Country
     </a>
-    <a class="nav-item" href="division">
-      <i class="bi bi-map"></i>
-      Division
+    <a class="nav-item" routerLink="/division" routerLinkActive="active">
+      <i class="bi bi-map nav-icon"></i>Division
     </a>
-    <a class="nav-item" href="district">
-      <i class="bi-flag"></i>
-      District
+    <a class="nav-item" routerLink="/district" routerLinkActive="active">
+      <i class="bi bi-map-fill nav-icon"></i>District
     </a>
-    <a class="nav-item" href="police">
-      <i class="bi-flag"></i>
-      Police Station
+    <a class="nav-item" routerLink="/police" routerLinkActive="active">
+      <i class="fas fa-shield nav-icon"></i>Police Station
     </a>
-    <a class="nav-item" href="hub">
-      <i class="bi-flag"></i>
-      Find Hub
+    <a class="nav-item" routerLink="/hub" routerLinkActive="active">
+      <i class="fas fa-shield nav-icon"></i>Hub Serach
     </a>
 
+    <span class="sidebar-section-label">System</span>
+
+    <a class="nav-item" routerLink="/admin/settings" routerLinkActive="active">
+      <i class="fas fa-gear nav-icon"></i>Settings
+    </a>
+
+  </ng-container>
+
+  <!-- ═══════════════════════════════════════════
+       AGENT
+  ════════════════════════════════════════════ -->
+  <ng-container *ngIf="userRole === 'AGENT'">
+
+    <span class="sidebar-section-label">Main Menu</span>
+
+    <a class="nav-item" routerLink="/agent" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+      <i class="fas fa-chart-pie nav-icon"></i>Dashboard
+    </a>
+
+    <span class="sidebar-section-label">Profile</span>
+
+    <a class="nav-item" routerLink="/agentprofile" routerLinkActive="active">
+      <i class="fas fa-box nav-icon"></i>Profile
+    </a>
+
+    <span class="sidebar-section-label">Parcels</span>
+
+    <a class="nav-item" routerLink="/hub" routerLinkActive="active">
+      <i class="fas fa-box nav-icon"></i>Find Hub
+    </a>
+    <a class="nav-item" routerLink="/hubparcel" routerLinkActive="active">
+      <i class="fas fa-box nav-icon"></i>Hub Parcels
+    </a>
+    <a class="nav-item" routerLink="/agentbook" routerLinkActive="active">
+      <i class="fas fa-plus-circle nav-icon"></i>Book Parcel
+    </a>
+    <span class="sidebar-section-label">Rider</span>
+
+    <a class="nav-item" routerLink="/addriderbyagent" routerLinkActive="active">
+      <i class="fas fa-user-plus nav-icon"></i>Add Rider
+    </a>
+    <a class="nav-item" routerLink="/riderListAgent" routerLinkActive="active">
+      <i class="fas fa-motorcycle nav-icon"></i>Rider List
+    </a>
+
+
+
+    <span class="sidebar-section-label">System</span>
+
+    <a class="nav-item" routerLink="/agent/notifications" routerLinkActive="active">
+      <i class="fas fa-bell nav-icon"></i>Notifications
+    </a>
+
+  </ng-container>
+
+  <!-- ═══════════════════════════════════════════
+       CUSTOMER
+  ════════════════════════════════════════════ -->
+  <ng-container *ngIf="userRole === 'CUSTOMER'">
+
+    <span class="sidebar-section-label">Main Menu</span>
+
+    <a class="nav-item" routerLink="/customer" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+      <i class="fas fa-chart-pie nav-icon"></i>Dashboard
+    </a>
+
+    <span class="sidebar-section-label">Profile</span>
+
+    <a class="nav-item" routerLink="customerprofile" routerLinkActive="active">
+      <i class="fas fa-plus-circle nav-icon"></i>Profile
+    </a>
+
+    <span class="sidebar-section-label">Parcels</span>
+
+    <a class="nav-item" routerLink="customerbook" routerLinkActive="active">
+      <i class="fas fa-plus-circle nav-icon"></i>Book Parcel
+    </a>
+    <a class="nav-item" routerLink="/myparcel" routerLinkActive="active">
+      <i class="fas fa-box nav-icon"></i>My Parcels
+    </a>
+    <a class="nav-item" routerLink="/customertrack" routerLinkActive="active">
+      <i class="fas fa-map-location-dot nav-icon"></i>Track Parcel
+    </a>
+
+    <span class="sidebar-section-label">System</span>
+
+    <a class="nav-item" routerLink="/customer/notifications" routerLinkActive="active">
+      <i class="fas fa-bell nav-icon"></i>Notifications
+    </a>
+
+  </ng-container>
+
+  <!-- ═══════════════════════════════════════════
+       RIDER
+  ════════════════════════════════════════════ -->
+  <ng-container *ngIf="userRole === 'RIDER'">
+
+    <span class="sidebar-section-label">Main Menu</span>
+
+    <a class="nav-item" routerLink="/rider" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+      <i class="fas fa-chart-pie nav-icon"></i>Dashboard
+    </a>
+
+    <span class="sidebar-section-label">Deliveries</span>
+
+    <a class="nav-item" routerLink="/rider/deliveries" routerLinkActive="active">
+      <i class="fas fa-box nav-icon"></i>My Deliveries
+    </a>
+    <a class="nav-item" routerLink="/rider/zones" routerLinkActive="active">
+      <i class="fas fa-map-location-dot nav-icon"></i>My Zones
+    </a>
+
+    <span class="sidebar-section-label">System</span>
+
+    <a class="nav-item" routerLink="/rider/notifications" routerLinkActive="active">
+      <i class="fas fa-bell nav-icon"></i>Notifications
+    </a>
+
+  </ng-container>
+
+  <!-- ═══════════════════════════════════════════
+       LOGOUT — always visible
+  ════════════════════════════════════════════ -->
+  <div class="sidebar-footer">
+    <a class="nav-item nav-item-danger" (click)="logout()">
+      <i class="fas fa-right-from-bracket nav-icon"></i>Logout
+    </a>
   </div>
 
-
-
-
-
-  <div *ngIf="userRole === 'CUSTOMER'">
-
-    <a class="nav-item" href="addcustomer">
-      <i class="fas fa-users nav-icon"></i>
-      Customers
-    </a>
-
-    <a class="nav-item" href="customerbook">
-      <i class="fas fa-box nav-icon"></i>
-      Book Parcel
-      <span class="nav-badge">24</span>
-    </a>
-    <a class="nav-item" href="myparcel">
-      <i class="fas fa-box nav-icon"></i>
-      My Parcel
-      <span class="nav-badge">24</span>
-    </a>
-  </div>
-
-
-  
-  <a class="nav-item">
-    <i class="fas fa-file-invoice nav-icon"></i>
-    Invoices
-  </a>
-
-  <a class="nav-item">
-    <i class="fas fa-tags nav-icon"></i>
-    Rates & Zones
-  </a>
-
-  <span class="sidebar-section-label">
-    System
-  </span>
-
-  <a class="nav-item">
-    <i class="fas fa-bell nav-icon"></i>
-    Notifications
-    <span class="nav-badge">5</span>
-  </a>
-
-  <a class="nav-item">
-    <i class="fas fa-gear nav-icon"></i>
-    Settings
-  </a>
 </aside>

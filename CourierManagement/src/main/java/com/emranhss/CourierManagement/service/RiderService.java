@@ -22,4 +22,25 @@ public interface RiderService {
     RiderResponseDTO getByUserId(Long id);
 
 
+    // ── Zone / coverage queries ────────────────────────────────────
+
+    /** All riders covering a specific police station */
+    List<RiderResponseDTO> getByPoliceStation(Long policeStationId);
+
+    /** Only active riders covering a specific police station */
+    List<RiderResponseDTO> getActiveByPoliceStation(Long policeStationId);
+
+    /** Riders covering any police station in a given district */
+    List<RiderResponseDTO> getByDistrict(Long districtId);
+
+    /** Only active riders covering any police station in a given district */
+    List<RiderResponseDTO> getActiveByDistrict(Long districtId);
+
+    // ── Status toggle ─────────────────────────────────────────────
+
+    /** Activate or deactivate a rider */
+    RiderResponseDTO setActive(Long id, boolean active);
+
+
+
 }

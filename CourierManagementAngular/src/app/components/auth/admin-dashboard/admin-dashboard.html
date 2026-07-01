@@ -1,0 +1,210 @@
+<div class="admin-dash">
+
+  <!-- ══════════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════════ -->
+  <div class="dash-header">
+    <div>
+      <div class="dash-greeting">{{ greeting }}, Admin 👋</div>
+      <div class="dash-subtitle">Here's what's happening across your network today.</div>
+    </div>
+    <div class="dash-header-actions">
+      <a routerLink="/agentList" class="action-btn">
+        <i class="bi bi-people-fill"></i> Manage Agents
+      </a>
+      <a routerLink="/riderlist" class="action-btn action-btn-outline">
+        <i class="bi bi-bicycle"></i> Manage Riders
+      </a>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       STAT CARDS
+  ══════════════════════════════════════════ -->
+  <div class="stats-grid">
+
+    <div class="stat-card stat-blue">
+      <div class="stat-icon"><i class="bi bi-box-seam-fill"></i></div>
+      <div class="stat-body">
+        <div class="stat-value">{{ totalParcels }}</div>
+        <div class="stat-label">Total Parcels</div>
+      </div>
+      <a routerLink="/hubparcel" class="stat-link">View all →</a>
+    </div>
+
+    <div class="stat-card stat-amber">
+      <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
+      <div class="stat-body">
+        <div class="stat-value">{{ pendingParcels }}</div>
+        <div class="stat-label">Pending</div>
+      </div>
+    </div>
+
+    <div class="stat-card stat-purple">
+      <div class="stat-icon"><i class="bi bi-arrow-left-right"></i></div>
+      <div class="stat-body">
+        <div class="stat-value">{{ inTransit }}</div>
+        <div class="stat-label">In Transit / At Hub</div>
+      </div>
+    </div>
+
+    <div class="stat-card stat-green">
+      <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
+      <div class="stat-body">
+        <div class="stat-value">{{ delivered }}</div>
+        <div class="stat-label">Delivered</div>
+      </div>
+    </div>
+
+    <div class="stat-card stat-teal">
+      <div class="stat-icon"><i class="bi bi-person-badge-fill"></i></div>
+      <div class="stat-body">
+        <div class="stat-value">{{ totalAgents }}</div>
+        <div class="stat-label">Active Agents</div>
+      </div>
+      <a routerLink="/agentList" class="stat-link">View all →</a>
+    </div>
+
+    <div class="stat-card stat-coral">
+      <div class="stat-icon"><i class="bi bi-bicycle"></i></div>
+      <div class="stat-body">
+        <div class="stat-value">{{ totalRiders }}</div>
+        <div class="stat-label">Active Riders</div>
+      </div>
+      <a routerLink="/riderlist" class="stat-link">View all →</a>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       QUICK ACTIONS
+  ══════════════════════════════════════════ -->
+  <div class="section-title">Quick Actions</div>
+  <div class="quick-grid">
+
+    <a routerLink="/addagent" class="quick-card">
+      <i class="bi bi-person-plus-fill quick-icon"></i>
+      <span>Add Agent</span>
+    </a>
+    <a routerLink="/addrider" class="quick-card">
+      <i class="bi bi-bicycle quick-icon"></i>
+      <span>Add Rider</span>
+    </a>
+    <a routerLink="/addcustomer" class="quick-card">
+      <i class="bi bi-person-fill quick-icon"></i>
+      <span>Add Customer</span>
+    </a>
+    <a routerLink="/country" class="quick-card">
+      <i class="bi bi-flag-fill quick-icon"></i>
+      <span>Country</span>
+    </a>
+    <a routerLink="/division" class="quick-card">
+      <i class="bi bi-map-fill quick-icon"></i>
+      <span>Division</span>
+    </a>
+    <a routerLink="/district" class="quick-card">
+      <i class="bi bi-geo-fill quick-icon"></i>
+      <span>District</span>
+    </a>
+    <a routerLink="/police" class="quick-card">
+      <i class="bi bi-shield-fill quick-icon"></i>
+      <span>Police Station</span>
+    </a>
+    <a routerLink="/hub" class="quick-card">
+      <i class="bi bi-building-fill quick-icon"></i>
+      <span>Find Hub</span>
+    </a>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       RECENT PARCELS
+  ══════════════════════════════════════════ -->
+  <div class="d-flex flex-wrap align-items-center justify-content-between" style="margin-top: 2rem;">
+    <div class="section-title mb-0">Recent Parcels</div>
+
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+      <select class="form-select form-select-sm" style="width: auto;"
+              [(ngModel)]="selectedHub" (ngModelChange)="onFilterChange()">
+        <option value="">All Hubs</option>
+        <option *ngFor="let hub of hubOptions" [value]="hub">{{ hub }}</option>
+      </select>
+
+      <select class="form-select form-select-sm" style="width: auto;"
+              [(ngModel)]="selectedStatus" (ngModelChange)="onFilterChange()">
+        <option value="">All Statuses</option>
+        <option *ngFor="let s of statusOptions" [value]="s">{{ badgeLabel(s) }}</option>
+      </select>
+
+      <button class="btn btn-sm btn-outline-secondary"
+              *ngIf="selectedHub || selectedStatus"
+              (click)="clearFilters()">
+        Clear
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-center py-4 text-muted">
+    <div class="spinner-border spinner-border-sm text-primary me-2"></div>Loading...
+  </div>
+
+  <div class="text-muted small mt-2 mb-2" *ngIf="!loading && recentParcels.length > 0">
+    <span *ngIf="selectedHub || selectedStatus">
+      Showing {{ recentParcels.length }} matching parcel{{ recentParcels.length === 1 ? '' : 's' }}
+    </span>
+    <span *ngIf="!selectedHub && !selectedStatus">
+      Showing {{ recentParcels.length }} most recent parcels
+    </span>
+  </div>
+
+  <div class="recent-table-wrap" *ngIf="!loading && recentParcels.length > 0">
+    <table class="recent-table">
+      <thead>
+        <tr>
+          <th>Tracking</th>
+          <th>Sender</th>
+          <th>Receiver</th>
+          <th>Route</th>
+          <th>Charge</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of recentParcels">
+          <td>
+            <span class="tracking-code">{{ p.trackingCode }}</span>
+          </td>
+          <td>
+            <div class="name-cell">{{ p.senderName }}</div>
+            <div class="sub-cell">{{ p.senderPhone }}</div>
+          </td>
+          <td>
+            <div class="name-cell">{{ p.receiverName }}</div>
+            <div class="sub-cell">{{ p.receiverPhone }}</div>
+          </td>
+          <td>
+            <div class="route-cell">
+              <span class="route-from">{{ p.originDistrict }}</span>
+              <i class="bi bi-arrow-right route-arrow"></i>
+              <span class="route-to">{{ p.destinationDistrict }}</span>
+            </div>
+          </td>
+          <td class="charge-cell">৳ {{ p.deliveryCharge }}</td>
+          <td>
+            <span class="badge" [ngClass]="badgeClass(p.status)">
+              {{ badgeLabel(p.status) }}
+            </span>
+          </td>
+          <td class="date-cell">{{ p.createdAt | date:'dd MMM, HH:mm' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!loading && recentParcels.length === 0" class="empty-state">
+    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+    No parcels match your filters.
+  </div>
+
+</div>

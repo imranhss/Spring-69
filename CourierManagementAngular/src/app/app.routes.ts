@@ -26,6 +26,12 @@ import { AgentParcelRequestComponent } from './components/feature/agents/agent-p
 import { BookingReceiptComponent } from './components/feature/print/booking-receipt-component/booking-receipt-component';
 import { BookParcelComponent } from './components/feature/customer/book-parcel-component/book-parcel-component';
 import { MyParcelsComponent } from './components/feature/customer/my-parcels-component/my-parcels-component';
+import { AdminDashboard } from './components/auth/admin-dashboard/admin-dashboard';
+import { HubRidersComponent } from './components/feature/agents/hub-riders-component/hub-riders-component';
+import { authGuard, roleGuard } from './guards/auth-guard';
+import { AgentProfileComponent } from './components/feature/agents/agent-profile-component/agent-profile-component';
+import { TrackOnBehalfComponent } from './components/feature/customer/track-on-behalf-component/track-on-behalf-component';
+import { CustomerProfileComponent } from './components/feature/customer/customer-profile-component/customer-profile-component';
 
 export const routes: Routes = [
 
@@ -49,31 +55,46 @@ export const routes: Routes = [
     },
 
 
-
     {
         path: '',
         component: MainLayout,
         children: [
 
-            { path: 'country', component: Country },
-            { path: 'division', component: Division },
-            { path: 'district', component: District },
-            { path: 'police', component: Policestation },
-            { path: 'hub', component: LocationSearchcomponent },
+            { path: 'country', component: Country, canActivate: [authGuard, roleGuard(['ADMIN'])] },
+            { path: 'division', component: Division , canActivate: [authGuard, roleGuard(['ADMIN'])]},
+            { path: 'district', component: District , canActivate: [authGuard, roleGuard(['ADMIN'])]},
+            { path: 'police', component: Policestation , canActivate: [authGuard, roleGuard(['ADMIN'])]},
 
-            { path: 'agentList', component: AgentList },
+            { path: 'hub', component: LocationSearchcomponent , canActivate: [authGuard, roleGuard(['ADMIN','AGENT'])]},
 
-            { path: 'riderlist', component: Riderlist },
+            { path: 'agentList', component: AgentList , canActivate: [authGuard, roleGuard(['ADMIN'])]},
 
-            { path: 'dashboard', component: RoleRedirect },
-            { path: 'customer', component: Customerdashboard },
-            { path: 'agent', component: Agentdashboard },
-            { path: 'rider', component: Riderdashboard },
-            { path: 'hubparcel', component: HubParcel },
-            { path: 'agentbook', component: AgentParcelRequestComponent },
-            { path: 'print', component: BookingReceiptComponent },
-            { path: 'customerbook', component: BookParcelComponent },
-            { path: 'myparcel', component: MyParcelsComponent },
+            { path: 'riderlist', component: Riderlist , canActivate: [authGuard, roleGuard(['ADMIN'])]},
+
+            { path: 'dashboard', component: RoleRedirect , canActivate: [authGuard]},
+
+            { path: 'customer', component: Customerdashboard , canActivate: [authGuard, roleGuard(['CUSTOMER'])]},
+            { path: 'customertrack', component: TrackOnBehalfComponent , canActivate: [authGuard, roleGuard(['CUSTOMER'])]},
+            { path: 'customerprofile', component: CustomerProfileComponent , canActivate: [authGuard, roleGuard(['CUSTOMER'])]},
+            { path: 'agent', component: Agentdashboard , canActivate: [authGuard, roleGuard(['AGENT'])]},
+
+            { path: 'rider', component: Riderdashboard , canActivate: [authGuard, roleGuard(['RIDER'])]},
+            { path: 'admin', component: AdminDashboard , canActivate: [authGuard, roleGuard(['ADMIN'])]},
+
+            { path: 'hubparcel', component: HubParcel , canActivate: [authGuard, roleGuard(['AGENT'])]},
+            { path: 'agentbook', component: AgentParcelRequestComponent , canActivate: [authGuard, roleGuard(['ADMIN','AGENT'])]},
+
+            { path: 'print', component: BookingReceiptComponent , canActivate: [authGuard]},
+            { path: 'customerbook', component: BookParcelComponent , canActivate: [authGuard, roleGuard(['ADMIN','CUSTOMER'])]},
+            { path: 'myparcel', component: MyParcelsComponent , canActivate: [authGuard, roleGuard(['ADMIN','CUSTOMER'])]},
+
+            { path: 'addriderbyagent', component: AddRider , canActivate: [authGuard, roleGuard(['AGENT'])]},
+            { path: 'addriderbyadmin', component: AddRider , canActivate: [authGuard, roleGuard(['ADMIN'])]},
+
+             { path: 'addagentbyAdmin', component: AddAgent , canActivate: [authGuard, roleGuard(['ADMIN'])]},
+             { path: 'addcustomerbyAdmin', component: AddCustomer , canActivate: [authGuard, roleGuard(['ADMIN'])]},
+             { path: 'riderListAgent', component: HubRidersComponent , canActivate: [authGuard, roleGuard(['AGENT'])]},
+             { path: 'agentprofile', component: AgentProfileComponent , canActivate: [authGuard, roleGuard(['AGENT'])]},
         ]
 
 
@@ -81,11 +102,6 @@ export const routes: Routes = [
     },
 
     { path: '**', redirectTo: '' }
-
-
-
-
-
 
 
 

@@ -69,4 +69,42 @@ public class RiderController {
     }
 
 
+    // ── Zone / coverage queries ────────────────────────────────────
+
+    // GET /api/riders/police-station/3
+    @GetMapping("/police-station/{policeStationId}")
+    public List<RiderResponseDTO> getByPoliceStation(@PathVariable Long policeStationId) {
+        return riderService.getByPoliceStation(policeStationId);
+    }
+
+    // GET /api/riders/police-station/3/active
+    @GetMapping("/police-station/{policeStationId}/active")
+    public List<RiderResponseDTO> getActiveByPoliceStation(@PathVariable Long policeStationId) {
+        return riderService.getActiveByPoliceStation(policeStationId);
+    }
+
+    // GET /api/riders/district/2
+    @GetMapping("/district/{districtId}")
+    public List<RiderResponseDTO> getByDistrict(@PathVariable Long districtId) {
+        return riderService.getByDistrict(districtId);
+    }
+
+    // GET /api/riders/district/2/active
+    @GetMapping("/district/{districtId}/active")
+    public List<RiderResponseDTO> getActiveByDistrict(@PathVariable Long districtId) {
+        return riderService.getActiveByDistrict(districtId);
+    }
+
+    // ── Status toggle ─────────────────────────────────────────────
+
+    // PATCH /api/riders/1/active?value=true
+    @PatchMapping("/{id}/active")
+    public RiderResponseDTO setActive(
+            @PathVariable Long id,
+            @RequestParam boolean value) {
+        return riderService.setActive(id, value);
+    }
+
+
+
 }

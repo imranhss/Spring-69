@@ -244,6 +244,14 @@ public class ParcelServiceImpl implements ParcelService {
     }
 
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<ParcelResponseDTO> getByRider(Long riderId) {
+        return parcelRepository.findByRiderIdWithDetails(riderId)
+                .stream().map(ParcelMapper::toDTO).collect(Collectors.toList());
+    }
+
+
 
     private LocalDate estimateDelivery(ServiceType serviceType) {
         int days = switch (serviceType) {

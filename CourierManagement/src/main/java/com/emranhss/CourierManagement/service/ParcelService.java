@@ -30,5 +30,8 @@ public interface ParcelService {
 
     void delete(Long id);
 
+    List<ParcelResponseDTO> getByRider(Long riderId);
+
+
     double calculateCharge(double weight, String serviceType, double codAmount);
 }

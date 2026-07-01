@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { ParcelResponse, StatusUpdateRequest } from '../models/parcel.model';
+import { ParcelResponse, ParcelStats, ParcelStatus, StatusUpdateRequest } from '../models/parcel.model';
 import { AgentParcelRequest } from '../models/agentParcelrequest.model';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -21,9 +21,9 @@ export class ParcelService {
     return this.http.post<ParcelResponse>(`${this.apiUrl}/book`, dto);
   }
 
-  getByCustomer(customerId: number): Observable<ParcelResponse[]> {
-    return this.http.get<ParcelResponse[]>(`${this.apiUrl}/customer/${customerId}`);
-  }
+  // getByCustomer(customerId: number): Observable<ParcelResponse[]> {
+  //   return this.http.get<ParcelResponse[]>(`${this.apiUrl}/customer/${customerId}`);
+  // }
 
   track(trackingCode: string): Observable<ParcelResponse> {
     return this.http.get<ParcelResponse>(`${this.apiUrl}/track/${trackingCode}`);
@@ -72,5 +72,34 @@ export class ParcelService {
   delete(id: number): Observable<string> {
     return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });
   }
+
+
+
+   getByCustomer(customerId: number): Observable<ParcelResponse[]> {
+    return this.http.get<ParcelResponse[]>(this.apiUrl + '/customer/' + customerId);
+  }
+ 
+
+getSummaryForCustomer(customerId: number): Observable<{ stats: ParcelStats; recent: ParcelResponse[] }> {
+  return this.getByCustomer(customerId).pipe(
+    map(parcels => ({
+      stats: {
+        total: parcels.length,
+        inTransit: parcels.filter(p => p.status === 'IN_TRANSIT' || p.status === 'PICKED_UP').length,
+        delivered: parcels.filter(p => p.status === 'DELIVERED').length,
+        pending: parcels.filter(p => p.status === 'PENDING').length,
+      },
+      recent: parcels.slice(0, 5),
+    }))
+  );
+}
+
+
+// In parcel.service.ts — add this one method
+getByRider(riderId: number): Observable<ParcelResponse[]> {
+  return this.http.get<ParcelResponse[]>(this.apiUrl + `/rider/${riderId}`);
+}
+
+
 
 }
