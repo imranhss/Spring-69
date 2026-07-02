@@ -232,8 +232,6 @@
               <span *ngIf="h.location"> — {{ h.location }}</span>
             </div>
             <div class="small" *ngIf="h.note">{{ h.note }}</div>
-            <!-- <div class="small" *ngIf="detailParcel.riderName">{{ detailParcel.riderName}}</div>
-            <div class="small" *ngIf="detailParcel.riderPhone">{{ detailParcel.riderPhone}}</div> -->
             <div class="text-muted" style="font-size: 0.75rem;" *ngIf="h.performedBy">by {{ h.performedBy }}</div>
           </div>
         </div>
@@ -338,10 +336,12 @@
       </div>
     </div>
 
-    <!-- ── RIDER ASSIGNMENT (shown when OUT_FOR_DELIVERY) ────────── -->
-    <div *ngIf="updateDto.status === 'OUT_FOR_DELIVERY'" class="card border-success border-opacity-25 bg-success-subtle p-3 mb-3">
+    <!-- ── RIDER ASSIGNMENT (shown when PICKED_UP or OUT_FOR_DELIVERY) ─ -->
+    <div *ngIf="updateDto.status === 'PICKED_UP' || updateDto.status === 'OUT_FOR_DELIVERY'"
+         class="card border-success border-opacity-25 bg-success-subtle p-3 mb-3">
       <div class="fw-semibold small mb-2">
-        <i class="bi bi-bicycle text-success me-1"></i>Assign Rider
+        <i class="bi bi-bicycle text-success me-1"></i>
+        {{ updateDto.status === 'PICKED_UP' ? 'Assign Pickup Rider' : 'Assign Delivery Rider' }}
       </div>
 
       <div *ngIf="ridersLoading" class="text-muted small">
@@ -358,7 +358,7 @@
         </select>
 
         <small class="text-muted d-block mt-1" *ngIf="availableRiders.length === 0">
-          No active riders found for the delivery area.
+          No active riders found{{ updateDto.status === 'PICKED_UP' ? ' at this hub' : ' for the delivery area' }}.
           You can still proceed — a rider can be assigned later by admin.
         </small>
       </div>

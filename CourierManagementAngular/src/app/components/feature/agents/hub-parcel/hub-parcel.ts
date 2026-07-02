@@ -57,7 +57,7 @@ export class HubParcel {
   saving = false;
   updateError: string | null = null;
 
-  // ── Rider selection (shown when OUT_FOR_DELIVERY) ─────────────────
+  // ── Rider selection (shown when PICKED_UP or OUT_FOR_DELIVERY) ────
   availableRiders: any[] = [];
   ridersLoading = false;
 
@@ -124,7 +124,7 @@ export class HubParcel {
     });
   }
 
-  // ── Load Riders ──────────────────────────────────────────────────
+  // ── Load Riders (current hub — used for PENDING panel open + PICKED_UP) ──
 
   loadRiders(): void {
     const agent = this.storage.getData<any>(KEYS.AGENT);
@@ -140,7 +140,6 @@ export class HubParcel {
       next: (riders) => {
         this.availableRiders = riders || [];
         this.ridersLoading = false;
-        console.log('Riders loaded:', this.availableRiders); // ← log here instead
         this.cdr.markForCheck();
       },
       error: (err) => {
@@ -187,8 +186,6 @@ export class HubParcel {
 
   openDetail(parcel: ParcelResponse): void {
     this.detailParcel = parcel; this.showDetail = true;
-    console.log(this.detailParcel);
-    
   }
   closeDetail(): void { this.showDetail = false; this.detailParcel = null; }
 
@@ -201,9 +198,15 @@ export class HubParcel {
 
     this.resetTransitCascade();
     this.showPanel = true;
-    this.loadRiders();
-    console.log(this.availableRiders + "11111111111111111111");
 
+    // Pre-load riders in case the panel opens directly on PICKED_UP/OUT_FOR_DELIVERY
+    if (parcel.status === 'PICKED_UP') {
+      this.loadRiders();
+    } else if (parcel.status === 'OUT_FOR_DELIVERY') {
+      this.loadRidersForDestination();
+    } else {
+      this.loadRiders();
+    }
   }
 
   closePanel(): void { this.showPanel = false; this.selectedParcel = null; }
@@ -214,7 +217,11 @@ export class HubParcel {
     this.updateDto.nextHubPoliceStationId = null;
     this.resetTransitCascade();
 
-    if (this.updateDto.status === 'OUT_FOR_DELIVERY') {
+    if (this.updateDto.status === 'PICKED_UP') {
+      // Rider who will pick up the parcel — from the current hub's active riders
+      this.loadRiders();
+    } else if (this.updateDto.status === 'OUT_FOR_DELIVERY') {
+      // Rider who will deliver — from the destination hub's active riders
       this.loadRidersForDestination();
     }
   }

@@ -325,6 +325,27 @@ public class AgentServiceImpl implements AgentService {
             }
         }
 
+
+        if (ParcelStatus.valueOf(dto.getStatus()) == ParcelStatus.PICKED_UP
+                && dto.getRiderId() != null) {
+
+            Rider rider = riderRepository.findById(dto.getRiderId())
+                    .orElseThrow(() -> new RuntimeException("Rider not found"));
+
+            parcel.setRider(rider);
+
+            if (autoNote == null || autoNote.isBlank()) {
+                autoNote = "Assigned to rider " + rider.getUser().getName()
+                        + " (" + rider.getVehicleType() + ")";
+            }
+
+            if (autoLocation == null || autoLocation.isBlank()) {
+                autoLocation = agent.getHub().getName();
+            }
+        }
+
+
+
         if (ParcelStatus.valueOf(dto.getStatus()) == ParcelStatus.DELIVERED) {
             if (autoNote == null || autoNote.isBlank()) {
                 autoNote = "Delivered successfully";
