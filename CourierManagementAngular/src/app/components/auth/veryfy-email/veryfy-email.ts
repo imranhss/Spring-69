@@ -14,25 +14,25 @@ type VerifyState = 'loading' | 'success' | 'error' | 'no-token';
 })
 export class VeryfyEmail {
 
- state: VerifyState = 'loading';
+  state: VerifyState = 'loading';
   errorMessage = '';
   countdown = 5;
   private timer: any;
- 
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private auth: AuthService
   ) { }
- 
+
   ngOnInit(): void {
     const token = this.route.snapshot.queryParamMap.get('token');
- 
+
     if (!token) {
       this.state = 'no-token';
       return;
     }
- 
+
     this.auth.verifyEmail(token).subscribe({
       next: () => {
         this.state = 'success';
@@ -47,7 +47,7 @@ export class VeryfyEmail {
       }
     });
   }
- 
+
   private startCountdown(): void {
     this.timer = setInterval(() => {
       this.countdown--;
@@ -57,12 +57,12 @@ export class VeryfyEmail {
       }
     }, 1000);
   }
- 
+
   goToLogin(): void {
     clearInterval(this.timer);
     this.router.navigate(['/login']);
   }
- 
+
   ngOnDestroy(): void {
     clearInterval(this.timer);
   }

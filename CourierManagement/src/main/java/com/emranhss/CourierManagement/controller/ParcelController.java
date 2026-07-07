@@ -93,7 +93,6 @@ public class ParcelController {
 
     // GET /api/parcels/rider/{riderId}
     @GetMapping("/rider/{riderId}")
-
     public ResponseEntity<List<ParcelResponseDTO>> getByRider(@PathVariable Long riderId) {
         List<ParcelResponseDTO> list = parcelService.getByRider(riderId);
         return list.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(list);

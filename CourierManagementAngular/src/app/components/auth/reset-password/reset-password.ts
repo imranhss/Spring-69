@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
 export class ResetPassword {
 
 
-token = '';
+  token = '';
   newPassword = '';
   confirmPassword = '';
 
