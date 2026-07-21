@@ -10,6 +10,7 @@ import { Observable, tap } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
+  
 
  private apiUrl = environment.apiUrl + 'auth';
 

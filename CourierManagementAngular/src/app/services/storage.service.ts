@@ -64,10 +64,7 @@ export class StorageService {
   }
 
 
-  // Customer -------------------------------------------------
-
  
-
 
 // Generic Method for ALl
 
