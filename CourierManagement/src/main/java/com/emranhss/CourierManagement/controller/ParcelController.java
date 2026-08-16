@@ -67,6 +67,16 @@ public class ParcelController {
         return parcelService.assignRider(id, riderId);
     }
 
+    // Rider: mark an assigned parcel as picked up from the sender
+    // PATCH /api/parcels/{id}/pickup?riderId=2
+    @PatchMapping("/{id}/pickup")
+    public ParcelResponseDTO pickup(@PathVariable Long id,
+                                    @RequestParam Long riderId,
+                                    @RequestParam(required = false) String note,
+                                    @RequestParam(required = false) String location) {
+        return parcelService.pickup(id, riderId, note, location);
+    }
+
     // Rider: update delivery status
     // Body: { "status": "IN_TRANSIT", "note": "...", "location": "...", "riderId": 2 }
     @PatchMapping("/{id}/status")

@@ -26,6 +26,8 @@ public interface ParcelService {
 
     ParcelResponseDTO assignRider(Long parcelId, Long riderId);
 
+    ParcelResponseDTO pickup(Long parcelId, Long riderId, String note, String location);
+
     ParcelResponseDTO updateStatus(Long parcelId, StatusUpdateRequestDTO dto);
 
     void delete(Long id);

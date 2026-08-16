@@ -181,14 +181,48 @@ public class ParcelServiceImpl implements ParcelService {
                 .orElseThrow(() -> new RuntimeException("Rider not found"));
 
         parcel.setRider(rider);
+        parcel.setStatus(ParcelStatus.ASSIGNED);
+
+        ParcelHistory h = new ParcelHistory();
+        h.setStatus(ParcelStatus.ASSIGNED.name());
+        h.setNote("Assigned to rider " + rider.getUser().getName() + " — awaiting pickup");
+        h.setLocation(parcel.getOriginPoliceStation() != null
+                ? parcel.getOriginPoliceStation().getName() + " Hub" : "Hub");
+        h.setPerformedBy(rider);
+        h.setParcel(parcel);
+        parcel.getHistory().add(h);
+
+        return ParcelMapper.toDTO(parcelRepository.save(parcel));
+    }
+
+    // Rider marks a parcel as picked up from the sender.
+    // Only the rider the parcel is assigned to may do this, and only
+    // while the parcel is still in ASSIGNED state.
+    @Transactional
+    @Override
+    public ParcelResponseDTO pickup(Long parcelId, Long riderId, String note, String location) {
+        Parcel parcel = parcelRepository.findByIdWithDetails(parcelId)
+                .orElseThrow(() -> new RuntimeException("Parcel not found"));
+
+        if (parcel.getRider() == null || !parcel.getRider().getId().equals(riderId)) {
+            throw new RuntimeException("This parcel is not assigned to you");
+        }
+
+        if (parcel.getStatus() != ParcelStatus.ASSIGNED) {
+            throw new RuntimeException(
+                    "Parcel cannot be picked up from status " + parcel.getStatus());
+        }
+
         parcel.setStatus(ParcelStatus.PICKED_UP);
 
         ParcelHistory h = new ParcelHistory();
         h.setStatus(ParcelStatus.PICKED_UP.name());
-        h.setNote("Assigned to " + rider.getUser().getName() + " and picked up");
-        h.setLocation(parcel.getOriginPoliceStation() != null
-                ? parcel.getOriginPoliceStation().getName() + " Hub" : "Hub");
-        h.setPerformedBy(rider);
+        h.setNote(note != null && !note.isBlank() ? note : "Picked up from sender");
+        h.setLocation(location != null && !location.isBlank()
+                ? location
+                : (parcel.getOriginPoliceStation() != null
+                   ? parcel.getOriginPoliceStation().getName() + " Hub" : "Hub"));
+        h.setPerformedBy(parcel.getRider());
         h.setParcel(parcel);
         parcel.getHistory().add(h);
 
@@ -206,6 +240,22 @@ public class ParcelServiceImpl implements ParcelService {
             newStatus = ParcelStatus.valueOf(dto.getStatus().toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("Invalid status: " + dto.getStatus());
+        }
+
+        // If a rider is performing this update, make sure it's the rider the
+        // parcel is actually assigned to, and that the parcel hasn't already
+        // reached a terminal state.
+        if (dto.getRiderId() != null) {
+            if (parcel.getRider() == null || !parcel.getRider().getId().equals(dto.getRiderId())) {
+                throw new RuntimeException("This parcel is not assigned to you");
+            }
+
+            List<ParcelStatus> terminal = List.of(
+                    ParcelStatus.DELIVERED, ParcelStatus.CANCELLED, ParcelStatus.RETURNED);
+            if (terminal.contains(parcel.getStatus())) {
+                throw new RuntimeException(
+                        "Parcel is already " + parcel.getStatus() + " and cannot be updated further");
+            }
         }
 
         parcel.setStatus(newStatus);

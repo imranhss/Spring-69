@@ -69,6 +69,16 @@ export class ParcelService {
     return this.http.patch<ParcelResponse>(`${this.apiUrl}/${id}/status`, dto);
   }
 
+  // ── Rider ─────────────────────────────────────────────────────
+
+  /** Rider marks an assigned parcel as picked up from the sender. */
+  pickup(id: number, riderId: number, note?: string, location?: string): Observable<ParcelResponse> {
+    let params = new HttpParams().set('riderId', riderId);
+    if (note) params = params.set('note', note);
+    if (location) params = params.set('location', location);
+    return this.http.patch<ParcelResponse>(`${this.apiUrl}/${id}/pickup`, null, { params });
+  }
+
   delete(id: number): Observable<string> {
     return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });
   }

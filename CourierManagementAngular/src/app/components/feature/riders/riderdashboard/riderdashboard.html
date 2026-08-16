@@ -94,7 +94,12 @@
     </div>
 
     <!-- RECENT DELIVERIES -->
-    <h6 class="text-uppercase text-muted fw-bold mb-3 small">Recent Deliveries</h6>
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <h6 class="text-uppercase text-muted fw-bold mb-0 small">Recent Deliveries</h6>
+      <a routerLink="/rider/deliveries" class="btn btn-danger btn-sm">
+        <i class="bi bi-box-seam-fill me-1"></i>Manage My Deliveries
+      </a>
+    </div>
 
     <div *ngIf="loadingParcels" class="text-center py-4 text-muted">
       <div class="spinner-border spinner-border-sm text-danger me-2"></div>Loading...

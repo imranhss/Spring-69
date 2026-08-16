@@ -32,6 +32,7 @@ import { authGuard, roleGuard } from './guards/auth-guard';
 import { AgentProfileComponent } from './components/feature/agents/agent-profile-component/agent-profile-component';
 import { TrackOnBehalfComponent } from './components/feature/customer/track-on-behalf-component/track-on-behalf-component';
 import { CustomerProfileComponent } from './components/feature/customer/customer-profile-component/customer-profile-component';
+import { RiderDeliveries } from './components/feature/riders/rider-deliveries/rider-deliveries';
 
 export const routes: Routes = [
 
@@ -79,6 +80,7 @@ export const routes: Routes = [
             { path: 'agent', component: Agentdashboard , canActivate: [authGuard, roleGuard(['AGENT'])]},
 
             { path: 'rider', component: Riderdashboard , canActivate: [authGuard, roleGuard(['RIDER'])]},
+            { path: 'rider/deliveries', component: RiderDeliveries , canActivate: [authGuard, roleGuard(['RIDER'])]},
             { path: 'admin', component: AdminDashboard , canActivate: [authGuard, roleGuard(['ADMIN'])]},
 
             { path: 'hubparcel', component: HubParcel , canActivate: [authGuard, roleGuard(['AGENT'])]},

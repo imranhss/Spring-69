@@ -2,7 +2,9 @@ package com.emranhss.CourierManagement.enums;
 
 
 public enum ParcelStatus {
+
     PENDING,
+    ASSIGNED,
     PICKED_UP,
     IN_TRANSIT,
     OUT_FOR_DELIVERY,
@@ -10,4 +12,5 @@ public enum ParcelStatus {
     CANCELLED,
     RETURNED,
     AT_HUB
+
 }

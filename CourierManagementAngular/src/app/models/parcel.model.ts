@@ -7,6 +7,7 @@ export type PaymentMethod = 'CASH' | 'BKASH' | 'COD' | 'NAGAD' | 'SSLCOMMERZ' | 
 export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED';
 export type ParcelStatus =
   | 'PENDING'
+  | 'ASSIGNED'
   | 'PICKED_UP'
   | 'IN_TRANSIT'
   | 'OUT_FOR_DELIVERY'
@@ -110,6 +111,7 @@ export interface ParcelStats {
 
 export const PARCEL_STATUS_META: Record<ParcelStatus, { label: string; badge: string }> = {
   PENDING: { label: 'Pending', badge: 'bg-secondary' },
+  ASSIGNED: { label: 'Assigned', badge: 'bg-warning text-dark' },
   PICKED_UP: { label: 'Picked Up', badge: 'bg-primary' },
   IN_TRANSIT: { label: 'In Transit', badge: 'bg-primary' },
   OUT_FOR_DELIVERY: { label: 'Out for Delivery', badge: 'bg-info text-dark' },

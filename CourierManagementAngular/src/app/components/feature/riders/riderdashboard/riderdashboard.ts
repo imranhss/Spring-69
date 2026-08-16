@@ -5,13 +5,14 @@ import { KEYS, StorageService } from '../../../../services/storage.service';
 import { AuthService } from '../../../../services/auth.service';
 import { RiderService } from '../../../../services/rider.service';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { environment } from '../../../../../environments/environment';
 import { PARCEL_STATUS_META, ParcelResponse, ParcelStatus } from '../../../../models/parcel.model';
 import { ParcelService } from '../../../../services/parcel.service';
 
 @Component({
   selector: 'app-riderdashboard',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './riderdashboard.html',
   styleUrl: './riderdashboard.css',
 })
